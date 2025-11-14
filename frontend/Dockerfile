@@ -10,7 +10,7 @@ RUN npm config set registry https://registry.npmmirror.com
 ENV NODE_OPTIONS=--max-old-space-size=16384
 # 设置阿里镜像、pnpm、依赖、编译
 RUN npm install pnpm -g && \
-    pnpm install --frozen-lockfile && \
+    pnpm install --no-frozen-lockfile && \
     pnpm build:docker
 # node部分结束
 RUN echo "🎉 编 🎉 译 🎉 成 🎉 功 🎉"
