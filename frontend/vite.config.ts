@@ -12,6 +12,7 @@ export default defineApplicationConfig({
         '@iconify/iconify',
         'ant-design-vue/es/locale/zh_CN',
         'ant-design-vue/es/locale/en_US',
+        'vxe-table',
       ],
     },
     server: {
@@ -21,8 +22,6 @@ export default defineApplicationConfig({
           changeOrigin: true,
           ws: true,
           rewrite: (path) => path.replace(new RegExp(`^/basic-api`), ''),
-          // only https
-          // secure: false
         },
         '/upload': {
           target: 'http://localhost:3300/upload',
@@ -31,9 +30,18 @@ export default defineApplicationConfig({
           rewrite: (path) => path.replace(new RegExp(`^/upload`), ''),
         },
       },
-      open: true, // 项目启动后，自动打开
+      open: true,
       warmup: {
         clientFiles: ['./index.html', './src/{views,components}/*'],
+      },
+    },
+    build: {
+      rollupOptions: {
+        onwarn(warning, warn) {
+          // Ignore vxe-table import warnings
+          if (warning.message.includes('vxe-table')) return;
+          warn(warning);
+        },
       },
     },
   },
