@@ -10,10 +10,17 @@ RUN npm install pnpm -g && \
     pnpm build:docker
 RUN echo "🎉 编 🎉 译 🎉 成 🎉 功 🎉"
 
-# Stage cuối chỉ giữ dist
+# Stage production - chỉ giữ dist
 FROM node:18-alpine as production-stage
-WORKDIR /app
-COPY --from=build-stage /app/dist ./dist
+WORKDIR /output
+COPY --from=build-stage /app/dist ./
 
-# Thay thế biến môi trường khi container start
-CMD sh -c "sed -i 's|__vg_base_url|${VG_BASE_URL}|g' /app/dist/assets/entry/index-*.js /app/dist/_app.config.js 2>/dev/null || true && tail -f /dev/null"
+# Script để copy và thay thế env variables
+CMD sh -c '\
+    if [ -d /shared ]; then \
+        echo "Copying dist to shared volume..."; \
+        cp -r /output/* /shared/; \
+        sed -i "s|__vg_base_url|${VG_BASE_URL:-http://localhost}|g" /shared/assets/entry/index-*.js /shared/_app.config.js 2>/dev/null || true; \
+        echo "Frontend files ready!"; \
+    fi; \
+    tail -f /dev/null'
