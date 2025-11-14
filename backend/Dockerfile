@@ -1,11 +1,18 @@
-FROM eclipse-temurin:17-jre-alpine
+# ===== Build stage =====
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-# Install wget for healthcheck
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn -e -B -DskipTests clean package
+
+# ===== Run stage =====
+FROM eclipse-temurin:17-jre-alpine
 RUN apk add --no-cache wget
 
 WORKDIR /app
-
-COPY target/*.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
