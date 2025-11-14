@@ -1,19 +1,17 @@
 FROM eclipse-temurin:17-jre-alpine
 
+# Install wget for healthcheck
+RUN apk add --no-cache wget
+
 WORKDIR /app
 
-# Copy JAR file - Updated to match slm-api-v2 project
 COPY target/*.jar app.jar
 
-# Expose port
 EXPOSE 8080
 
-# JVM options
-ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseContainerSupport"
+ENV JAVA_OPTS="-Xms512m -Xmx1024m"
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
 
-# Run application
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]
