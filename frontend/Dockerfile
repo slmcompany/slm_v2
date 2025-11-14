@@ -6,11 +6,10 @@ COPY . ./
 RUN npm config set registry https://registry.npmmirror.com
 ENV NODE_OPTIONS=--max-old-space-size=16384
 
-# Cài cross-env và build với mock
+# Build bình thường - mock đã bật trong .env.production
 RUN npm install pnpm -g && \
     pnpm install --no-frozen-lockfile && \
-    pnpm add -g cross-env && \
-    cross-env VITE_USE_MOCK=true pnpm build
+    pnpm build
 
 RUN echo "🎉 编 🎉 译 🎉 成 🎉 功 🎉"
 
