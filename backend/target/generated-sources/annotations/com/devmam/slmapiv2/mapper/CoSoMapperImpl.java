@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-13T16:14:26+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
+    date = "2025-11-14T11:32:53+0700",
+    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class CoSoMapperImpl implements CoSoMapper {
@@ -23,12 +23,12 @@ public class CoSoMapperImpl implements CoSoMapper {
 
         CoSoDto.CoSoDtoBuilder coSoDto = CoSoDto.builder();
 
+        coSoDto.dcKho( coSo.getDcKho() );
+        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
         coSoDto.id( coSo.getId() );
         coSoDto.ma( coSo.getMa() );
-        coSoDto.ten( coSo.getTen() );
-        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
-        coSoDto.dcKho( coSo.getDcKho() );
         coSoDto.taoLuc( coSo.getTaoLuc() );
+        coSoDto.ten( coSo.getTen() );
         coSoDto.trangThai( coSo.getTrangThai() );
 
         return coSoDto.build();

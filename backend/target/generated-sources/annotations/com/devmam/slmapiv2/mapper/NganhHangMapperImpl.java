@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-13T16:14:26+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
+    date = "2025-11-14T11:32:52+0700",
+    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class NganhHangMapperImpl implements NganhHangMapper {
@@ -23,13 +23,13 @@ public class NganhHangMapperImpl implements NganhHangMapper {
 
         NganhHangDto.NganhHangDtoBuilder nganhHangDto = NganhHangDto.builder();
 
-        nganhHangDto.id( nganhHang.getId() );
-        nganhHangDto.ma( nganhHang.getMa() );
-        nganhHangDto.ten( nganhHang.getTen() );
-        nganhHangDto.sdtSale( nganhHang.getSdtSale() );
-        nganhHangDto.sdtTech( nganhHang.getSdtTech() );
         nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
         nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
+        nganhHangDto.id( nganhHang.getId() );
+        nganhHangDto.ma( nganhHang.getMa() );
+        nganhHangDto.sdtSale( nganhHang.getSdtSale() );
+        nganhHangDto.sdtTech( nganhHang.getSdtTech() );
+        nganhHangDto.ten( nganhHang.getTen() );
         nganhHangDto.trangThai( nganhHang.getTrangThai() );
 
         return nganhHangDto.build();
