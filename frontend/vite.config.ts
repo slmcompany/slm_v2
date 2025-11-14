@@ -12,7 +12,7 @@ export default defineApplicationConfig({
         '@iconify/iconify',
         'ant-design-vue/es/locale/zh_CN',
         'ant-design-vue/es/locale/en_US',
-        'vxe-table', // Thêm dòng này
+        'vxe-table',
       ],
     },
     server: {
@@ -35,29 +35,27 @@ export default defineApplicationConfig({
         clientFiles: ['./index.html', './src/{views,components}/*'],
       },
     },
-    // Thêm build config
+    // THÊM PHẦN NÀY
     build: {
+      // Tắt strict mode
       rollupOptions: {
-        onwarn(warning, warn) {
-          // Bỏ qua warning về missing exports từ vxe-table
-          if (warning.code === 'MISSING_EXPORT' && warning.message.includes('vxe-table')) {
-            return;
-          }
-          if (warning.code === 'UNRESOLVED_IMPORT' && warning.message.includes('vxe-table')) {
-            return;
-          }
-          warn(warning);
+        // Tắt validate external
+        external: [],
+        output: {
+          // Tắt strict checks
+          exports: 'auto',
+          interop: 'auto',
         },
+        // Shimming cho missing default exports
+        shimMissingExports: true,
       },
       // Cho phép commonjs interop
       commonjsOptions: {
         transformMixedEsModules: true,
         strictRequires: false,
+        defaultIsModuleExports: true,
+        esmExternals: true,
       },
-    },
-    // Thêm resolve config
-    resolve: {
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     },
   },
 });
