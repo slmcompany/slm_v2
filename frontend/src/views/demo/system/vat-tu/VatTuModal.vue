@@ -77,29 +77,22 @@
               <a-row :gutter="16">
                 <a-col :span="12">
                   <a-form-item label="Mã cơ sở" :required="true">
-                    <a-input 
+                    <a-select 
                       v-model:value="item.maCoSo" 
-                      placeholder="Nhập mã cơ sở"
-                    />
+                      placeholder="Chọn cơ sở"
+                      @change="(value) => handleCoSoChange(item, value)"
+                    >
+                      <a-select-option value="HN">HN</a-select-option>
+                      <a-select-option value="HCM">HCM</a-select-option>
+                    </a-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="12">
                   <a-form-item label="Tên cơ sở" :required="true">
                     <a-input 
                       v-model:value="item.tenCoSo" 
-                      placeholder="Nhập tên cơ sở"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                  <a-form-item label="Giá nhập" :required="true">
-                    <InputNumber 
-                      v-model:value="item.giaNhap" 
-                      placeholder="Nhập giá nhập"
-                      :min="0"
-                      :formatter="value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="value => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
+                      placeholder="Tên cơ sở"
+                      disabled
                     />
                   </a-form-item>
                 </a-col>
@@ -266,8 +259,7 @@
         });
         console.log('Loaded fileList:', fileList.value); // Debug log
       }
-
-
+      
       setFieldsValue({
         ...data.record,
         nhomVatTuId: data.record.nhomVatTu?.id,
@@ -603,6 +595,14 @@
     const val = item[field];
     item[`${field}Raw`] = val != null ? String(val) : '';
   }
+
+  function handleCoSoChange(item: any, value: string) {
+  const coSoMap = {
+    'HN': 'Hà Nội',
+    'HCM': 'Hồ Chí Minh'
+  };
+  item.tenCoSo = coSoMap[value] || '';
+}
 
   // Xử lý xóa file từ danh sách upload
   function handleRemoveFile(file: any) {
