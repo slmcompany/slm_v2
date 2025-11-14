@@ -7,7 +7,7 @@ RUN npm config set registry https://registry.npmmirror.com
 ENV NODE_OPTIONS=--max-old-space-size=16384
 RUN npm install pnpm -g && \
     pnpm install --no-frozen-lockfile && \
-    pnpm build:docker
+    cross-env VITE_USE_MOCK=true pnpm build
 RUN echo "🎉 编 🎉 译 🎉 成 🎉 功 🎉"
 
 # Stage production - chỉ giữ dist
