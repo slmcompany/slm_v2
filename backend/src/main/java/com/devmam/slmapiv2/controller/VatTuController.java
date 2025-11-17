@@ -74,4 +74,9 @@ public class VatTuController {
                                                          @RequestPart("files") List<MultipartFile> files) {
         return vatTuService.create(dto, files);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseData<VatTuDto>> delete(@PathVariable Integer id){
+        return vatTuService.deleteVatTu(id);
+    }
 }
