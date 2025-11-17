@@ -68,18 +68,22 @@
             :key="`gia-item-${index}`"
             class="gia-item"
           >
-            <a-card size="small" :title="`Thông tin giá ${index + 1}`">
-              <template #extra>
-                <a-button 
-                  type="link" 
-                  danger 
-                  size="small"
-                  @click="handleRemoveGia(index)"
-                >
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-size: 14px; font-weight: 500;">Thông tin giá {{ index + 1 }}</span>
+              <a-button 
+                type="primary" 
+                danger 
+                size="small"
+                @click="handleRemoveGia(index)"
+              >
+                <template #icon>
                   <DeleteOutlined />
-                </a-button>
-              </template>
-              
+                </template>
+                Xóa
+              </a-button>
+            </div>
+            
+            <a-card size="small" :bordered="true">
               <a-row :gutter="16">
                 <a-col :span="8">
                   <a-form-item label="Mã cơ sở" :required="true">
@@ -237,7 +241,7 @@
 
       if (data.record.thongTinGias && data.record.thongTinGias.length > 0) {
         dsGiaList.value = (data.record.thongTinGias[0].dsGia || []).map((g: any) => ({
-          maCoSo: g.maCoSo || '',  // Đảm bảo không null/undefined
+          maCoSo: g.maCoSo || '',
           tenCoSo: g.tenCoSo || '',
           giaNhap: g.giaNhap != null ? Number(g.giaNhap) : 0,
           giaBan: g.giaBan != null ? Number(g.giaBan) : 0,
@@ -586,10 +590,8 @@
 </script>
 
 <style lang="less" scoped>
-.du-lieu-rieng-container,
-.ds-gia-container {
-  .du-lieu-rieng-item,
-  .gia-item {
+.du-lieu-rieng-container {
+  .du-lieu-rieng-item {
     margin-bottom: 16px;
     
     &:last-child {
@@ -613,6 +615,39 @@
   
   :deep(.ant-form-item) {
     margin-bottom: 8px;
+  }
+}
+
+.ds-gia-container {
+  .gia-item {
+    margin-bottom: 16px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  :deep(.ant-card) {
+    .ant-card-head {
+      min-height: 48px;
+      padding: 0 16px;
+      border-bottom: 1px solid rgb(255 255 255 / 10%);
+      background: rgb(255 255 255 / 4%);
+      
+      .ant-card-head-title {
+        padding: 12px 0;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+    
+    .ant-card-body {
+      padding: 16px;
+    }
+  }
+  
+  :deep(.ant-form-item) {
+    margin-bottom: 12px;
   }
 }
 
