@@ -231,24 +231,24 @@ export const formSchema: FormSchema[] = [
     },
     required: true,
   },
+  // Dữ liệu riêng - dùng slot
   {
     field: 'duLieuRieng',
     label: 'Dữ liệu riêng',
-    component: 'Input',
     slot: 'duLieuRieng',
     colProps: { span: 24 },
   } as FormSchema,
+  // Thông tin giá - dùng slot  
   {
     field: 'dsGia',
     label: 'Thông tin giá',
-    component: 'Input',
     slot: 'dsGia',
     colProps: { span: 24 },
   } as FormSchema,
+  // Hình ảnh - dùng slot
   {
     field: 'files',
     label: 'Hình ảnh',
-    component: 'Input',
     slot: 'files',
     colProps: { span: 24 },
   } as FormSchema,

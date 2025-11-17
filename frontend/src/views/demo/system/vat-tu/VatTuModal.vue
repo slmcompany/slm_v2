@@ -43,8 +43,8 @@
         </div>
       </template>
 
-      <template #dsGia="{ model }">
-        <div class="ds-gia-container">
+      <template #dsGia="{ model, field }">
+        <div class="ds-gia-container" v-if="field === 'dsGia'">
           <a-button 
             type="dashed" 
             block 
@@ -57,9 +57,15 @@
             Thêm thông tin giá
           </a-button>
           
+          <a-empty 
+            v-if="dsGiaList.length === 0" 
+            description="Chưa có thông tin giá"
+            :image-style="{ height: '60px' }"
+          />
+          
           <div 
             v-for="(item, index) in dsGiaList" 
-            :key="index"
+            :key="`gia-item-${index}`"
             class="gia-item"
           >
             <a-card size="small" :title="`Thông tin giá ${index + 1}`">
@@ -75,20 +81,21 @@
               </template>
               
               <a-row :gutter="16">
-                <a-col :span="12">
+                <a-col :span="8">
                   <a-form-item label="Mã cơ sở" :required="true">
-                    <a-select 
-                      v-model:value="item.maCoSo" 
+                    <Select 
+                      :value="item.maCoSo"
+                      @change="(val) => { item.maCoSo = val; handleCoSoChange(item, val); }"
                       placeholder="Chọn cơ sở"
-                      @change="(value) => handleCoSoChange(item, value)"
+                      style="width: 100%"
                     >
-                      <a-select-option value="HN">HN</a-select-option>
-                      <a-select-option value="HCM">HCM</a-select-option>
-                    </a-select>
+                      <SelectOption value="HN">HN - Hà Nội</SelectOption>
+                      <SelectOption value="HCM">HCM - Hồ Chí Minh</SelectOption>
+                    </Select>
                   </a-form-item>
                 </a-col>
-                <a-col :span="12">
-                  <a-form-item label="Tên cơ sở" :required="true">
+                <a-col :span="8">
+                  <a-form-item label="Tên cơ sở">
                     <a-input 
                       v-model:value="item.tenCoSo" 
                       placeholder="Tên cơ sở"
@@ -96,7 +103,7 @@
                     />
                   </a-form-item>
                 </a-col>
-                <a-col :span="12">
+                <a-col :span="8">
                   <a-form-item label="Giá bán" :required="true">
                     <InputNumber
                       v-model:value="item.giaBan" 
@@ -127,14 +134,12 @@
             accept="image/*"
             :show-upload-list="true"
           >
-            <!-- bấm vào div này sẽ mở native file input (fallback nếu a-upload ko kích hoạt) -->
             <div v-if="fileList.length < 8" @click.stop.prevent="triggerNativeFileInput" style="cursor:pointer">
               <PlusOutlined />
               <div style="margin-top: 8px">Tải ảnh lên</div>
             </div>
           </Upload>
 
-          <!-- native fallback input (ẩn) -->
           <input
             ref="nativeFileInput"
             type="file"
@@ -153,7 +158,7 @@
   
 <script lang="ts" setup>
   import { ref, computed, unref, watch } from 'vue';
-  import { Upload, InputNumber } from 'ant-design-vue';
+  import { Upload, InputNumber, Empty, Select, SelectOption } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form';
   import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue';
@@ -177,7 +182,12 @@
   const dsGiaList = ref<GiaInfo[]>([]);
   const fileList = ref<any[]>([]);
 
-  // refs for native fallback
+  // Options cho select cơ sở
+  const coSoOptions = ref([
+    { label: 'HN - Hà Nội', value: 'HN' },
+    { label: 'HCM - Hồ Chí Minh', value: 'HCM' }
+  ]);
+
   const nativeFileInput = ref<HTMLInputElement | null>(null);
   const antUpload = ref<any>(null);
 
@@ -196,7 +206,6 @@
     dsGiaList.value = [];
     fileList.value = [];
 
-    // Cập nhật options + gắn onChange để bắt sự kiện khi user chọn nhóm
     updateSchema([
       {
         field: 'nhomVatTuId',
@@ -216,7 +225,6 @@
     if (unref(isUpdate)) {
       recordId.value = data.record.id;
       
-      // Load dữ liệu riêng từ record
       if (data.record.duLieuRieng && Object.keys(data.record.duLieuRieng).length > 0) {
         duLieuRiengList.value = Object.entries(data.record.duLieuRieng).map(([key, value]) => {
           const v = value as any;
@@ -227,12 +235,10 @@
         });
       }
 
-      // Load thông tin giá
       if (data.record.thongTinGias && data.record.thongTinGias.length > 0) {
-        // ensure giaNhap/giaBan are numbers and add raw strings for binding
         dsGiaList.value = (data.record.thongTinGias[0].dsGia || []).map((g: any) => ({
-          maCoSo: g.maCoSo ?? '',
-          tenCoSo: g.tenCoSo ?? '',
+          maCoSo: g.maCoSo || '',  // Đảm bảo không null/undefined
+          tenCoSo: g.tenCoSo || '',
           giaNhap: g.giaNhap != null ? Number(g.giaNhap) : 0,
           giaBan: g.giaBan != null ? Number(g.giaBan) : 0,
           giaNhapRaw: g.giaNhap != null ? formatNumber(Number(g.giaNhap)) : '',
@@ -240,10 +246,8 @@
         }));
       }
       
-      // populate fileList from existing images (so preview shows when edit)
       if (Array.isArray(data.record.anhVatTus) && data.record.anhVatTus.length > 0) {
         fileList.value = data.record.anhVatTus.map((a: any, i: number) => {
-          console.log('Loading existing image:', a); // Debug log
           const duongDan = a.tepTin?.duongDan || '';
           return {
             uid: String(a.id ?? `exist-${i}`),
@@ -251,13 +255,11 @@
             status: 'done',
             url: duongDan,
             thumbUrl: duongDan,
-            response: { url: duongDan }, // Some Upload components need this
+            response: { url: duongDan },
             type: a.tepTin?.loaiTepTin || 'image/jpeg',
-            // Mark as existing file so we don't upload it again
             isExisting: true,
           };
         });
-        console.log('Loaded fileList:', fileList.value); // Debug log
       }
       
       setFieldsValue({
@@ -266,15 +268,12 @@
         thuongHieuId: data.record.thuongHieu?.id,
       });
 
-      // ensure duLieuRieng populated after setting fields in edit mode
       handleNhomChange(data.record.nhomVatTu?.id);
     } else {
-      // for create ensure no duLieuRieng shown until user selects group
       duLieuRiengList.value = [];
     }
   });
 
-  // Handler trực tiếp khi user chọn nhóm vật tư (được gắn vào select.onChange)
   function handleNhomChange(newNhomVatTuId: any) {
     try {
       if (!newNhomVatTuId) {
@@ -293,7 +292,6 @@
           };
         });
       } else {
-        // nếu đang tạo mới, reset; nếu edit có thể giữ hiện tại
         if (!unref(isUpdate)) {
           duLieuRiengList.value = [];
         }
@@ -303,28 +301,23 @@
     }
   }
 
-  // Watch nhomVatTuId để tự động load thuộc tính riêng
   watch(
     () => {
       try {
-        // call safely, guard khi getFieldsValue() chưa sẵn sàng
         const fields = typeof getFieldsValue === 'function' ? getFieldsValue() : undefined;
         return fields?.nhomVatTuId;
       } catch (e) {
-        // tránh throw trong getter của watcher
         return undefined;
       }   
     },
     (newNhomVatTuId) => {
       try {
-        // accept number/string comparison, and update both create/edit flow if appropriate
         if (!newNhomVatTuId) {
           duLieuRiengList.value = [];
           return;
         }
         const selectedNhom = props.nhomVatTuOptions.find(opt => String(opt.value) === String(newNhomVatTuId));
         if (selectedNhom?.thuocTinhRieng) {
-          // Chuyển đổi thuộc tính riêng từ nhóm vật tư thành dữ liệu riêng cho vật tư
           duLieuRiengList.value = Object.entries(selectedNhom.thuocTinhRieng).map(([key, value]) => {
             const v = value as any;
             return {
@@ -349,30 +342,40 @@
   const getTitle = computed(() => (!unref(isUpdate) ? 'Tạo vật tư' : 'Chỉnh sửa vật tư'));
 
   function handleAddGia() {
-    dsGiaList.value.push({
+    const newGia = {
       maCoSo: '',
       tenCoSo: '',
       giaNhap: 0,
       giaBan: 0,
       giaNhapRaw: '0',
       giaBanRaw: '0',
-    });
+    };
+    dsGiaList.value.push(newGia);
+    console.log('Added new gia:', newGia);
+    console.log('Current dsGiaList:', dsGiaList.value);
   }
   
   function handleRemoveGia(index: number) {
     dsGiaList.value.splice(index, 1);
   }
 
+  function handleCoSoChange(item: any, value: string) {
+    const coSoMap: Record<string, string> = {
+      'HN': 'Hà Nội',
+      'HCM': 'Hồ Chí Minh'
+    };
+    item.tenCoSo = coSoMap[value] || '';
+    console.log('Selected cơ sở:', value, '-> Tên:', item.tenCoSo);
+  }
+
   function triggerNativeFileInput() {
     try {
-      // first try to trigger ant upload's input (if exists)
       const antEl = antUpload.value?.$el ?? antUpload.value;
       const inputInside = antEl?.querySelector?.('input[type=file]');
       if (inputInside) {
         inputInside.click();
         return;
       }
-      // fallback to native input we created
       nativeFileInput.value?.click();
     } catch (e) {
       console.error('triggerNativeFileInput error', e);
@@ -385,7 +388,6 @@
     const files = Array.from(input.files || []);
     if (!files.length) return;
     for (const f of files) {
-      // validate type/size same as beforeUpload
       const isImage = f.type && f.type.startsWith && f.type.startsWith('image/');
       if (!isImage) {
         message.error('Chỉ chấp nhận file ảnh!');
@@ -406,7 +408,6 @@
           url,
           thumbUrl: url,
         };
-        // ensure not exceed 8
         if (fileList.value.length >= 8) {
           message.warning('Đã đạt tối đa 8 ảnh');
           break;
@@ -416,11 +417,9 @@
         console.error('onNativeFiles push error', err);
       }
     }
-    // reset native input so same file can be selected again if needed
     input.value = '';
   }
   
-  // keep existing beforeUpload (still used if ant-upload internal input works)
   const beforeUpload: UploadProps['beforeUpload'] = (file) => {
     const isImage = file.type && file.type.startsWith && file.type.startsWith('image/');
     if (!isImage) {
@@ -449,12 +448,10 @@
     return false;
   };
 
-  // onChange handler from a-upload: normalize fileList items so preview shows
   function onUploadChange(e: any) {
     try {
       const fl = (e && e.fileList) || [];
       fileList.value = fl.map((f: any) => {
-        // if our internal object already present, keep it; otherwise build preview-friendly object
         if (f.url || f.thumbUrl) {
           return {
             uid: f.uid,
@@ -465,7 +462,6 @@
             originFileObj: f.originFileObj || f.originFile,
           };
         }
-        // try create thumb from originFile if available
         const origin = f.originFile || f.originFileObj;
         const url = origin ? URL.createObjectURL(origin) : undefined;
         return {
@@ -477,7 +473,6 @@
           originFileObj: origin,
         };
       });
-      console.debug('onUploadChange normalized fileList', fileList.value);
     } catch (err) {
       console.error('onUploadChange error', err);
     }
@@ -488,7 +483,6 @@
       const values = await validate();
       setModalProps({ confirmLoading: true });
 
-      // Validate dsGia
       for (let i = 0; i < dsGiaList.value.length; i++) {
         const gia = dsGiaList.value[i] as any;
         if (!gia.maCoSo || !gia.tenCoSo) {
@@ -503,7 +497,6 @@
         }
       }
       
-      // Transform duLieuRieng
       const duLieuRiengMap = {};
       if (duLieuRiengList.value.length > 0) {
         duLieuRiengList.value.forEach((item) => {
@@ -516,7 +509,6 @@
         });
       }
       
-      // Normalize dsGia to expected shape (maCoSo, tenCoSo, giaNhap, giaBan) with numeric values
       const dsGiaPayload = dsGiaList.value.length > 0
         ? dsGiaList.value.map((g: any) => ({
             maCoSo: g.maCoSo,
@@ -539,7 +531,6 @@
         dsGia: dsGiaPayload,
       };
 
-      // Prepare files
       const files = fileList.value.map(f => f.originFileObj).filter(Boolean);
 
       let result;
@@ -564,7 +555,6 @@
     }
   }
 
-  // helper: format / parse number with thousand separators
   function formatNumber(value: number | null | undefined) {
     if (value === null || value === undefined || isNaN(Number(value))) return '';
     return new Intl.NumberFormat('en-US').format(Number(value));
@@ -577,39 +567,10 @@
     const n = Number(cleaned);
     return Number.isFinite(n) ? n : null;
   }
-  
-  function onNumberInput(item: any, field: 'giaNhap' | 'giaBan', ev: Event) {
-    const input = ev.target as HTMLInputElement;
-    item[`${field}Raw`] = input.value;
-    const parsed = parseNumberFromString(input.value);
-    item[field] = parsed;
-  }
-  function onNumberBlur(item: any, field: 'giaNhap' | 'giaBan') {
-    // format display after leaving input
-    const parsed = parseNumberFromString(item[`${field}Raw`]);
-    item[field] = parsed;
-    item[`${field}Raw`] = parsed != null ? formatNumber(parsed) : '';
-  }
-  function onNumberFocus(item: any, field: 'giaNhap' | 'giaBan') {
-    // show plain number for editing
-    const val = item[field];
-    item[`${field}Raw`] = val != null ? String(val) : '';
-  }
 
-  function handleCoSoChange(item: any, value: string) {
-  const coSoMap = {
-    'HN': 'Hà Nội',
-    'HCM': 'Hồ Chí Minh'
-  };
-  item.tenCoSo = coSoMap[value] || '';
-}
-
-  // Xử lý xóa file từ danh sách upload
   function handleRemoveFile(file: any) {
     try {
-      // loại bỏ theo uid hoặc tên
       fileList.value = fileList.value.filter((f: any) => !(f.uid === file.uid || f.name === file.name));
-      // revoke objectURL nếu có
       try {
         const url = file.url || file.thumbUrl;
         if (url && url.startsWith && url.startsWith('blob:')) {
@@ -618,7 +579,6 @@
       } catch (e) {
         // ignore
       }
-      console.debug('Removed file', file);
     } catch (err) {
       console.error('handleRemoveFile error', err);
     }
