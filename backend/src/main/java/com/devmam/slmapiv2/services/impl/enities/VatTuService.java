@@ -142,17 +142,20 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
     @Transactional
     public ResponseEntity<ResponseData<VatTuDto>> deleteVatTu(Integer id) {
 
-        Optional<VatTu> finding = getOne(id);
+        VatTu vatTu = getOne(id)
+                .orElseThrow(() -> new CommonException("Không tìm thấy vật tư id: " + id));
 
-        if(finding.isEmpty()){
-            throw new CommonException("Không tìm thấy vật tư id: "+id);
-        }
+        VatTuDto vatTuDto = VatTuDto.builder()
+                .id(vatTu.getId())
+                .ten(vatTu.getTen())
+                .build();
         delete(id);
+
         return ResponseEntity.ok(
                 ResponseData.<VatTuDto>builder()
                         .status(200)
                         .message("Delete success")
-                        .data(vatTuMapper.toDto(finding.get()))
+                        .data(vatTuDto)
                         .error(null)
                         .build()
         );

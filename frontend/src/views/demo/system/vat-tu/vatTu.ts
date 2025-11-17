@@ -5,7 +5,7 @@ enum Api {
   GetById = '/vat-tu/',
   Create = '/vat-tu/create',
   Update = '/vat-tu/update/',
-  Delete = '/vat-tu/delete/',
+  Delete = '/vat-tu/',
   GetAllNhomVatTu = '/nhom-vat-tu/filter',
   GetAllThuongHieu = '/thuong-hieu/all',
 }
@@ -308,7 +308,7 @@ export function updateVatTu(id: number, data: VatTuCreateDto, files: File[]) {
 
 export function deleteVatTu(id: number) {
   return realHttp
-    .delete<ResponseData<void>>(
+    .delete<ResponseData<VatTuDto>>(
       {
         url: `${Api.Delete}${id}`,
       },
