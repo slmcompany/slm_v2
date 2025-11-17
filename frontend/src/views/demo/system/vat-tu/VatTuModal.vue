@@ -108,6 +108,18 @@
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
+                  <a-form-item label="Giá nhập" :required="true">
+                    <InputNumber
+                      v-model:value="item.giaNhap" 
+                      placeholder="Nhập giá nhập"
+                      :min="0"
+                      :formatter="value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                      :parser="value => value.replace(/\$\s?|(,*)/g, '')"
+                      style="width: 100%"
+                    />
+                  </a-form-item>
+                </a-col>
+                <a-col :span="8">
                   <a-form-item label="Giá bán" :required="true">
                     <InputNumber
                       v-model:value="item.giaBan" 

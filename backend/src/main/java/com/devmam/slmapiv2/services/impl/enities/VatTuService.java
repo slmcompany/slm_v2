@@ -85,39 +85,42 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         creatingVattu = create(creatingVattu);
 
         int i = 0;
-        for (MultipartFile file : files) {
-            i++;
-            try {
-                String objectName = minioService.upload(file, "vat_tu_"+creatingVattu.getTen()+"_"+i);
-                TepTin creatingTepTin = tepTinService.create(
-                        TepTin.builder()
-                                .tenTepGoc(creatingVattu.getTen()+"_"+i)
-                                .tenTaiLen(creatingVattu.getTen()+"_"+i)
-                                .tenLuuTru(objectName)
-                                .duongDan(minioService.getPublicUrl(objectName))
-                                .loaiTepTin(FileType.IMAGE.toString())
-                                .duoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"))
-                                .trangThai(1)
-                                .taoLuc(creatingVattu.getTaoLuc())
-                                .build()
-                );
+        if(files != null){
+            for (MultipartFile file : files) {
+                i++;
+                try {
+                    String objectName = minioService.upload(file, "vat_tu_"+creatingVattu.getTen()+"_"+i);
+                    TepTin creatingTepTin = tepTinService.create(
+                            TepTin.builder()
+                                    .tenTepGoc(creatingVattu.getTen()+"_"+i)
+                                    .tenTaiLen(creatingVattu.getTen()+"_"+i)
+                                    .tenLuuTru(objectName)
+                                    .duongDan(minioService.getPublicUrl(objectName))
+                                    .loaiTepTin(FileType.IMAGE.toString())
+                                    .duoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"))
+                                    .trangThai(1)
+                                    .taoLuc(creatingVattu.getTaoLuc())
+                                    .build()
+                    );
 
-                anhVatTuService.create(
-                        AnhVatTu.builder()
-                                .vatTu(creatingVattu)
-                                .tepTin(creatingTepTin)
-                                .anhChinh(i == 1)
-                                .trangThai(1)
-                                .taoLuc(creatingVattu.getTaoLuc())
-                                .build()
-                );
+                    anhVatTuService.create(
+                            AnhVatTu.builder()
+                                    .vatTu(creatingVattu)
+                                    .tepTin(creatingTepTin)
+                                    .anhChinh(i == 1)
+                                    .trangThai(1)
+                                    .taoLuc(creatingVattu.getTaoLuc())
+                                    .build()
+                    );
 
 
-            } catch (Exception e) {
-                log.error("Lỗi tạo tệp tin cho vật tư: {}", dto.getTen(), e);
-                throw new RuntimeException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
+                } catch (Exception e) {
+                    log.error("Lỗi tạo tệp tin cho vật tư: {}", dto.getTen(), e);
+                    throw new RuntimeException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
+                }
             }
         }
+
         ThongTinGia creatingThongTinGia = ThongTinGia.builder()
                 .vatTu(creatingVattu)
                 .dsGia(dto.getDsGia())
