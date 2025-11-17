@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-14T11:32:53+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)"
+    date = "2025-11-17T14:45:09+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class NhomVatTuMapperImpl implements NhomVatTuMapper {
@@ -25,18 +25,18 @@ public class NhomVatTuMapperImpl implements NhomVatTuMapper {
 
         NhomVatTuDto.NhomVatTuDtoBuilder nhomVatTuDto = NhomVatTuDto.builder();
 
-        nhomVatTuDto.gm( nhomVatTu.getGm() );
         nhomVatTuDto.id( nhomVatTu.getId() );
         nhomVatTuDto.ma( nhomVatTu.getMa() );
         nhomVatTuDto.nghanhHang( nganhHangToNganhHangDto( nhomVatTu.getNghanhHang() ) );
-        nhomVatTuDto.taoLuc( nhomVatTu.getTaoLuc() );
         nhomVatTuDto.ten( nhomVatTu.getTen() );
         Map<String, Object> map = nhomVatTu.getThuocTinhRieng();
         if ( map != null ) {
             nhomVatTuDto.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
         }
-        nhomVatTuDto.trangThai( nhomVatTu.getTrangThai() );
+        nhomVatTuDto.gm( nhomVatTu.getGm() );
         nhomVatTuDto.vatTuChinh( nhomVatTu.getVatTuChinh() );
+        nhomVatTuDto.taoLuc( nhomVatTu.getTaoLuc() );
+        nhomVatTuDto.trangThai( nhomVatTu.getTrangThai() );
 
         return nhomVatTuDto.build();
     }
@@ -49,18 +49,18 @@ public class NhomVatTuMapperImpl implements NhomVatTuMapper {
 
         NhomVatTu.NhomVatTuBuilder nhomVatTu = NhomVatTu.builder();
 
-        nhomVatTu.gm( nhomVatTuDto.getGm() );
         nhomVatTu.id( nhomVatTuDto.getId() );
         nhomVatTu.ma( nhomVatTuDto.getMa() );
         nhomVatTu.nghanhHang( nganhHangDtoToNganhHang( nhomVatTuDto.getNghanhHang() ) );
-        nhomVatTu.taoLuc( nhomVatTuDto.getTaoLuc() );
         nhomVatTu.ten( nhomVatTuDto.getTen() );
         Map<String, Object> map = nhomVatTuDto.getThuocTinhRieng();
         if ( map != null ) {
             nhomVatTu.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
         }
-        nhomVatTu.trangThai( nhomVatTuDto.getTrangThai() );
+        nhomVatTu.gm( nhomVatTuDto.getGm() );
         nhomVatTu.vatTuChinh( nhomVatTuDto.getVatTuChinh() );
+        nhomVatTu.taoLuc( nhomVatTuDto.getTaoLuc() );
+        nhomVatTu.trangThai( nhomVatTuDto.getTrangThai() );
 
         return nhomVatTu.build();
     }
@@ -72,13 +72,13 @@ public class NhomVatTuMapperImpl implements NhomVatTuMapper {
 
         NganhHangDto.NganhHangDtoBuilder nganhHangDto = NganhHangDto.builder();
 
-        nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
-        nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
         nganhHangDto.id( nganhHang.getId() );
         nganhHangDto.ma( nganhHang.getMa() );
+        nganhHangDto.ten( nganhHang.getTen() );
         nganhHangDto.sdtSale( nganhHang.getSdtSale() );
         nganhHangDto.sdtTech( nganhHang.getSdtTech() );
-        nganhHangDto.ten( nganhHang.getTen() );
+        nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
+        nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
         nganhHangDto.trangThai( nganhHang.getTrangThai() );
 
         return nganhHangDto.build();
@@ -91,13 +91,13 @@ public class NhomVatTuMapperImpl implements NhomVatTuMapper {
 
         NganhHang.NganhHangBuilder nganhHang = NganhHang.builder();
 
-        nganhHang.anhNgang( nganhHangDto.getAnhNgang() );
-        nganhHang.anhVuong( nganhHangDto.getAnhVuong() );
         nganhHang.id( nganhHangDto.getId() );
         nganhHang.ma( nganhHangDto.getMa() );
+        nganhHang.ten( nganhHangDto.getTen() );
         nganhHang.sdtSale( nganhHangDto.getSdtSale() );
         nganhHang.sdtTech( nganhHangDto.getSdtTech() );
-        nganhHang.ten( nganhHangDto.getTen() );
+        nganhHang.anhNgang( nganhHangDto.getAnhNgang() );
+        nganhHang.anhVuong( nganhHangDto.getAnhVuong() );
         nganhHang.trangThai( nganhHangDto.getTrangThai() );
 
         return nganhHang.build();

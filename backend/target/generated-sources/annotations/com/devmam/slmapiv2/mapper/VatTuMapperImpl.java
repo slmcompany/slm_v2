@@ -24,8 +24,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-14T11:32:53+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)"
+    date = "2025-11-17T14:45:08+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class VatTuMapperImpl implements VatTuMapper {
@@ -38,22 +38,22 @@ public class VatTuMapperImpl implements VatTuMapper {
 
         VatTuDto.VatTuDtoBuilder vatTuDto = VatTuDto.builder();
 
-        vatTuDto.anhVatTus( anhVatTuListToAnhVatTuDtoList( vatTu.getAnhVatTus() ) );
+        vatTuDto.id( vatTu.getId() );
+        vatTuDto.nhomVatTu( nhomVatTuToNhomVatTuDto( vatTu.getNhomVatTu() ) );
+        vatTuDto.thuongHieu( thuongHieuToThuongHieuDto( vatTu.getThuongHieu() ) );
+        vatTuDto.ten( vatTu.getTen() );
+        vatTuDto.sheetLink( vatTu.getSheetLink() );
         vatTuDto.donVi( vatTu.getDonVi() );
+        vatTuDto.moTaBaoGia( vatTu.getMoTaBaoGia() );
+        vatTuDto.moTaHopDong( vatTu.getMoTaHopDong() );
         Map<String, Object> map = vatTu.getDuLieuRieng();
         if ( map != null ) {
             vatTuDto.duLieuRieng( new LinkedHashMap<String, Object>( map ) );
         }
-        vatTuDto.id( vatTu.getId() );
-        vatTuDto.moTaBaoGia( vatTu.getMoTaBaoGia() );
-        vatTuDto.moTaHopDong( vatTu.getMoTaHopDong() );
-        vatTuDto.nhomVatTu( nhomVatTuToNhomVatTuDto( vatTu.getNhomVatTu() ) );
-        vatTuDto.sheetLink( vatTu.getSheetLink() );
         vatTuDto.taoLuc( vatTu.getTaoLuc() );
-        vatTuDto.ten( vatTu.getTen() );
-        vatTuDto.thongTinGias( thongTinGiaListToThongTinGiaDtoList( vatTu.getThongTinGias() ) );
-        vatTuDto.thuongHieu( thuongHieuToThuongHieuDto( vatTu.getThuongHieu() ) );
         vatTuDto.trangThai( vatTu.getTrangThai() );
+        vatTuDto.anhVatTus( anhVatTuListToAnhVatTuDtoList( vatTu.getAnhVatTus() ) );
+        vatTuDto.thongTinGias( thongTinGiaListToThongTinGiaDtoList( vatTu.getThongTinGias() ) );
 
         return vatTuDto.build();
     }
@@ -72,6 +72,66 @@ public class VatTuMapperImpl implements VatTuMapper {
         return list;
     }
 
+    protected NganhHangDto nganhHangToNganhHangDto(NganhHang nganhHang) {
+        if ( nganhHang == null ) {
+            return null;
+        }
+
+        NganhHangDto.NganhHangDtoBuilder nganhHangDto = NganhHangDto.builder();
+
+        nganhHangDto.id( nganhHang.getId() );
+        nganhHangDto.ma( nganhHang.getMa() );
+        nganhHangDto.ten( nganhHang.getTen() );
+        nganhHangDto.sdtSale( nganhHang.getSdtSale() );
+        nganhHangDto.sdtTech( nganhHang.getSdtTech() );
+        nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
+        nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
+        nganhHangDto.trangThai( nganhHang.getTrangThai() );
+
+        return nganhHangDto.build();
+    }
+
+    protected NhomVatTuDto nhomVatTuToNhomVatTuDto(NhomVatTu nhomVatTu) {
+        if ( nhomVatTu == null ) {
+            return null;
+        }
+
+        NhomVatTuDto.NhomVatTuDtoBuilder nhomVatTuDto = NhomVatTuDto.builder();
+
+        nhomVatTuDto.id( nhomVatTu.getId() );
+        nhomVatTuDto.ma( nhomVatTu.getMa() );
+        nhomVatTuDto.nghanhHang( nganhHangToNganhHangDto( nhomVatTu.getNghanhHang() ) );
+        nhomVatTuDto.ten( nhomVatTu.getTen() );
+        Map<String, Object> map = nhomVatTu.getThuocTinhRieng();
+        if ( map != null ) {
+            nhomVatTuDto.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
+        }
+        nhomVatTuDto.gm( nhomVatTu.getGm() );
+        nhomVatTuDto.vatTuChinh( nhomVatTu.getVatTuChinh() );
+        nhomVatTuDto.taoLuc( nhomVatTu.getTaoLuc() );
+        nhomVatTuDto.trangThai( nhomVatTu.getTrangThai() );
+
+        return nhomVatTuDto.build();
+    }
+
+    protected ThuongHieuDto thuongHieuToThuongHieuDto(ThuongHieu thuongHieu) {
+        if ( thuongHieu == null ) {
+            return null;
+        }
+
+        ThuongHieuDto.ThuongHieuDtoBuilder thuongHieuDto = ThuongHieuDto.builder();
+
+        thuongHieuDto.id( thuongHieu.getId() );
+        thuongHieuDto.tenQuocTe( thuongHieu.getTenQuocTe() );
+        thuongHieuDto.ten( thuongHieu.getTen() );
+        thuongHieuDto.quocGia( thuongHieu.getQuocGia() );
+        thuongHieuDto.sdt( thuongHieu.getSdt() );
+        thuongHieuDto.email( thuongHieu.getEmail() );
+        thuongHieuDto.trangThai( thuongHieu.getTrangThai() );
+
+        return thuongHieuDto.build();
+    }
+
     protected TepTinDto tepTinToTepTinDto(TepTin tepTin) {
         if ( tepTin == null ) {
             return null;
@@ -79,17 +139,17 @@ public class VatTuMapperImpl implements VatTuMapper {
 
         TepTinDto.TepTinDtoBuilder tepTinDto = TepTinDto.builder();
 
-        tepTinDto.duoiTep( tepTin.getDuoiTep() );
-        tepTinDto.duongDan( tepTin.getDuongDan() );
         tepTinDto.id( tepTin.getId() );
-        tepTinDto.kichCo( tepTin.getKichCo() );
-        tepTinDto.loaiTepTin( tepTin.getLoaiTepTin() );
-        tepTinDto.moTa( tepTin.getMoTa() );
-        tepTinDto.suaLuc( tepTin.getSuaLuc() );
-        tepTinDto.taoLuc( tepTin.getTaoLuc() );
-        tepTinDto.tenLuuTru( tepTin.getTenLuuTru() );
-        tepTinDto.tenTaiLen( tepTin.getTenTaiLen() );
         tepTinDto.tenTepGoc( tepTin.getTenTepGoc() );
+        tepTinDto.tenTaiLen( tepTin.getTenTaiLen() );
+        tepTinDto.tenLuuTru( tepTin.getTenLuuTru() );
+        tepTinDto.duongDan( tepTin.getDuongDan() );
+        tepTinDto.loaiTepTin( tepTin.getLoaiTepTin() );
+        tepTinDto.duoiTep( tepTin.getDuoiTep() );
+        tepTinDto.kichCo( tepTin.getKichCo() );
+        tepTinDto.moTa( tepTin.getMoTa() );
+        tepTinDto.taoLuc( tepTin.getTaoLuc() );
+        tepTinDto.suaLuc( tepTin.getSuaLuc() );
         tepTinDto.trangThai( tepTin.getTrangThai() );
 
         return tepTinDto.build();
@@ -102,9 +162,9 @@ public class VatTuMapperImpl implements VatTuMapper {
 
         AnhVatTuDto.AnhVatTuDtoBuilder anhVatTuDto = AnhVatTuDto.builder();
 
-        anhVatTuDto.anhChinh( anhVatTu.getAnhChinh() );
         anhVatTuDto.id( anhVatTu.getId() );
         anhVatTuDto.tepTin( tepTinToTepTinDto( anhVatTu.getTepTin() ) );
+        anhVatTuDto.anhChinh( anhVatTu.getAnhChinh() );
         anhVatTuDto.trangThai( anhVatTu.getTrangThai() );
 
         return anhVatTuDto.build();
@@ -123,48 +183,6 @@ public class VatTuMapperImpl implements VatTuMapper {
         return list1;
     }
 
-    protected NganhHangDto nganhHangToNganhHangDto(NganhHang nganhHang) {
-        if ( nganhHang == null ) {
-            return null;
-        }
-
-        NganhHangDto.NganhHangDtoBuilder nganhHangDto = NganhHangDto.builder();
-
-        nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
-        nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
-        nganhHangDto.id( nganhHang.getId() );
-        nganhHangDto.ma( nganhHang.getMa() );
-        nganhHangDto.sdtSale( nganhHang.getSdtSale() );
-        nganhHangDto.sdtTech( nganhHang.getSdtTech() );
-        nganhHangDto.ten( nganhHang.getTen() );
-        nganhHangDto.trangThai( nganhHang.getTrangThai() );
-
-        return nganhHangDto.build();
-    }
-
-    protected NhomVatTuDto nhomVatTuToNhomVatTuDto(NhomVatTu nhomVatTu) {
-        if ( nhomVatTu == null ) {
-            return null;
-        }
-
-        NhomVatTuDto.NhomVatTuDtoBuilder nhomVatTuDto = NhomVatTuDto.builder();
-
-        nhomVatTuDto.gm( nhomVatTu.getGm() );
-        nhomVatTuDto.id( nhomVatTu.getId() );
-        nhomVatTuDto.ma( nhomVatTu.getMa() );
-        nhomVatTuDto.nghanhHang( nganhHangToNganhHangDto( nhomVatTu.getNghanhHang() ) );
-        nhomVatTuDto.taoLuc( nhomVatTu.getTaoLuc() );
-        nhomVatTuDto.ten( nhomVatTu.getTen() );
-        Map<String, Object> map = nhomVatTu.getThuocTinhRieng();
-        if ( map != null ) {
-            nhomVatTuDto.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
-        }
-        nhomVatTuDto.trangThai( nhomVatTu.getTrangThai() );
-        nhomVatTuDto.vatTuChinh( nhomVatTu.getVatTuChinh() );
-
-        return nhomVatTuDto.build();
-    }
-
     protected ThongTinGiaDto thongTinGiaToThongTinGiaDto(ThongTinGia thongTinGia) {
         if ( thongTinGia == null ) {
             return null;
@@ -172,11 +190,11 @@ public class VatTuMapperImpl implements VatTuMapper {
 
         ThongTinGiaDto.ThongTinGiaDtoBuilder thongTinGiaDto = ThongTinGiaDto.builder();
 
+        thongTinGiaDto.id( thongTinGia.getId() );
         List<GiaInfo> list = thongTinGia.getDsGia();
         if ( list != null ) {
             thongTinGiaDto.dsGia( new ArrayList<GiaInfo>( list ) );
         }
-        thongTinGiaDto.id( thongTinGia.getId() );
         thongTinGiaDto.taoLuc( thongTinGia.getTaoLuc() );
         thongTinGiaDto.trangThai( thongTinGia.getTrangThai() );
 
@@ -194,23 +212,5 @@ public class VatTuMapperImpl implements VatTuMapper {
         }
 
         return list1;
-    }
-
-    protected ThuongHieuDto thuongHieuToThuongHieuDto(ThuongHieu thuongHieu) {
-        if ( thuongHieu == null ) {
-            return null;
-        }
-
-        ThuongHieuDto.ThuongHieuDtoBuilder thuongHieuDto = ThuongHieuDto.builder();
-
-        thuongHieuDto.email( thuongHieu.getEmail() );
-        thuongHieuDto.id( thuongHieu.getId() );
-        thuongHieuDto.quocGia( thuongHieu.getQuocGia() );
-        thuongHieuDto.sdt( thuongHieu.getSdt() );
-        thuongHieuDto.ten( thuongHieu.getTen() );
-        thuongHieuDto.tenQuocTe( thuongHieu.getTenQuocTe() );
-        thuongHieuDto.trangThai( thuongHieu.getTrangThai() );
-
-        return thuongHieuDto.build();
     }
 }
