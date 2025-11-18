@@ -65,4 +65,10 @@ public class TronGoiController {
         return tronGoiService.create(dto,file);
     }
 
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseData<TronGoiDto>> delete(@PathVariable Integer id){
+        return tronGoiService.deleteTronGoi(id);
+    }
+
 }

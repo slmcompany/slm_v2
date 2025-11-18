@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * DTO for {@link com.devmam.slmapiv2.entities.NhomTronGoi}
@@ -18,11 +19,12 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = {"id"})
 public class NhomTronGoiDto implements Serializable {
     Integer id;
-    NganhHangDto nghanhHang;
+    NganhHangDto nganhHang;
     @Size(max = 400)
     String ten;
     ThuongHieuDto thuongHieuTamPin;
     ThuongHieuDto thuongHieuInverter;
     ThuongHieuDto thuongHieuPinLuuTru;
+    Instant taoLuc;
     Integer trangThai;
 }

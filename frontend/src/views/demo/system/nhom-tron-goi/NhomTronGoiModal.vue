@@ -156,15 +156,10 @@ async function handleSubmit() {
       return;
     }
 
-    if (!values.thuongHieuPinLuuTruId) {
-      message.error('Vui lòng chọn thương hiệu pin lưu trữ');
-      setModalProps({ confirmLoading: false });
-      return;
-    }
 
     const submitData: NhomTronGoiCreateDto = {
       nganhHangId: values.nganhHangId,
-      ten: values.ten.trim(),
+      ten: values.ten,
       thuongHieuTamPinId: values.thuongHieuTamPinId,
       thuongHieuInverterId: values.thuongHieuInverterId,
       thuongHieuPinLuuTruId: values.thuongHieuPinLuuTruId,
@@ -183,6 +178,7 @@ async function handleSubmit() {
       );
     } else {
       // Create
+      console.log('Creating with data:', submitData);
       result = await createNhomTronGoi(submitData);
     }
 

@@ -41,20 +41,22 @@
               <a-row :gutter="16">
                 <a-col :span="8">
                   <a-form-item label="Cơ sở" :required="true">
-                    <a-select
-                      v-model:value="item.coSoId"
+                    <Select
+                      :value="item.coSoId"
                       placeholder="Chọn cơ sở"
                       show-search
                       :filter-option="filterOption"
                       :options="coSoOptions"
-                    />
+                      @change="value => item.coSoId = value"
+                    >
+                  </Select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item label="Sản lượng tối thiểu (kW)" :required="true">
                     <InputNumber
                       v-model:value="item.sanLuongToiThieu"
-                      placeholder="Nhập sản lượng"
+                      placeholder="Sản lượng tối thiểu (kW)"
                       :min="0"
                       style="width: 100%"
                     />
@@ -64,7 +66,7 @@
                   <a-form-item label="Sản lượng tối đa (kW)" :required="true">
                     <InputNumber
                       v-model:value="item.sanLuongToiDa"
-                      placeholder="Nhập sản lượng"
+                      placeholder="Sản lượng tối đa (kW)"
                       :min="0"
                       style="width: 100%"
                     />
@@ -81,26 +83,26 @@
           <a-row :gutter="16" style="margin-bottom: 16px">
             <a-col :span="12">
               <a-form-item label="Nhóm vật tư">
-                <a-select
-                  v-model:value="selectedNhomVatTu"
+                <Select
+                  :value="selectedNhomVatTu"
                   placeholder="Chọn nhóm vật tư"
                   show-search
                   :filter-option="filterOption"
                   :options="nhomVatTuOptions"
-                  @change="handleNhomVatTuChange"
-                />
+                  @change="value => handleNhomVatTuChange(value)"
+                ></Select>
               </a-form-item>
             </a-col>
             <a-col :span="12">
               <a-form-item label="Thương hiệu">
-                <a-select
-                  v-model:value="selectedThuongHieu"
+                <Select
+                  :value="selectedThuongHieu"
                   placeholder="Chọn thương hiệu"
                   show-search
                   :filter-option="filterOption"
                   :options="thuongHieuOptions"
-                  @change="handleThuongHieuChange"
-                />
+                  @change="value=>handleThuongHieuChange(value)"
+                ></Select>
               </a-form-item>
             </a-col>
           </a-row>
@@ -137,13 +139,13 @@
               <a-row :gutter="16">
                 <a-col :span="12">
                   <a-form-item label="Vật tư" :required="true">
-                    <a-select
+                    <Select
                       v-model:value="item.vatTuId"
                       placeholder="Chọn vật tư"
                       show-search
                       :filter-option="filterOption"
                       :options="vatTuOptions"
-                    />
+                    ></Select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="12">
@@ -153,6 +155,7 @@
                       placeholder="Nhập số lượng"
                       :min="0"
                       style="width: 100%"
+                      :tooltip="`Số lượng của vật tư `+index+` trong trọn gói`"
                     />
                   </a-form-item>
                 </a-col>
@@ -252,7 +255,7 @@
 
 <script lang="ts" setup>
   import { ref, computed, unref } from 'vue';
-  import { Upload, InputNumber } from 'ant-design-vue';
+  import { Upload, InputNumber, Select, SelectOption } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form';
   import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue';
@@ -269,10 +272,15 @@
     CoSoDto,
     NhomTronGoiDto,
     ThuongHieuDto,
-    VatTuDto
+    VatTuDto,
+    NhomVatTuDto,
+    getAllNhomVatTu,
+    ResponseData,
+    PageResponse
   } from './tronGoi';
   import { message } from 'ant-design-vue';
   import type { UploadProps } from 'ant-design-vue';
+import { s } from 'node_modules/vite/dist/node/types.d-aGj9QkWt';
 
   defineOptions({ name: 'TronGoiModal' });
 
@@ -282,6 +290,7 @@
   const recordId = ref<number>();
   const tronGoiCoSosList = ref<ThongTinTronGoiCoSoCreatingDto[]>([]);
   const vatTuTronGoisList = ref<Array<VatTuTronGoiCreatingDto & { trangThai: number }>>([]);
+  const nhomVatTuRes = ref<ResponseData<PageResponse<NhomVatTuDto>>>(null);
   const fileList = ref<any[]>([]);
   const nativeFileInput = ref<HTMLInputElement | null>(null);
   const antUpload = ref<any>(null);
@@ -308,6 +317,7 @@
     isUpdate.value = !!data?.isUpdate;
     tronGoiCoSosList.value = [];
     vatTuTronGoisList.value = [];
+    nhomVatTuRes.value = null;
     fileList.value = [];
     selectedNhomVatTu.value = null;
     selectedThuongHieu.value = null;
@@ -358,10 +368,11 @@
 
   async function loadOptions() {
     try {
-      const [coSoRes, nhomTronGoiRes, thuongHieuRes] = await Promise.allSettled([
+      const [coSoRes, nhomTronGoiRes, thuongHieuRes, nhomVatTuRes] = await Promise.allSettled([
         getAllCoSo(),
         getAllNhomTronGoi(),
         getAllThuongHieu(),
+        getAllNhomVatTu(),
       ]);
 
       if (coSoRes.status === 'fulfilled' && coSoRes.value?.data) {
@@ -402,6 +413,16 @@
           label: item.ten || item.tenQuocTe || String(item.id),
           value: item.id,
         }));
+        selectedThuongHieu.value = undefined;
+      }
+
+      if (nhomVatTuRes.status === 'fulfilled' && nhomVatTuRes.value?.data?.content) {
+        const list = Array.isArray(nhomVatTuRes.value.data.content) ? nhomVatTuRes.value.data.content : [];
+        nhomVatTuOptions.value = list.map((item: NhomVatTuDto) => ({
+          label: item.ten || String(item.id),
+          value: item.id,
+        }));
+        selectedNhomVatTu.value = undefined;
       }
 
       updateSchema([
@@ -418,11 +439,13 @@
     }
   }
 
-  async function handleNhomVatTuChange() {
+  async function handleNhomVatTuChange(value: number) {
+    selectedNhomVatTu.value = value;
     await loadVatTuOptions();
   }
 
-  async function handleThuongHieuChange() {
+  async function handleThuongHieuChange(value: number) {
+    selectedThuongHieu.value = value;
     await loadVatTuOptions();
   }
 
@@ -448,8 +471,9 @@
   }
 
   function handleAddCoSo() {
+    let coSoIdBegin = coSoOptions.value.length > 0 ? coSoOptions.value[0].value : undefined;
     tronGoiCoSosList.value.push({
-      coSoId: 0,
+      coSoId: coSoIdBegin,
       sanLuongToiThieu: 0,
       sanLuongToiDa: 0,
     });
@@ -460,8 +484,9 @@
   }
 
   function handleAddVatTu() {
+    let vatTuIdBegin = vatTuOptions.value.length > 0 ? vatTuOptions.value[0].value : undefined;
     vatTuTronGoisList.value.push({
-      vatTuId: 0,
+      vatTuId: vatTuIdBegin,
       moTa: '',
       soLuong: 0,
       gia: 0,

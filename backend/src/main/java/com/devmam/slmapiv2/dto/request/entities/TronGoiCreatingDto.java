@@ -18,19 +18,26 @@ public class TronGoiCreatingDto {
     String ten;
     String loaiHeThong;
     String loaiPha;
+    Double congSuatHeThong;
     String moTa;
     Double tongGia;
+    Double gmTong;
     Boolean banChay;
+    Integer trangThai;
     Set<VatTuTronGoiCreatingDto> vatTuTronGois;
+
 
     public static TronGoi toEntity(TronGoiCreatingDto dto) {
         return TronGoi.builder()
                 .ten(dto.getTen())
                 .loaiHeThong(dto.getLoaiHeThong())
                 .loaiPha(dto.getLoaiPha())
+                .congSuatHeThong(dto.getCongSuatHeThong())
                 .moTa(dto.getMoTa())
                 .tongGia(dto.getTongGia())
+                .gmTong(dto.getGmTong())
                 .banChay(dto.getBanChay())
+                .trangThai(dto.getTrangThai())
                 .build();
     }
 }

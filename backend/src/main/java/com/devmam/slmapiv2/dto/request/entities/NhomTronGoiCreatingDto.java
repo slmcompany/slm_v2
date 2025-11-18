@@ -10,11 +10,13 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@ToString
 public class NhomTronGoiCreatingDto {
-    Integer nghanhHangId;
+    Integer nganhHangId;
     @Size(max = 400)
     String ten;
     Integer thuongHieuTamPinId;
     Integer thuongHieuInverterId;
     Integer thuongHieuPinLuuTruId;
+    Integer trangThai;
 }

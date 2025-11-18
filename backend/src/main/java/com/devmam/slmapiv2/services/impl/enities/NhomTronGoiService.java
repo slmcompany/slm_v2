@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -42,9 +43,9 @@ public class NhomTronGoiService extends BaseServiceImpl<NhomTronGoi, Integer> {
     @Transactional
     public ResponseEntity<ResponseData<NhomTronGoiDto>> create(NhomTronGoiCreatingDto dto) {
 
-        Optional<NganhHang> findingNganhHang = nganhHangService.getOne(dto.getNghanhHangId());
+        Optional<NganhHang> findingNganhHang = nganhHangService.getOne(dto.getNganhHangId());
         if (findingNganhHang.isEmpty()) {
-            throw new CommonException("Không tìm thấy ngành hàng id: " + dto.getNghanhHangId());
+            throw new CommonException("Không tìm thấy ngành hàng id: " + dto.getNganhHangId());
         }
 
         Optional<ThuongHieu> findingThuongHieuTamPin = thuongHieuService.getOne(dto.getThuongHieuTamPinId());
@@ -57,17 +58,25 @@ public class NhomTronGoiService extends BaseServiceImpl<NhomTronGoi, Integer> {
             throw new CommonException("Không tìm thấy thương hiệu inverter id: " + dto.getThuongHieuInverterId());
         }
 
-        Optional<ThuongHieu> findingThuongHieuPinLuuTru = thuongHieuService.getOne(dto.getThuongHieuPinLuuTruId());
-        if (findingThuongHieuPinLuuTru.isEmpty()) {
-            throw new CommonException("Không tìm thấy thương hiệu pin lưu trữ id: " + dto.getThuongHieuPinLuuTruId());
+        ThuongHieu thuongHieuPinLuuTru = null;
+        if(dto.getThuongHieuPinLuuTruId() != null){
+            Optional<ThuongHieu> findingThuongHieuPinLuuTru = thuongHieuService.getOne(dto.getThuongHieuPinLuuTruId());
+            thuongHieuPinLuuTru = findingThuongHieuPinLuuTru.get();
+            if (findingThuongHieuPinLuuTru.isEmpty()) {
+                throw new CommonException("Không tìm thấy thương hiệu pin lưu trữ id: " + dto.getThuongHieuPinLuuTruId());
+            }
+
         }
 
+
         NhomTronGoi creatingNhomTronGoi = NhomTronGoi.builder()
-                .nghanhHang(findingNganhHang.get())
+                .nganhHang(findingNganhHang.get())
                 .ten(dto.getTen())
                 .thuongHieuTamPin(findingThuongHieuTamPin.get())
                 .thuongHieuInverter(findingThuongHieuInverter.get())
-                .thuongHieuPinLuuTru(findingThuongHieuPinLuuTru.get())
+                .thuongHieuPinLuuTru(thuongHieuPinLuuTru)
+                .trangThai(dto.getTrangThai())
+                .taoLuc(Instant.now())
                 .build();
         creatingNhomTronGoi = create(creatingNhomTronGoi);
         return ResponseEntity.ok(

@@ -8,6 +8,7 @@ enum Api {
   Delete = '/tron-goi/delete/',
   GetAllCoSo = '/co-so/all',
 
+  GetAllNhomVatTu = '/nhom-vat-tu/filter',
   GetAllNhomTronGoi = '/nhom-tron-goi/all',
   GetAllThuongHieu = '/thuong-hieu/all',
   FilterVatTu = '/vat-tu/filter',
@@ -81,6 +82,10 @@ export interface NhomVatTuDto {
   ma: string;
   ten: string;
   thuocTinhRieng: Record<string, ThuocTinh>;
+  gm: number;
+  vatTuChinh: boolean;
+  taoLuc: string;
+  trangThai: number;
 }
 
 export interface ThuongHieuDto {
@@ -97,6 +102,7 @@ export interface NhaCungCapDto {
 
 export interface VatTuDto {
   id: number;
+  ma: string;
   nhomVatTu: NhomVatTuDto;
   thuongHieu: ThuongHieuDto;
   nhaCungCap: NhaCungCapDto;
@@ -147,10 +153,13 @@ export interface VatTuTronGoiDto {
   trangThai: number;
 }
 export interface VatTuTronGoiCreatingDto {
-  vatTuId: number;
+  vatTuId: number| undefined;
   moTa: string;
   soLuong: number;
-  gia: number;
+  giaNhapMienBac: number;
+  giaNhapMienNam: number;
+  giaBanMienBac: number;
+  giaBanMienNam: number;
   gm: number;
   thoiGianBaoHanh: number;
   duocBaoHanh: boolean;
@@ -186,7 +195,7 @@ export interface TronGoiDto {
 }
 
 export interface ThongTinTronGoiCoSoCreatingDto {
-  coSoId: number;
+  coSoId: number | undefined;
   sanLuongToiThieu: number;
   sanLuongToiDa: number;
 }
@@ -244,7 +253,7 @@ export function convertToFilterRequest(params: any): BaseFilterRequest {
       fieldName: 'nhomTronGoi.id',
       operation: 'EQUALS',
       // đảm bảo kiểu number
-      value: Number(params.nhomTronGoiId+''),
+      value: Number(params.nhomTronGoiId + ''),
     });
   }
 
@@ -310,14 +319,16 @@ export function getAllCoSo() {
 }
 
 export function getAllThuongHieu() {
-  return realHttp.get<ResponseData<ThuongHieuDto[]>>(
-    {
-      url: Api.GetAllThuongHieu,
-    },
-    {
-      isTransformResponse: false,
-    }
-  ).then((res: any) => res as ResponseData<ThuongHieuDto[]>);
+  return realHttp
+    .get<ResponseData<ThuongHieuDto[]>>(
+      {
+        url: Api.GetAllThuongHieu,
+      },
+      {
+        isTransformResponse: false,
+      },
+    )
+    .then((res: any) => res as ResponseData<ThuongHieuDto[]>);
 }
 
 export function getAllNhomTronGoi() {
@@ -336,22 +347,34 @@ export function getAllNhomTronGoi() {
     });
 }
 
-export function filterVatTu(nhomVatTuId: number | null, thuongHieuId: number | null) {
+export function filterVatTu(
+  nhomVatTuId: number | null, 
+  maNhomVatTu:string|null,
+  thuongHieuIds: number[] | null,
+  ) {
   const filters: FilterCriteria[] = [];
   const sorts: SortCriteria[] = [];
-  if (thuongHieuId) {
+  if (thuongHieuIds) {
     filters.push({
-      fieldName: 'nhomVatTu.id',
+      fieldName: 'nhomVatTu.thuongHieu.id',
       operation: 'EQUALS',
       value: nhomVatTuId,
+    });
+  }
+
+  if(maNhomVatTu){
+    filters.push({
+      fieldName: 'nhomVatTu.ma',
+      operation: 'EQUALS',
+      value: maNhomVatTu,
     });
   }
 
   if (nhomVatTuId) {
     filters.push({
       fieldName: 'thuongHieu.id',
-      operation: 'EQUALS',
-      value: thuongHieuId,
+      operation: 'IN',
+      value: thuongHieuIds,
     });
   }
   const filterRequest: BaseFilterRequest = {
@@ -403,4 +426,51 @@ export function createTronGoi(data: TronGoiCreateDto, file: File | null) {
       console.log('CreateTronGoi response:', res); // Debug log
       return res as ResponseData<TronGoiDto>;
     });
+}
+
+export function updateTronGoi(id: number, data: TronGoiCreateDto, file: File | null) {
+  const formData = new FormData();
+  formData.append('data', JSON.stringify(data));
+  if (file) {
+    formData.append('file', file);
+  }
+
+  return realHttp
+    .put<ResponseData<TronGoiDto>>(
+      {
+        url: Api.Update + id,
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+      {
+        isTransformResponse: false,
+      },
+    )
+    .then((res: any) => {
+      console.log('UpdateTronGoi response:', res); // Debug log
+      return res as ResponseData<TronGoiDto>;
+    });
+}
+
+
+
+export function getAllNhomVatTu() {
+  return realHttp
+    .post<ResponseData<PageResponse<NhomVatTuDto>>>(
+      {
+        url: Api.GetAllNhomVatTu,
+        data: {
+          filters: [],
+          sorts: [{ fieldName: 'id', direction: 'DESC' }],
+          page: 0,
+          size: 1000,
+        },
+      },
+      {
+        isTransformResponse: false,
+      },
+    )
+    .then((res: any) => res as ResponseData<PageResponse<NhomVatTuDto>>);
 }

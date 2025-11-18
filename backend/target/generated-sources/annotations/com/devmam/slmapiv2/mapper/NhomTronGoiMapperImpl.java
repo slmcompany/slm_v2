@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-17T16:01:30+0700",
+    date = "2025-11-18T19:20:39+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -28,11 +28,12 @@ public class NhomTronGoiMapperImpl implements NhomTronGoiMapper {
         NhomTronGoiDto.NhomTronGoiDtoBuilder nhomTronGoiDto = NhomTronGoiDto.builder();
 
         nhomTronGoiDto.id( nhomTronGoi.getId() );
-        nhomTronGoiDto.nghanhHang( nganhHangToNganhHangDto( nhomTronGoi.getNghanhHang() ) );
+        nhomTronGoiDto.nganhHang( nganhHangToNganhHangDto( nhomTronGoi.getNganhHang() ) );
         nhomTronGoiDto.ten( nhomTronGoi.getTen() );
         nhomTronGoiDto.thuongHieuTamPin( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuTamPin() ) );
         nhomTronGoiDto.thuongHieuInverter( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuInverter() ) );
         nhomTronGoiDto.thuongHieuPinLuuTru( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuPinLuuTru() ) );
+        nhomTronGoiDto.taoLuc( nhomTronGoi.getTaoLuc() );
         nhomTronGoiDto.trangThai( nhomTronGoi.getTrangThai() );
 
         return nhomTronGoiDto.build();

@@ -21,6 +21,7 @@ import java.util.Map;
 @EqualsAndHashCode(of = {"id"})
 public class VatTuDto implements Serializable {
     Integer id;
+    String ma;
     NhomVatTuDto nhomVatTu;
     ThuongHieuDto thuongHieu;
     @Size(max = 400)

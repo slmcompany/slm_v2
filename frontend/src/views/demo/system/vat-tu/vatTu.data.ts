@@ -9,6 +9,15 @@ export const columns: BasicColumn[] = [
     width: 250,
   },
   {
+    title: 'Mã vât tư',
+    dataIndex: 'ma',
+    width: 250,
+    customRender: ({ record }) => {
+      if (!record.ma) return '-';
+      return String(record.ma);
+    },
+  },
+  {
     title: 'Nhóm vật tư',
     dataIndex: ['nhomVatTu', 'ten'],
     width: 180,

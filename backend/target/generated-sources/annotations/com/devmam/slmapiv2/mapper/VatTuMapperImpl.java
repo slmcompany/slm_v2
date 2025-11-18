@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-17T16:01:30+0700",
+    date = "2025-11-18T19:20:38+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -39,6 +39,7 @@ public class VatTuMapperImpl implements VatTuMapper {
         VatTuDto.VatTuDtoBuilder vatTuDto = VatTuDto.builder();
 
         vatTuDto.id( vatTu.getId() );
+        vatTuDto.ma( vatTu.getMa() );
         vatTuDto.nhomVatTu( nhomVatTuToNhomVatTuDto( vatTu.getNhomVatTu() ) );
         vatTuDto.thuongHieu( thuongHieuToThuongHieuDto( vatTu.getThuongHieu() ) );
         vatTuDto.ten( vatTu.getTen() );

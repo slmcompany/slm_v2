@@ -147,8 +147,16 @@
         </div>
       </template>
     </BasicTable>
-    <TronGoiModal
-      @register="registerModal"
+    
+    <!-- Create Modal -->
+    <CreateTronGoiModal
+      @register="registerCreateModal"
+      @success="handleSuccess"
+    />
+    
+    <!-- Update Modal -->
+    <UpdateTronGoiModal
+      @register="registerUpdateModal"
       @success="handleSuccess"
     />
   </div>
@@ -161,7 +169,8 @@
   import { useModal } from '@/components/Modal';
   import { columns, searchFormSchema } from './tronGoi.data';
   import { filterTronGoi, getAllNhomTronGoi, TronGoiDto } from './tronGoi';
-  import TronGoiModal from './TronGoiModal.vue';
+  import CreateTronGoiModal from './CreateTronGoiModal.vue';
+  import UpdateTronGoiModal from './UpdateTronGoiModal.vue';
   import { message } from 'ant-design-vue';
 
   defineOptions({ name: 'TronGoiManagement' });
@@ -223,7 +232,9 @@
     },
   ];
 
-  const [registerModal, { openModal }] = useModal();
+  const [registerCreateModal, { openModal: openCreateModal }] = useModal();
+  const [registerUpdateModal, { openModal: openUpdateModal }] = useModal();
+  
   const [registerTable, { reload, getForm }] = useTable({
     title: 'Danh sách trọn gói',
     api: async (params) => {
@@ -347,9 +358,7 @@
 
   function handleCreate() {
     try {
-      openModal(true, {
-        isUpdate: false,
-      });
+      openCreateModal(true, {});
     } catch (err) {
       console.error('handleCreate error:', err);
       message.error('Không thể mở modal: ' + String(err));
@@ -358,9 +367,8 @@
 
   function handleEdit(record: TronGoiDto) {
     try {
-      openModal(true, {
+      openUpdateModal(true, {
         record,
-        isUpdate: true,
       });
     } catch (err) {
       console.error('handleEdit error:', err);

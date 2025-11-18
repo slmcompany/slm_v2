@@ -7,6 +7,7 @@ import com.devmam.slmapiv2.dto.request.entities.VatTuTronGoiCreatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.TronGoiDto;
 import com.devmam.slmapiv2.entities.*;
+import com.devmam.slmapiv2.entities.commons.GiaInfo;
 import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.TronGoiMapper;
 import com.devmam.slmapiv2.services.JwtService;
@@ -94,12 +95,28 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 if (vatTu.isEmpty()) {
                     throw new CommonException("Không tìm thấy vật tư id: " + vatTuTronGoiDto.getVatTuId());
                 }
+                List<ThongTinGia> dsThongTinGia = vatTu.get().getThongTinGias();
+                if (dsThongTinGia.isEmpty()) {
+                    throw new CommonException("Giá của vật tư id:"+ vatTu.get().getId()+" chưa được khởi tạo");
+                }
+                Double giaBanTheoKhuVuc = 0.0;
+                boolean daChinhGia = false;
+                for (GiaInfo giaInfo: dsThongTinGia.get(dsThongTinGia.size()-1).getDsGia()) {
+                    if(giaInfo.getMaCoSo().equals(coSo.get().getMa())){
+                        giaBanTheoKhuVuc =  giaInfo.getGiaBan() + 0.0;
+                        daChinhGia = true;
+                        break;
+                    }
+                }
+                if(!daChinhGia){
+                   giaBanTheoKhuVuc = dsThongTinGia.get(dsThongTinGia.size()-1).getDsGia().get(0).getGiaBan() + 0.0;
+                }
                 vatTuTronGoiService.create(VatTuTronGoi.builder()
                         .tronGoi(tronGoi)
                         .vatTu(vatTu.get())
                         .moTa(vatTuTronGoiDto.getMoTa())
                         .soLuong(vatTuTronGoiDto.getSoLuong())
-                        .gia(vatTuTronGoiDto.getGia())
+                        .gia(giaBanTheoKhuVuc)
                         .gm(vatTuTronGoiDto.getGm())
                         .duocBaoHanh(vatTuTronGoiDto.getDuocBaoHanh())
                         .trangThai(vatTuTronGoiDto.getTrangThai())
@@ -133,6 +150,27 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                         .message("Success")
                         .data(results)
                         .build()
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<TronGoiDto>> deleteTronGoi(Integer id){
+        Optional<TronGoi> tronGoi = getOne(id);
+        if (tronGoi.isEmpty()){
+            throw new CommonException("Không tồn tại trọn gói id: "+id);
+        }
+        TronGoiDto dto = TronGoiDto.builder()
+                .ten(tronGoi.get().getTen())
+                .id(tronGoi.get().getId())
+                .build();
+        delete(id);
+        return ResponseEntity.ok(
+          ResponseData.<TronGoiDto>builder()
+                  .status(200)
+                  .error(null)
+                  .message("Success")
+                  .data(dto)
+                  .build()
         );
     }
 }

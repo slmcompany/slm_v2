@@ -133,7 +133,7 @@ export const formSchema: FormSchema[] = [
     field: 'thuongHieuPinLuuTruId',
     label: 'Thương hiệu pin lưu trữ',
     component: 'Select',
-    required: true,
+    required: false,
     componentProps: {
       placeholder: 'Chọn thương hiệu pin lưu trữ',
       options: [],

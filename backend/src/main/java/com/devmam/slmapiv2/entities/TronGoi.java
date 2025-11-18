@@ -47,6 +47,9 @@ public class TronGoi implements Serializable {
     @Column(name = "loai_pha", length = 50)
     private String loaiPha;
 
+    @Column(name = "cong_suat_he_thong")
+    private Double congSuatHeThong;
+
     @Column(name = "san_luong_toi_thieu")
     private Double sanLuongToiThieu;
 
@@ -58,6 +61,9 @@ public class TronGoi implements Serializable {
 
     @Column(name = "tong_gia")
     private Double tongGia;
+
+    @Column(name = "gm_tong")
+    private Double gmTong;
 
     @ColumnDefault("true")
     @Column(name = "ban_chay")

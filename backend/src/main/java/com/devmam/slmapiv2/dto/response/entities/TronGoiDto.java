@@ -29,11 +29,13 @@ public class TronGoiDto implements Serializable {
     String loaiHeThong;
     @Size(max = 50)
     String loaiPha;
+    Double congSuatHeThong;
     Double sanLuongToiThieu;
     Double sanLuongToiDa;
     String moTa;
     Instant taoLuc;
     Double tongGia;
+    Double gmTong;
     Boolean banChay;
     Integer trangThai;
     Set<VatTuTronGoiDto> vatTuTronGois;

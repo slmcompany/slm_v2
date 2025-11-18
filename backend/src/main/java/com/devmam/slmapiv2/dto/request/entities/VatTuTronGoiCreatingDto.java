@@ -16,7 +16,6 @@ public class VatTuTronGoiCreatingDto {
     @Size(max = 500)
     String moTa;
     Integer soLuong;
-    Double gia;
     Double gm;
     Integer thoiGianBaoHanh;
     Boolean duocBaoHanh;

@@ -26,6 +26,9 @@ public class VatTu implements Serializable {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(name = "ma")
+    private String ma;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nhom_vat_tu_id")
     private NhomVatTu nhomVatTu;

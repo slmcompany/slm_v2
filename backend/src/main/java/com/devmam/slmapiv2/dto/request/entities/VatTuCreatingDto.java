@@ -6,7 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.text.Normalizer;
 import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,10 @@ public class VatTuCreatingDto {
 
     public static VatTu toEntity(VatTuCreatingDto dto) {
         Map<String, Object> thuocTinhRiengObj = new HashMap<>(dto.getDuLieuRieng());
+        // Gen mã vật tư từ trường tên phân các từ bằng dấu gạch dưới và bỏ hết dấu cũng như viết hoa chẳng hạn kẹp Biên thành kep_bien
+        String ma = genMaVatTu(dto.getTen()) + new Date().getTime();
         return VatTu.builder()
+                .ma(ma)
                 .ten(dto.getTen())
                 .sheetLink(dto.getSheetLink())
                 .donVi(dto.getDonVi())
@@ -46,4 +51,20 @@ public class VatTuCreatingDto {
                 .trangThai(dto.getTrangThai())
                 .build();
     }
+
+
+    public static String genMaVatTu(String tenString) {
+        // Bỏ dấu tiếng Việt
+        String khongDau = Normalizer.normalize(tenString, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
+        // Chuyển về chữ thường
+        khongDau = khongDau.toLowerCase();
+
+        // Thay thế khoảng trắng bằng dấu gạch dưới
+        String ma = khongDau.replaceAll("\\s+", "_");
+
+        return ma;
+    }
+
 }

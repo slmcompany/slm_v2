@@ -108,6 +108,7 @@ export interface NhaCungCapDto {
 
 export interface VatTuDto {
   id: number;
+  ma: string;
   nhomVatTu: NhomVatTuDto;
   thuongHieu: ThuongHieuDto;
   nhaCungCap: NhaCungCapDto;

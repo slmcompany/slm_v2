@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-17T16:01:31+0700",
+    date = "2025-11-18T19:20:39+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -55,11 +55,13 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         tronGoiDto.tepTin( tepTinToTepTinDto( tronGoi.getTepTin() ) );
         tronGoiDto.loaiHeThong( tronGoi.getLoaiHeThong() );
         tronGoiDto.loaiPha( tronGoi.getLoaiPha() );
+        tronGoiDto.congSuatHeThong( tronGoi.getCongSuatHeThong() );
         tronGoiDto.sanLuongToiThieu( tronGoi.getSanLuongToiThieu() );
         tronGoiDto.sanLuongToiDa( tronGoi.getSanLuongToiDa() );
         tronGoiDto.moTa( tronGoi.getMoTa() );
         tronGoiDto.taoLuc( tronGoi.getTaoLuc() );
         tronGoiDto.tongGia( tronGoi.getTongGia() );
+        tronGoiDto.gmTong( tronGoi.getGmTong() );
         tronGoiDto.banChay( tronGoi.getBanChay() );
         tronGoiDto.trangThai( tronGoi.getTrangThai() );
         tronGoiDto.vatTuTronGois( vatTuTronGoiListToVatTuTronGoiDtoSet( tronGoi.getVatTuTronGois() ) );
@@ -82,10 +84,12 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         tronGoi.tepTin( tepTinDtoToTepTin( tronGoiDto.getTepTin() ) );
         tronGoi.loaiHeThong( tronGoiDto.getLoaiHeThong() );
         tronGoi.loaiPha( tronGoiDto.getLoaiPha() );
+        tronGoi.congSuatHeThong( tronGoiDto.getCongSuatHeThong() );
         tronGoi.sanLuongToiThieu( tronGoiDto.getSanLuongToiThieu() );
         tronGoi.sanLuongToiDa( tronGoiDto.getSanLuongToiDa() );
         tronGoi.moTa( tronGoiDto.getMoTa() );
         tronGoi.tongGia( tronGoiDto.getTongGia() );
+        tronGoi.gmTong( tronGoiDto.getGmTong() );
         tronGoi.banChay( tronGoiDto.getBanChay() );
         tronGoi.taoLuc( tronGoiDto.getTaoLuc() );
         tronGoi.trangThai( tronGoiDto.getTrangThai() );
@@ -139,11 +143,12 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         NhomTronGoiDto.NhomTronGoiDtoBuilder nhomTronGoiDto = NhomTronGoiDto.builder();
 
         nhomTronGoiDto.id( nhomTronGoi.getId() );
-        nhomTronGoiDto.nghanhHang( nganhHangToNganhHangDto( nhomTronGoi.getNghanhHang() ) );
+        nhomTronGoiDto.nganhHang( nganhHangToNganhHangDto( nhomTronGoi.getNganhHang() ) );
         nhomTronGoiDto.ten( nhomTronGoi.getTen() );
         nhomTronGoiDto.thuongHieuTamPin( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuTamPin() ) );
         nhomTronGoiDto.thuongHieuInverter( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuInverter() ) );
         nhomTronGoiDto.thuongHieuPinLuuTru( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuPinLuuTru() ) );
+        nhomTronGoiDto.taoLuc( nhomTronGoi.getTaoLuc() );
         nhomTronGoiDto.trangThai( nhomTronGoi.getTrangThai() );
 
         return nhomTronGoiDto.build();
@@ -280,6 +285,7 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         VatTuDto.VatTuDtoBuilder vatTuDto = VatTuDto.builder();
 
         vatTuDto.id( vatTu.getId() );
+        vatTuDto.ma( vatTu.getMa() );
         vatTuDto.nhomVatTu( nhomVatTuToNhomVatTuDto( vatTu.getNhomVatTu() ) );
         vatTuDto.thuongHieu( thuongHieuToThuongHieuDto( vatTu.getThuongHieu() ) );
         vatTuDto.ten( vatTu.getTen() );
@@ -396,11 +402,12 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         NhomTronGoi.NhomTronGoiBuilder nhomTronGoi = NhomTronGoi.builder();
 
         nhomTronGoi.id( nhomTronGoiDto.getId() );
-        nhomTronGoi.nghanhHang( nganhHangDtoToNganhHang( nhomTronGoiDto.getNghanhHang() ) );
+        nhomTronGoi.nganhHang( nganhHangDtoToNganhHang( nhomTronGoiDto.getNganhHang() ) );
         nhomTronGoi.ten( nhomTronGoiDto.getTen() );
         nhomTronGoi.thuongHieuTamPin( thuongHieuDtoToThuongHieu( nhomTronGoiDto.getThuongHieuTamPin() ) );
         nhomTronGoi.thuongHieuInverter( thuongHieuDtoToThuongHieu( nhomTronGoiDto.getThuongHieuInverter() ) );
         nhomTronGoi.thuongHieuPinLuuTru( thuongHieuDtoToThuongHieu( nhomTronGoiDto.getThuongHieuPinLuuTru() ) );
+        nhomTronGoi.taoLuc( nhomTronGoiDto.getTaoLuc() );
         nhomTronGoi.trangThai( nhomTronGoiDto.getTrangThai() );
 
         return nhomTronGoi.build();
@@ -519,6 +526,7 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         VatTu.VatTuBuilder vatTu = VatTu.builder();
 
         vatTu.id( vatTuDto.getId() );
+        vatTu.ma( vatTuDto.getMa() );
         vatTu.nhomVatTu( nhomVatTuDtoToNhomVatTu( vatTuDto.getNhomVatTu() ) );
         vatTu.thuongHieu( thuongHieuDtoToThuongHieu( vatTuDto.getThuongHieu() ) );
         vatTu.ten( vatTuDto.getTen() );

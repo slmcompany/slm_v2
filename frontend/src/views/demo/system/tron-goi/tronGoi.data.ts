@@ -118,9 +118,8 @@ export const searchFormSchema: FormSchema[] = [
       placeholder: 'Chọn loại hệ thống',
       allowClear: true,
       options: [
-        { label: 'Hòa lưới', value: 'Hòa lưới' },
-        { label: 'Độc lập', value: 'Độc lập' },
-        { label: 'Lai', value: 'Lai' },
+        { label: 'On-Grid', value: 'On-Grid' },
+        { label: 'Hy-Brid', value: 'Hy-Brid' },
       ],
     },
     colProps: { span: 6 },
@@ -174,9 +173,8 @@ export const formSchema: FormSchema[] = [
     componentProps: {
       placeholder: 'Chọn loại hệ thống',
       options: [
-        { label: 'Hòa lưới', value: 'Hòa lưới' },
-        { label: 'Độc lập', value: 'Độc lập' },
-        { label: 'Lai', value: 'Lai' },
+        { label: 'On-Grid', value: 'On-Grid' },
+        { label: 'Hy-Brid', value: 'Hy-Brid' },
       ],
     },
   },
@@ -202,19 +200,7 @@ export const formSchema: FormSchema[] = [
       rows: 3,
     },
   },
-  {
-    field: 'tongGia',
-    label: 'Tổng giá',
-    component: 'InputNumber',
-    required: true,
-    componentProps: {
-      placeholder: 'Nhập tổng giá',
-      min: 0,
-      formatter: (value: any) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-      parser: (value: any) => value.replace(/\$\s?|(,*)/g, ''),
-      style: { width: '100%' },
-    },
-  },
+  
   {
     field: 'banChay',
     label: 'Bán chạy',
@@ -243,17 +229,28 @@ export const formSchema: FormSchema[] = [
   {
     field: 'tronGoiCoSos',
     label: 'Thông tin cơ sở',
-    component: 'Input',
     slot: 'tronGoiCoSos',
     colProps: { span: 24 },
   } as FormSchema,
   {
     field: 'vatTuTronGois',
     label: 'Vật tư trong gói',
-    component: 'Input',
     slot: 'vatTuTronGois',
     colProps: { span: 24 },
   } as FormSchema,
+  {
+    field: 'tongGia',
+    label: 'Tổng giá',
+    component: 'InputNumber',
+    required: true,
+    componentProps: {
+      placeholder: 'Nhập tổng giá',
+      min: 0,
+      formatter: (value: any) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+      parser: (value: any) => value.replace(/\$\s?|(,*)/g, ''),
+      style: { width: '100%' },
+    },
+  },
   {
     field: 'file',
     label: 'Hình ảnh',

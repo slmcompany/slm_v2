@@ -24,7 +24,7 @@ public class NhomTronGoi implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nghanh_hang_id")
-    private NganhHang nghanhHang;
+    private NganhHang nganhHang;
 
     @Size(max = 400)
     @Column(name = "ten", length = 400)
