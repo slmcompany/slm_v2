@@ -28,5 +28,6 @@ public class VatTuTronGoiDto implements Serializable {
     Instant taoLuc;
     Integer thoiGianBaoHanh;
     Boolean duocBaoHanh;
+    Boolean duocXem;
     Integer trangThai;
 }

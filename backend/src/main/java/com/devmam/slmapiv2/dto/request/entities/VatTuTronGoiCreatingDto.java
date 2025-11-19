@@ -19,5 +19,6 @@ public class VatTuTronGoiCreatingDto {
     Double gm;
     Integer thoiGianBaoHanh;
     Boolean duocBaoHanh;
+    Boolean duocXem;
     Integer trangThai;
 }

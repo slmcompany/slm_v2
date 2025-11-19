@@ -163,6 +163,7 @@ export interface VatTuTronGoiCreatingDto {
   gm: number;
   thoiGianBaoHanh: number;
   duocBaoHanh: boolean;
+  duocXem: boolean;
   trangThai: number;
 }
 

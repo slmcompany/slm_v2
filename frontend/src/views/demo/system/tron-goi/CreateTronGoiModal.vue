@@ -253,6 +253,14 @@
                     ></Textarea>
                   </FormItem>
                 </Col>
+                <Col :span="12">
+                  <FormItem label="Được xem">
+                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                      <RadioButton :value="true">Có</RadioButton>
+                      <RadioButton :value="false">Không</RadioButton>
+                    </RadioGroup>
+                  </FormItem>
+                </Col>
               </Row>
             </Card>
           </div>
@@ -389,6 +397,14 @@
                     ></Textarea>
                   </FormItem>
                 </Col>
+                <Col :span="12">
+                  <FormItem label="Được xem">
+                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                      <RadioButton :value="true">Có</RadioButton>
+                      <RadioButton :value="false">Không</RadioButton>
+                    </RadioGroup>
+                  </FormItem>
+                </Col>
               </Row>
             </Card>
           </div>
@@ -523,6 +539,14 @@
                       placeholder="Nhập mô tả"
                       :rows="2"
                     ></Textarea>
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Được xem">
+                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                      <RadioButton :value="true">Có</RadioButton>
+                      <RadioButton :value="false">Không</RadioButton>
+                    </RadioGroup>
                   </FormItem>
                 </Col>
               </Row>
@@ -669,6 +693,14 @@
                     ></Textarea>
                   </FormItem>
                 </Col>
+                <Col :span="12">
+                  <FormItem label="Được xem">
+                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                      <RadioButton :value="true">Có</RadioButton>
+                      <RadioButton :value="false">Không</RadioButton>
+                    </RadioGroup>
+                  </FormItem>
+                </Col>
               </Row>
             </Card>
           </div>
@@ -803,6 +835,14 @@
                       placeholder="Nhập mô tả"
                       :rows="2"
                     ></Textarea>
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Được xem">
+                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                      <RadioButton :value="true">Có</RadioButton>
+                      <RadioButton :value="false">Không</RadioButton>
+                    </RadioGroup>
                   </FormItem>
                 </Col>
               </Row>
@@ -941,6 +981,14 @@
                     ></Textarea>
                   </FormItem>
                 </Col>
+                <Col :span="12">
+                  <FormItem label="Được xem">
+                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                      <RadioButton :value="true">Có</RadioButton>
+                      <RadioButton :value="false">Không</RadioButton>
+                    </RadioGroup>
+                  </FormItem>
+                </Col>
               </Row>
             </Card>
           </div>
@@ -1075,6 +1123,14 @@
                       placeholder="Nhập mô tả"
                       :rows="2"
                     ></Textarea>
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Được xem">
+                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                      <RadioButton :value="true">Có</RadioButton>
+                      <RadioButton :value="false">Không</RadioButton>
+                    </RadioGroup>
                   </FormItem>
                 </Col>
               </Row>
@@ -1215,6 +1271,14 @@
                       placeholder="Nhập mô tả"
                       :rows="2"
                     ></Textarea>
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Được xem">
+                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                      <RadioButton :value="true">Có</RadioButton>
+                      <RadioButton :value="false">Không</RadioButton>
+                    </RadioGroup>
                   </FormItem>
                 </Col>
               </Row>
@@ -1615,6 +1679,7 @@
                 gm: firstVatTu.nhomVatTu.gm,
                 thoiGianBaoHanh: 0,
                 duocBaoHanh: true,
+                duocXem: true,
                 trangThai: 1,
               },
             ];
@@ -1636,6 +1701,7 @@
                 gm: 0,
                 thoiGianBaoHanh: 0,
                 duocBaoHanh: true,
+                duocXem: true,
                 trangThai: 1,
               },
             ];
@@ -1759,6 +1825,7 @@
       gm: firstVatTu.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
       duocBaoHanh: true,
+      duocXem: true,
       trangThai: 1,
     });
   }
@@ -1786,6 +1853,7 @@
       gm: firstVatTu.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
       duocBaoHanh: true,
+      duocXem: true,
       trangThai: 1,
     });
   }
@@ -1843,6 +1911,7 @@
       gm: firstHeKhungNhom.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
       duocBaoHanh: true,
+      duocXem: true,
       trangThai: 1,
     });
   }
@@ -1870,6 +1939,7 @@
       gm: firstHeDayDien.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
       duocBaoHanh: true,
+      duocXem: true,
       trangThai: 1,
     });
   }
@@ -1902,6 +1972,7 @@
       gm: firstTuDien.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
       duocBaoHanh: true,
+      duocXem: true,
       trangThai: 1,
     });
   }
@@ -1929,6 +2000,7 @@
       gm: firstHeTiepDia.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
       duocBaoHanh: true,
+      duocXem: true,
       trangThai: 1,
     });
   }
@@ -1957,6 +2029,7 @@
       gm: firstVatTu.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
       duocBaoHanh: false,
+      duocXem: true,
       trangThai: 1,
     });
   }
@@ -2290,6 +2363,7 @@
           gm: v.gm,
           thoiGianBaoHanh: v.thoiGianBaoHanh || 0,
           duocBaoHanh: v.duocBaoHanh,
+          duocXem: v.duocXem,
           trangThai: v.trangThai,
         })),
       };

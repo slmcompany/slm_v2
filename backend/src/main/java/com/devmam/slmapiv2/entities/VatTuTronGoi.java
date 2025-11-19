@@ -50,6 +50,10 @@ public class VatTuTronGoi implements Serializable {
     @Column(name = "duoc_bao_hanh")
     private Boolean duocBaoHanh;
 
+    @ColumnDefault("false")
+    @Column(name = "duoc_xem")
+    private Boolean duocXem;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "tao_luc")
     private Instant taoLuc;

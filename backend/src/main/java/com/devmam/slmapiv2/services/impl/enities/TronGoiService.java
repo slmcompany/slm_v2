@@ -89,7 +89,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             tronGoi.setSanLuongToiThieu(tronGoiCoSo.getSanLuongToiThieu());
             tronGoi.setSanLuongToiDa(tronGoiCoSo.getSanLuongToiDa());
             tronGoi.setTongGia(dto.getTongGiaMienBac());
-            if(coSo.get().getMa().equals("HCM")){
+            if (coSo.get().getMa().equals("HCM")) {
                 tronGoi.setTongGia(dto.getTongGiaMienNam());
             }
             tronGoi = create(tronGoi);
@@ -101,19 +101,19 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 }
                 List<ThongTinGia> dsThongTinGia = vatTu.get().getThongTinGias();
                 if (dsThongTinGia.isEmpty()) {
-                    throw new CommonException("Giá của vật tư id:"+ vatTu.get().getId()+" chưa được khởi tạo");
+                    throw new CommonException("Giá của vật tư id:" + vatTu.get().getId() + " chưa được khởi tạo");
                 }
                 Double giaBanTheoKhuVuc = 0.0;
                 boolean daChinhGia = false;
-                for (GiaInfo giaInfo: dsThongTinGia.get(dsThongTinGia.size()-1).getDsGia()) {
-                    if(giaInfo.getMaCoSo().equals(coSo.get().getMa())){
-                        giaBanTheoKhuVuc =  giaInfo.getGiaBan() + 0.0;
+                for (GiaInfo giaInfo : dsThongTinGia.get(dsThongTinGia.size() - 1).getDsGia()) {
+                    if (giaInfo.getMaCoSo().equals(coSo.get().getMa())) {
+                        giaBanTheoKhuVuc = giaInfo.getGiaBan() + 0.0;
                         daChinhGia = true;
                         break;
                     }
                 }
-                if(!daChinhGia){
-                   giaBanTheoKhuVuc = dsThongTinGia.get(dsThongTinGia.size()-1).getDsGia().get(0).getGiaBan() + 0.0;
+                if (!daChinhGia) {
+                    giaBanTheoKhuVuc = dsThongTinGia.get(dsThongTinGia.size() - 1).getDsGia().get(0).getGiaBan() + 0.0;
                 }
                 vatTuTronGoiService.create(VatTuTronGoi.builder()
                         .tronGoi(tronGoi)
@@ -123,6 +123,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                         .gia(giaBanTheoKhuVuc)
                         .gm(vatTuTronGoiDto.getGm())
                         .duocBaoHanh(vatTuTronGoiDto.getDuocBaoHanh())
+                        .duocXem(vatTuTronGoiDto.getDuocXem())
                         .trangThai(vatTuTronGoiDto.getTrangThai())
                         .build());
             }
@@ -131,8 +132,8 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 String objectName = minioService.upload(file);
                 TepTin creatingTepTin = tepTinService.create(
                         TepTin.builder()
-                                .tenTepGoc(tronGoi.getTen()+"_"+coSo.get().getMa())
-                                .tenTaiLen(tronGoi.getTen()+"_"+coSo.get().getMa())
+                                .tenTepGoc(tronGoi.getTen() + "_" + coSo.get().getMa())
+                                .tenTaiLen(tronGoi.getTen() + "_" + coSo.get().getMa())
                                 .tenLuuTru(objectName)
                                 .duongDan(minioService.getPublicUrl(objectName))
                                 .loaiTepTin(FileType.IMAGE.toString())
@@ -158,10 +159,10 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
     }
 
     @Transactional
-    public ResponseEntity<ResponseData<TronGoiDto>> deleteTronGoi(Integer id){
+    public ResponseEntity<ResponseData<TronGoiDto>> deleteTronGoi(Integer id) {
         Optional<TronGoi> tronGoi = getOne(id);
-        if (tronGoi.isEmpty()){
-            throw new CommonException("Không tồn tại trọn gói id: "+id);
+        if (tronGoi.isEmpty()) {
+            throw new CommonException("Không tồn tại trọn gói id: " + id);
         }
         TronGoiDto dto = TronGoiDto.builder()
                 .ten(tronGoi.get().getTen())
@@ -169,12 +170,12 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 .build();
         delete(id);
         return ResponseEntity.ok(
-          ResponseData.<TronGoiDto>builder()
-                  .status(200)
-                  .error(null)
-                  .message("Success")
-                  .data(dto)
-                  .build()
+                ResponseData.<TronGoiDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(dto)
+                        .build()
         );
     }
 }
