@@ -156,7 +156,10 @@
                       placeholder="Nhập số lượng"
                       :min="0"
                       style="width: 100%"
-                      @change="value => handleChangeSoLuongTamPin(tamPinList[0].vatTuId, itemIndex, value)"
+                      @change="
+                        (value) =>
+                          handleChangeSoLuongTamPin(tamPinList[0].vatTuId, itemIndex, value)
+                      "
                     />
                   </FormItem>
                 </Col>
@@ -1243,15 +1246,36 @@
       <Row :gutter="16">
         <Col :span="12">
           <FormItem
-            label="Tổng giá (VND)"
+            label="Tổng giá Miền Bắc (VND)"
             name="tongGia"
-            :rules="[{ required: true, message: 'Vui lòng nhập tổng giá' }]"
+            :rules="[{ required: true, message: 'Vui lòng nhập tổng giá Miền Bắc' }]"
             :label-col="{ span: 12 }"
             :wrapper-col="{ span: 12 }"
           >
             <InputNumber
-              v-model:value="formState.tongGia"
-              placeholder="Nhập tổng giá"
+              v-model:value="formState.tongGiaMienBac"
+              placeholder="Nhập tổng giá Miền Bắc"
+              :min="0"
+              :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+              :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+              style="width: 100%"
+            ></InputNumber>
+          </FormItem>
+        </Col>
+      </Row>
+
+      <Row :gutter="16">
+        <Col :span="12">
+          <FormItem
+            label="Tổng giá Miền Nam (VND)"
+            name="tongGia"
+            :rules="[{ required: true, message: 'Vui lòng nhập tổng giá Miền Nam' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
+            <InputNumber
+              v-model:value="formState.tongGiaMienBac"
+              placeholder="Nhập tổng giá Miền Nam"
               :min="0"
               :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
               :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -1369,7 +1393,8 @@
     loaiHeThong: undefined as string | undefined,
     loaiPha: '1 pha',
     moTa: '',
-    tongGia: 0,
+    tongGiaMienBac: 0,
+    tongGiaMienNam: 0,
     gmTong: 0,
     congSuatHeThong: 0,
     banChay: false,
@@ -1582,14 +1607,14 @@
               {
                 vatTuId: firstVatTu.id,
                 moTa: firstVatTu.moTaBaoGia || '',
-                soLuong: 0,
+                soLuong: 1,
                 giaNhapMienBac: giaNhapMienBac,
                 giaNhapMienNam: giaNhapMienNam,
                 giaBanMienBac: giaBanMienBac,
                 giaBanMienNam: giaBanMienNam,
                 gm: firstVatTu.nhomVatTu.gm,
                 thoiGianBaoHanh: 0,
-                duocBaoHanh: false,
+                duocBaoHanh: true,
                 trangThai: 1,
               },
             ];
@@ -1603,14 +1628,14 @@
               {
                 vatTuId: undefined,
                 moTa: '',
-                soLuong: 0,
+                soLuong: 1,
                 giaNhapMienBac: 0,
                 giaNhapMienNam: 0,
                 giaBanMienBac: 0,
                 giaBanMienNam: 0,
                 gm: 0,
                 thoiGianBaoHanh: 0,
-                duocBaoHanh: false,
+                duocBaoHanh: true,
                 trangThai: 1,
               },
             ];
@@ -1726,14 +1751,14 @@
     bienTanList.value.push({
       vatTuId: firstId,
       moTa: '',
-      soLuong: 0,
+      soLuong: 1,
       giaNhapMienBac: giaNhapMienBac,
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
       gm: firstVatTu.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
-      duocBaoHanh: false,
+      duocBaoHanh: true,
       trangThai: 1,
     });
   }
@@ -1753,14 +1778,14 @@
     pinLuuTruList.value.push({
       vatTuId: firstId,
       moTa: '',
-      soLuong: 0,
+      soLuong: 1,
       giaNhapMienBac: giaNhapMienBac,
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
       gm: firstVatTu.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
-      duocBaoHanh: false,
+      duocBaoHanh: true,
       trangThai: 1,
     });
   }
@@ -1799,10 +1824,13 @@
       soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4) * 6;
     }
     if (firstHeKhungNhom.ma.includes('kep_tiep_dia')) {
-      soLuongCal = ceil(tamPinList.value[0].soLuong / 5);
+      soLuongCal = ceil(tamPinList.value[0].soLuong / 5) + 1;
     }
     if (firstHeKhungNhom.ma.includes('la_tiep_dia')) {
-      soLuongCal = (ceil(tamPinList.value[0].soLuong / 5) * 8 + 4 + 4) / 2;
+      soLuongCal = (ceil(tamPinList.value[0].soLuong / 5) * 8 + 4) / 2;
+    }
+    if (firstHeKhungNhom.ma.includes('kep_day_dien')) {
+      soLuongCal = tamPinList.value[0].soLuong * 4;
     }
     heKhungNhomList.value.push({
       vatTuId: firstId,
@@ -1814,7 +1842,7 @@
       giaBanMienNam: giaBanMienNam,
       gm: firstHeKhungNhom.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
-      duocBaoHanh: false,
+      duocBaoHanh: true,
       trangThai: 1,
     });
   }
@@ -1834,14 +1862,14 @@
     heDayDienList.value.push({
       vatTuId: firstId,
       moTa: '',
-      soLuong: 0,
+      soLuong: 1,
       giaNhapMienBac: giaNhapMienBac,
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
       gm: firstHeDayDien.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
-      duocBaoHanh: false,
+      duocBaoHanh: true,
       trangThai: 1,
     });
   }
@@ -1866,14 +1894,14 @@
     tuDienList.value.push({
       vatTuId: firstId,
       moTa: '',
-      soLuong: 0,
+      soLuong: 1,
       giaNhapMienBac: giaNhapMienBac,
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
       gm: firstTuDien.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
-      duocBaoHanh: false,
+      duocBaoHanh: true,
       trangThai: 1,
     });
   }
@@ -1893,14 +1921,14 @@
     heTiepDiaList.value.push({
       vatTuId: firstId,
       moTa: '',
-      soLuong: 0,
+      soLuong: 1,
       giaNhapMienBac: giaNhapMienBac,
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
       gm: firstHeTiepDia.nhomVatTu.gm,
       thoiGianBaoHanh: 0,
-      duocBaoHanh: false,
+      duocBaoHanh: true,
       trangThai: 1,
     });
   }
@@ -1921,7 +1949,7 @@
     tronGoiLapDatList.value.push({
       vatTuId: firstId,
       moTa: '',
-      soLuong: 0,
+      soLuong: 1,
       giaNhapMienBac: giaNhapMienBac,
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
@@ -1966,9 +1994,9 @@
       }
     }
 
-    for (const vatTuTronGoi of heKhungNhomList.value){
+    for (const vatTuTronGoi of heKhungNhomList.value) {
       let vatTuFinding = getVatTuByIdInList(vatTuTronGoi.vatTuId, heKhungNhomData.value);
-      if(vatTuFinding){
+      if (vatTuFinding) {
         let soLuongCal = 0;
         if (vatTuFinding.ma.includes('kep_bien')) {
           soLuongCal = ceil(tamPinList.value[0].soLuong / 5) * 4 + 4;
@@ -1986,10 +2014,13 @@
           soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4) * 6;
         }
         if (vatTuFinding.ma.includes('kep_tiep_dia')) {
-          soLuongCal = ceil(tamPinList.value[0].soLuong / 5);
+          soLuongCal = ceil(tamPinList.value[0].soLuong / 5) + 1;
         }
         if (vatTuFinding.ma.includes('la_tiep_dia')) {
-          soLuongCal = (ceil(tamPinList.value[0].soLuong / 5) * 8 + 4 + 4) / 2;
+          soLuongCal = (ceil(tamPinList.value[0].soLuong / 5) * 8 + 4) / 2;
+        }
+        if (vatTuFinding.ma.includes('kep_day_dien')) {
+          soLuongCal = tamPinList.value[0].soLuong * 4;
         }
         let dsGiaVatTu = vatTuFinding.thongTinGias[vatTuFinding.thongTinGias.length - 1].dsGia;
         let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
@@ -2008,9 +2039,12 @@
     }
   }
 
-  function getVatTuByIdInList(id:number | null | undefined, data_list:VatTuDto[]): VatTuDto | null{
-    for(const vatTu of data_list){
-      if(vatTu.id === id){
+  function getVatTuByIdInList(
+    id: number | null | undefined,
+    data_list: VatTuDto[],
+  ): VatTuDto | null {
+    for (const vatTu of data_list) {
+      if (vatTu.id === id) {
         return vatTu;
       }
     }
@@ -2077,10 +2111,13 @@
           soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4) * 6;
         }
         if (vatTu.ma.includes('kep_tiep_dia')) {
-          soLuongCal = ceil(tamPinList.value[0].soLuong / 5);
+          soLuongCal = ceil(tamPinList.value[0].soLuong / 5) + 1;
         }
         if (vatTu.ma.includes('la_tiep_dia')) {
-          soLuongCal = (ceil(tamPinList.value[0].soLuong / 5) * 8 + 4 + 4) / 2;
+          soLuongCal = (ceil(tamPinList.value[0].soLuong / 5) * 8 + 4) / 2;
+        }
+        if (vatTu.ma.includes('kep_day_dien')) {
+          soLuongCal = tamPinList.value[0].soLuong * 4;
         }
         let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
         let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
@@ -2177,7 +2214,8 @@
   }
 
   function tinhTongGia() {
-    let tongGia = 0;
+    let tongGiaMienBac = 0;
+    let tongGiaMienNam = 0;
     const allVatTu: VatTuItem[] = [
       ...tamPinList.value,
       ...bienTanList.value,
@@ -2189,9 +2227,17 @@
       ...tronGoiLapDatList.value,
     ];
     for (const vatTu of allVatTu) {
-      tongGia += (vatTu.gia || 0) * (vatTu.soLuong || 0);
+      if(vatTu.giaBanMienBac){
+        tongGiaMienBac += (vatTu.giaBanMienBac || 0) * (vatTu.soLuong || 0);
+      }
+      if(vatTu.giaBanMienNam){
+        tongGiaMienNam += (vatTu.giaBanMienNam || 0) * (vatTu.soLuong || 0);
+      } else {
+        tongGiaMienNam += (vatTu.giaBanMienBac || 0) * (vatTu.soLuong || 0);
+      }
     }
-    formState.tongGia = tongGia;
+    formState.tongGiaMienBac = tongGiaMienBac;
+    formState.tongGiaMienNam = tongGiaMienNam;
   }
 
   async function handleSubmit() {
@@ -2237,7 +2283,10 @@
           vatTuId: v.vatTuId,
           moTa: v.moTa || '',
           soLuong: v.soLuong,
-          gia: v.gia,
+          giaNhapMienBac: v.giaNhapMienBac,
+          giaNhapMienNam: v.giaNhapMienNam,
+          giaBanMienBac: v.giaBanMienBac,
+          giaBanMienNam: v.giaBanMienNam,
           gm: v.gm,
           thoiGianBaoHanh: v.thoiGianBaoHanh || 0,
           duocBaoHanh: v.duocBaoHanh,

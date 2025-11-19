@@ -88,6 +88,10 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             tronGoi.setNhomTronGoi(nhomTronGoi.get());
             tronGoi.setSanLuongToiThieu(tronGoiCoSo.getSanLuongToiThieu());
             tronGoi.setSanLuongToiDa(tronGoiCoSo.getSanLuongToiDa());
+            tronGoi.setTongGia(dto.getTongGiaMienBac());
+            if(coSo.get().getMa().equals("HCM")){
+                tronGoi.setTongGia(dto.getTongGiaMienNam());
+            }
             tronGoi = create(tronGoi);
 
             for (VatTuTronGoiCreatingDto vatTuTronGoiDto : dto.getVatTuTronGois()) {

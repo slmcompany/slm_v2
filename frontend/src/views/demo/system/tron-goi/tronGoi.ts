@@ -404,7 +404,8 @@ export function filterVatTu(
 
 export function createTronGoi(data: TronGoiCreateDto, file: File | null) {
   const formData = new FormData();
-  formData.append('data', JSON.stringify(data));
+  const jsonBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  formData.append('dto', jsonBlob);
   if (file) {
     formData.append('file', file);
   }
@@ -473,4 +474,15 @@ export function getAllNhomVatTu() {
       },
     )
     .then((res: any) => res as ResponseData<PageResponse<NhomVatTuDto>>);
+}
+
+export function deleteTronGoi(id: number){
+  return realHttp.delete<ResponseData<TronGoiDto>>(
+    {
+      url: Api.Delete+id,
+    },
+    {
+      isTransformResponse: false,
+    },
+  ).then((res: any) => res as ResponseData<TronGoiDto>);
 }

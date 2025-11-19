@@ -4,6 +4,7 @@ import com.devmam.slmapiv2.entities.TronGoi;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -20,7 +21,8 @@ public class TronGoiCreatingDto {
     String loaiPha;
     Double congSuatHeThong;
     String moTa;
-    Double tongGia;
+    Double tongGiaMienBac;
+    Double tongGiaMienNam;
     Double gmTong;
     Boolean banChay;
     Integer trangThai;
@@ -34,10 +36,10 @@ public class TronGoiCreatingDto {
                 .loaiPha(dto.getLoaiPha())
                 .congSuatHeThong(dto.getCongSuatHeThong())
                 .moTa(dto.getMoTa())
-                .tongGia(dto.getTongGia())
                 .gmTong(dto.getGmTong())
                 .banChay(dto.getBanChay())
                 .trangThai(dto.getTrangThai())
+                .taoLuc(Instant.now())
                 .build();
     }
 }

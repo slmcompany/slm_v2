@@ -168,7 +168,7 @@
   import { PlusOutlined, ReloadOutlined } from '@ant-design/icons-vue';
   import { useModal } from '@/components/Modal';
   import { columns, searchFormSchema } from './tronGoi.data';
-  import { filterTronGoi, getAllNhomTronGoi, TronGoiDto } from './tronGoi';
+  import { filterTronGoi, getAllNhomTronGoi, TronGoiDto, deleteTronGoi } from './tronGoi';
   import CreateTronGoiModal from './CreateTronGoiModal.vue';
   import UpdateTronGoiModal from './UpdateTronGoiModal.vue';
   import { message } from 'ant-design-vue';
@@ -379,15 +379,15 @@
   async function handleDelete(record: TronGoiDto) {
     try {
       // Note: Delete API not implemented in tronGoi.ts yet
-      message.info('Chức năng xóa chưa được triển khai');
+      // message.info('Chức năng xóa chưa được triển khai');
       // Uncomment when API is ready:
-      // const result = await deleteTronGoi(record.id);
-      // if (result && (result.status === 200)) {
-      //   message.success('Xóa thành công');
-      //   reload();
-      // } else {
-      //   message.error(result?.message || 'Có lỗi xảy ra khi xóa');
-      // }
+      const result = await deleteTronGoi(record.id);
+      if (result && (result.status === 200)) {
+        message.success('Xóa thành công');
+        reload();
+      } else {
+        message.error(result?.message || 'Có lỗi xảy ra khi xóa');
+      }
     } catch (error) {
       console.error('Delete error:', error);
       message.error('Có lỗi xảy ra khi xóa');
