@@ -507,7 +507,7 @@
       // let host = 'http://localhost:8080'
       let host = 'http://103.161.16.66/api'
 
-      const response = await fetch('/basic-api/bai-viet/create', {
+      const response = await fetch(host+'/basic-api/bai-viet/create', {
         method: 'POST',
         body: formData,
       });
