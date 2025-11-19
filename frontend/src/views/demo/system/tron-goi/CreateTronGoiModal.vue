@@ -1338,7 +1338,7 @@
             :wrapper-col="{ span: 12 }"
           >
             <InputNumber
-              v-model:value="formState.tongGiaMienBac"
+              v-model:value="formState.tongGiaMienNam"
               placeholder="Nhập tổng giá Miền Nam"
               :min="0"
               :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
