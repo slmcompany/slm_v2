@@ -22,7 +22,7 @@
         placeholder="Nhập tiêu đề bài viết"
         :maxlength="400"
         :auto-size="{ minRows: 2, maxRows: 4 }"
-      ></Textarea>
+      />
     </FormItem>
 
     <!-- Ảnh bìa -->
@@ -58,11 +58,12 @@
           mode="default"
         />
         <Editor
-          style="height: 400px; overflow-y: hidden"
+          style="height: 700px; overflow-y: hidden"
           v-model="valueHtml"
           :defaultConfig="editorConfig"
           mode="default"
           @onCreated="handleCreated"
+          @customPaste="handleCustomPaste"
         />
       </div>
     </FormItem>
@@ -148,54 +149,107 @@
             
             // Xử lý từng file
             Array.from(files).forEach((file: any) => {
-              // Kiểm tra file
-              const isImage = file.type.startsWith('image/');
-              if (!isImage) {
-                message.error(`${file.name}: Chỉ chấp nhận file ảnh!`);
-                return;
-              }
-              
-              const isLt5M = file.size / 1024 / 1024 < 5;
-              if (!isLt5M) {
-                message.error(`${file.name}: Kích thước ảnh phải nhỏ hơn 5MB!`);
-                return;
-              }
-              
-              // Convert sang base64
-              const reader = new FileReader();
-              reader.onload = (event: any) => {
-                const base64String = event.target.result;
-                const alt = file.name;
-                const href = base64String;
-                
-                // Chèn ảnh base64 vào editor
-                insertFn(base64String, alt, href);
-                message.success(`Đã chèn ảnh: ${file.name}`);
-              };
-              
-              reader.onerror = () => {
-                message.error(`Lỗi khi đọc file: ${file.name}`);
-              };
-              
-              reader.readAsDataURL(file);
+              processImageFile(file, insertFn);
             });
           };
           
           input.click();
         },
         
-        // Xử lý khi paste ảnh
+        // Xử lý khi paste ảnh từ clipboard
+        customPaste: (editor: any, event: ClipboardEvent) => {
+          const items = event.clipboardData?.items;
+          if (!items) return false;
+          
+          let hasImage = false;
+          
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            
+            // Kiểm tra nếu là ảnh
+            if (item.type.indexOf('image') !== -1) {
+              hasImage = true;
+              event.preventDefault(); // Ngăn paste mặc định
+              
+              const file = item.getAsFile();
+              if (file) {
+                processImageFile(file, (url: string, alt: string, href: string) => {
+                  editor.dangerouslyInsertHtml(`<img src="${url}" alt="${alt}" style="max-width: 100%;" />`);
+                });
+              }
+            }
+          }
+          
+          return hasImage; // true = đã xử lý, false = để editor xử lý mặc định
+        },
+        
+        // Xử lý khi kéo thả ảnh vào editor
+        customDrop: (editor: any, event: DragEvent) => {
+          const files = event.dataTransfer?.files;
+          if (!files || files.length === 0) return false;
+          
+          let hasImage = false;
+          
+          Array.from(files).forEach((file: any) => {
+            if (file.type.startsWith('image/')) {
+              hasImage = true;
+              event.preventDefault(); // Ngăn drop mặc định
+              
+              processImageFile(file, (url: string, alt: string, href: string) => {
+                editor.dangerouslyInsertHtml(`<img src="${url}" alt="${alt}" style="max-width: 100%;" />`);
+              });
+            }
+          });
+          
+          return hasImage;
+        },
+        
+        // Xử lý khi chèn ảnh
         onInsertedImage(imageNode: any) {
           console.log('Đã chèn ảnh:', imageNode);
         },
         
-        // Kiểm tra file trước khi upload (không cần nữa vì đã check ở trên)
+        // Kiểm tra file trước khi upload
         onBeforeUpload(file: File) {
           return true;
         },
       },
     },
   };
+
+  // Hàm xử lý ảnh chung (dùng cho upload, paste, drag-drop)
+  function processImageFile(file: File, insertFn: any) {
+    // Kiểm tra file
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+      message.error(`${file.name}: Chỉ chấp nhận file ảnh!`);
+      return;
+    }
+    
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error(`${file.name}: Kích thước ảnh phải nhỏ hơn 5MB!`);
+      return;
+    }
+    
+    // Convert sang base64
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      const base64String = event.target.result;
+      const alt = file.name || 'image';
+      const href = base64String;
+      
+      // Chèn ảnh base64 vào editor
+      insertFn(base64String, alt, href);
+      message.success(`Đã chèn ảnh: ${file.name || 'image'}`);
+    };
+    
+    reader.onerror = () => {
+      message.error(`Lỗi khi đọc file: ${file.name}`);
+    };
+    
+    reader.readAsDataURL(file);
+  }
 
   // ============ LIFECYCLE ============
   onBeforeUnmount(() => {
@@ -240,6 +294,67 @@
     if (editor.i18nChangeLanguage) {
       editor.i18nChangeLanguage('zh'); // Giữ 'zh' nhưng nội dung đã đổi ở trên
     }
+  };
+
+  // Xử lý paste ảnh từ clipboard
+  const handleCustomPaste = (editor: any, event: ClipboardEvent, callback: any) => {
+    // Lấy dữ liệu từ clipboard
+    const items = event.clipboardData?.items;
+    if (!items) {
+      callback(true); // Tiếp tục paste mặc định
+      return;
+    }
+
+    let hasImage = false;
+
+    // Duyệt qua các items trong clipboard
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+
+      // Kiểm tra nếu là ảnh
+      if (item.type.indexOf('image') !== -1) {
+        hasImage = true;
+        const file = item.getAsFile();
+
+        if (file) {
+          // Kiểm tra kích thước
+          const isLt5M = file.size / 1024 / 1024 < 5;
+          if (!isLt5M) {
+            message.error('Kích thước ảnh phải nhỏ hơn 5MB!');
+            event.preventDefault();
+            callback(false);
+            return;
+          }
+
+          // Convert sang base64 và chèn vào editor
+          const reader = new FileReader();
+          reader.onload = (e: any) => {
+            const base64String = e.target.result;
+            
+            // Chèn ảnh vào editor
+            editor.dangerouslyInsertHtml(
+              `<img src="${base64String}" alt="pasted-image" style="max-width: 100%;" />`
+            );
+            
+            message.success('Đã dán ảnh từ clipboard!');
+          };
+
+          reader.onerror = () => {
+            message.error('Lỗi khi đọc ảnh từ clipboard!');
+          };
+
+          reader.readAsDataURL(file);
+        }
+
+        // Ngăn paste mặc định
+        event.preventDefault();
+        callback(false);
+        return;
+      }
+    }
+
+    // Nếu không có ảnh, tiếp tục paste mặc định
+    callback(true);
   };
 
   // ============ UPLOAD HANDLERS ============
@@ -389,9 +504,10 @@
       formData.append('noi_dung', noiDungFile);
 
       // Gửi request - THAY URL NÀY BẰNG API THỰC TẾ CỦA BẠN
-      let host = 'http://localhost:8080';
-      host = 'http://103.161.16.66/api';
-      const response = await fetch(host+'/basic-api/bai-viet/create', {
+      let host = 'http://localhost:8080'
+      host = 'http://103.161.16.66/api'
+
+      const response = await fetch('/basic-api/bai-viet/create', {
         method: 'POST',
         body: formData,
       });
