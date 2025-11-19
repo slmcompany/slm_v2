@@ -117,6 +117,15 @@ const system: AppRouteModule = {
       },
       component: () => import('@/views/demo/system/tron-goi/index.vue'),
     },
+    {
+      path: 'bai-viet',
+      name: 'BaiVietManagement',
+      meta: {
+        title: t('routes.demo.system.baiViet'),
+        ignoreKeepAlive: false,
+      },
+      component: () => import('@/views/demo/system/bai-viet/index.vue'),
+    },
   ],
 };
 
