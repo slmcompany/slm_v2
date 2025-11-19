@@ -504,8 +504,8 @@
       formData.append('noi_dung', noiDungFile);
 
       // Gửi request - THAY URL NÀY BẰNG API THỰC TẾ CỦA BẠN
-      let host = 'http://localhost:8080'
-      host = 'http://103.161.16.66/api'
+      // let host = 'http://localhost:8080'
+      let host = 'http://103.161.16.66/api'
 
       const response = await fetch('/basic-api/bai-viet/create', {
         method: 'POST',
