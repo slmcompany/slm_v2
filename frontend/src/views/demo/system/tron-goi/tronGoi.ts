@@ -207,7 +207,8 @@ export interface TronGoiCreateDto {
   loaiHeThong: string;
   loaiPha: string;
   moTa: string;
-  tongGia: number;
+  tongGiaMienBac: number;
+  tongGiaMienNam: number;
   banChay: boolean;
   vatTuTronGois: VatTuTronGoiCreatingDto[];
 }
