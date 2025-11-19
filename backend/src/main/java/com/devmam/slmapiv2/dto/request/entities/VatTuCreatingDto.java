@@ -38,7 +38,7 @@ public class VatTuCreatingDto {
     public static VatTu toEntity(VatTuCreatingDto dto) {
         Map<String, Object> thuocTinhRiengObj = new HashMap<>(dto.getDuLieuRieng());
         // Gen mã vật tư từ trường tên phân các từ bằng dấu gạch dưới và bỏ hết dấu cũng như viết hoa chẳng hạn kẹp Biên thành kep_bien
-        String ma = genMaVatTu(dto.getTen()) + new Date().getTime();
+        String ma = genMaVatTu(dto.getTen())+ "_" + new Date().getTime();
         return VatTu.builder()
                 .ma(ma)
                 .ten(dto.getTen())
