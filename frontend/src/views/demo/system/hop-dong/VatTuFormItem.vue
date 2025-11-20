@@ -10,7 +10,7 @@
         <FormItem label="Vật tư" :required="true">
           <Select
             :value="modelValue.vatTuId"
-            @update:value="handleVatTuChange"
+            @update:value:="handleVatTuChange"
             placeholder="Chọn vật tư"
             show-search
             :filter-option="filterOption"

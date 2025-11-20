@@ -32,7 +32,7 @@
   import { PlusOutlined } from '@ant-design/icons-vue';
   import { Button, Divider } from 'ant-design-vue';
   import VatTuFormItem from './VatTuFormItem.vue';
-  import type { VatTuHopDongCreatingDto, VatTuDto } from './hopDong';
+  import type { VatTuHopDongCreatingDto, VatTuDto } from './hopDong.ts';
 
   interface Props {
     title: string;
