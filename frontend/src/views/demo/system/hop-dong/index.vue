@@ -142,8 +142,8 @@
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { PlusOutlined, ReloadOutlined } from '@ant-design/icons-vue';
   import { useModal } from '@/components/Modal';
-  import { columns, searchFormSchema, vatTuColumns } from './hopDong.data';
-  import { filterHopDong, getAllCoSo, getAllNganhHang, deleteHopDong, type HopDongDto } from './hopDong';
+  import { columns, searchFormSchema, vatTuColumns } from './hopDong.data.ts';
+  import { filterHopDong, getAllCoSo, getAllNganhHang, deleteHopDong, type HopDongDto } from './hopDong.ts';
   import CreateHopDongModal from './CreateHopDongModal.vue';
   import { message } from 'ant-design-vue';
 

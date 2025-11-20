@@ -10,7 +10,7 @@
         <FormItem label="Vật tư" :required="true">
           <Select
             :value="modelValue.vatTuId"
-            @change="value => handleVatTuChange(value)"
+            @change="(value) => handleVatTuChange(value)"
             placeholder="Chọn vật tư"
             show-search
             :filter-option="filterOption"
@@ -21,7 +21,7 @@
       <Col :span="12">
         <FormItem label="Số lượng" :required="true">
           <InputNumber
-            :value="modelValue.soLuong"
+            v-model:value="soLuong"
             @update:value="updateField('soLuong', $event)"
             placeholder="Nhập số lượng"
             :min="0"
@@ -67,7 +67,7 @@
       </Col>
       <Col :span="12">
         <FormItem label="Được bảo hành">
-          <RadioGroup 
+          <RadioGroup
             :value="modelValue.duocBaoHanh"
             @update:value="updateField('duocBaoHanh', $event)"
             button-style="solid"
@@ -95,8 +95,16 @@
   import { computed } from 'vue';
   import { DeleteOutlined } from '@ant-design/icons-vue';
   import {
-    Button, Card, Col, FormItem, InputNumber, 
-    RadioButton, RadioGroup, Row, Select, Textarea
+    Button,
+    Card,
+    Col,
+    FormItem,
+    InputNumber,
+    RadioButton,
+    RadioGroup,
+    Row,
+    Select,
+    Textarea,
   } from 'ant-design-vue';
   import type { VatTuHopDongCreatingDto, VatTuDto, GiaInfo } from './hopDong';
 
@@ -112,13 +120,18 @@
   const props = withDefaults(defineProps<Props>(), {
     showDelete: true,
     region: 'Miền Bắc',
-    coSoMa: 'HN'
+    coSoMa: 'HN',
   });
 
   const emit = defineEmits<{
     (e: 'update:modelValue', value: VatTuHopDongCreatingDto): void;
     (e: 'remove'): void;
   }>();
+
+  const soLuong = computed({
+    get: () => props.modelValue.soLuong,
+    set: (value) => updateField('soLuong', value),
+  });
 
   const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -132,12 +145,12 @@
   };
 
   const handleVatTuChange = (vatTuId: number) => {
-    const vatTu = props.vatTuData.find(v => v.id === vatTuId);
+    const vatTu = props.vatTuData.find((v) => v.id === vatTuId);
     if (!vatTu) return;
 
     const latestGia = vatTu.thongTinGias[vatTu.thongTinGias.length - 1];
     const giaInfo = latestGia?.dsGia.find((g: GiaInfo) => g.maCoSo === props.coSoMa);
-    
+
     emit('update:modelValue', {
       ...props.modelValue,
       vatTuId,

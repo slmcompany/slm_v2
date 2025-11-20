@@ -10,14 +10,24 @@
     <Form ref="formRef" :model="formState" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <!-- THÔNG TIN CƠ BẢN -->
       <Divider orientation="center">Thông tin cơ bản</Divider>
-      
-      <FormItem label="Tên hợp đồng" name="ten" :rules="[{ required: true, message: 'Vui lòng nhập tên' }]">
+
+      <FormItem
+        label="Tên hợp đồng"
+        name="ten"
+        :rules="[{ required: true, message: 'Vui lòng nhập tên' }]"
+      >
         <Input v-model:value="formState.ten" placeholder="Nhập tên hợp đồng" :maxlength="400" />
       </FormItem>
 
       <Row :gutter="16">
         <Col :span="12">
-          <FormItem label="Cơ sở" name="coSoId" :rules="[{ required: true, message: 'Vui lòng chọn' }]" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Cơ sở"
+            name="coSoId"
+            :rules="[{ required: true, message: 'Vui lòng chọn' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <Select
               v-model:value="formState.coSoId"
               placeholder="Chọn cơ sở"
@@ -29,7 +39,13 @@
           </FormItem>
         </Col>
         <Col :span="12">
-          <FormItem label="Ngành hàng" name="nghanhHangId" :rules="[{ required: true, message: 'Vui lòng chọn' }]" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Ngành hàng"
+            name="nghanhHangId"
+            :rules="[{ required: true, message: 'Vui lòng chọn' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <Select
               v-model:value="formState.nghanhHangId"
               placeholder="Chọn ngành hàng"
@@ -43,7 +59,13 @@
 
       <Row :gutter="16">
         <Col :span="12">
-          <FormItem label="Loại hệ thống" name="loaiHeThong" :rules="[{ required: true, message: 'Vui lòng chọn' }]" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Loại hệ thống"
+            name="loaiHeThong"
+            :rules="[{ required: true, message: 'Vui lòng chọn' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <Select
               v-model:value="formState.loaiHeThong"
               placeholder="Chọn loại hệ thống"
@@ -55,7 +77,13 @@
           </FormItem>
         </Col>
         <Col :span="12">
-          <FormItem label="Loại pha" name="loaiPha" :rules="[{ required: true, message: 'Vui lòng chọn' }]" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Loại pha"
+            name="loaiPha"
+            :rules="[{ required: true, message: 'Vui lòng chọn' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <Select
               v-model:value="formState.loaiPha"
               placeholder="Chọn loại pha"
@@ -71,12 +99,22 @@
 
       <Row :gutter="16">
         <Col :span="12">
-          <FormItem label="Sản lượng TT (kW)" name="sanLuongToiThieu" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Sản lượng TT (kW)"
+            name="sanLuongToiThieu"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <InputNumber v-model:value="formState.sanLuongToiThieu" :min="0" style="width: 100%" />
           </FormItem>
         </Col>
         <Col :span="12">
-          <FormItem label="Sản lượng TĐ (kW)" name="sanLuongToiDa" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Sản lượng TĐ (kW)"
+            name="sanLuongToiDa"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <InputNumber v-model:value="formState.sanLuongToiDa" :min="0" style="width: 100%" />
           </FormItem>
         </Col>
@@ -91,12 +129,24 @@
 
       <Row :gutter="16">
         <Col :span="12">
-          <FormItem label="Họ và tên" name="hoVaTenKhachHang" :rules="[{ required: true, message: 'Vui lòng nhập' }]" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Họ và tên"
+            name="hoVaTenKhachHang"
+            :rules="[{ required: true, message: 'Vui lòng nhập' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <Input v-model:value="formState.hoVaTenKhachHang" placeholder="Nhập họ tên" />
           </FormItem>
         </Col>
         <Col :span="12">
-          <FormItem label="Số điện thoại" name="sdtKhachHang" :rules="[{ required: true, message: 'Vui lòng nhập' }]" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Số điện thoại"
+            name="sdtKhachHang"
+            :rules="[{ required: true, message: 'Vui lòng nhập' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <Input v-model:value="formState.sdtKhachHang" placeholder="Nhập SĐT" />
           </FormItem>
         </Col>
@@ -104,12 +154,23 @@
 
       <Row :gutter="16">
         <Col :span="12">
-          <FormItem label="Email" name="emailKhachHang" :rules="[{ type: 'email', message: 'Email không hợp lệ' }]" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Email"
+            name="emailKhachHang"
+            :rules="[{ type: 'email', message: 'Email không hợp lệ' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <Input v-model:value="formState.emailKhachHang" placeholder="Nhập email" />
           </FormItem>
         </Col>
         <Col :span="12">
-          <FormItem label="Giới tính" name="gioiTinhKhachHang" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Giới tính"
+            name="gioiTinhKhachHang"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <RadioGroup v-model:value="formState.gioiTinhKhachHang" button-style="solid">
               <RadioButton :value="true">Nam</RadioButton>
               <RadioButton :value="false">Nữ</RadioButton>
@@ -154,7 +215,12 @@
       <Divider />
       <Row :gutter="16">
         <Col :span="12">
-          <FormItem label="Giá khung sắt" name="giaKhungSat" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Giá khung sắt"
+            name="giaKhungSat"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <InputNumber
               v-model:value="formState.giaKhungSat"
               :min="0"
@@ -165,7 +231,13 @@
           </FormItem>
         </Col>
         <Col :span="12">
-          <FormItem label="Tổng giá" name="tongGia" :rules="[{ required: true, message: 'Vui lòng nhập' }]" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+          <FormItem
+            label="Tổng giá"
+            name="tongGia"
+            :rules="[{ required: true, message: 'Vui lòng nhập' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
             <InputNumber
               v-model:value="formState.tongGia"
               :min="0"
@@ -187,16 +259,33 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, computed, watch } from 'vue';
+  import { ref, reactive, computed, watch, Ref } from 'vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import {
-    Button, Col, Divider, Form, FormItem, Input, 
-    InputNumber, RadioButton, RadioGroup, Row, Select, Textarea, message
+    Button,
+    Col,
+    Divider,
+    Form,
+    FormItem,
+    Input,
+    InputNumber,
+    RadioButton,
+    RadioGroup,
+    Row,
+    Select,
+    Textarea,
+    message,
   } from 'ant-design-vue';
   import VatTuGroupSection from './VatTuGroupSection.vue';
   import {
-    createHopDong, getAllCoSo, getAllNganhHang, getAllNguoiDung, filterVatTu,
-    type HopDongCreateDto, type VatTuHopDongCreatingDto, type VatTuDto
+    createHopDong,
+    getAllCoSo,
+    getAllNganhHang,
+    getAllNguoiDung,
+    filterVatTu,
+    type HopDongCreateDto,
+    type VatTuHopDongCreatingDto,
+    type VatTuDto,
   } from './hopDong.ts';
   import { ceil } from 'lodash-es';
 
@@ -205,7 +294,7 @@
 
   const formRef = ref();
   const loading = ref(false);
-  
+
   const formState = reactive<HopDongCreateDto>({
     coSoId: undefined,
     nghanhHangId: undefined,
@@ -253,7 +342,7 @@
   const tronGoiLapDatList = ref<VatTuHopDongCreatingDto[]>([]);
 
   const selectedCoSoMa = computed(() => {
-    const coSo = coSoOptions.value.find(c => c.value === formState.coSoId);
+    const coSo = coSoOptions.value.find((c) => c.value === formState.coSoId);
     return coSo?.ma || 'HN';
   });
 
@@ -262,7 +351,7 @@
       code: 'TAM_PIN',
       title: 'Tấm pin',
       items: tamPinList.value,
-      options: tamPinData.value.map(v => ({ label: v.ten, value: v.id })),
+      options: tamPinData.value.map((v) => ({ label: v.ten, value: v.id })),
       data: tamPinData.value,
       allowMultiple: false,
     },
@@ -270,7 +359,7 @@
       code: 'BIEN_TAN',
       title: 'Biến tần',
       items: bienTanList.value,
-      options: bienTanData.value.map(v => ({ label: v.ten, value: v.id })),
+      options: bienTanData.value.map((v) => ({ label: v.ten, value: v.id })),
       data: bienTanData.value,
       allowMultiple: true,
     },
@@ -278,7 +367,7 @@
       code: 'PIN_LUU_TRU',
       title: 'Pin lưu trữ',
       items: pinLuuTruList.value,
-      options: pinLuuTruData.value.map(v => ({ label: v.ten, value: v.id })),
+      options: pinLuuTruData.value.map((v) => ({ label: v.ten, value: v.id })),
       data: pinLuuTruData.value,
       allowMultiple: true,
     },
@@ -286,7 +375,7 @@
       code: 'HE_KHUNG_NHOM',
       title: 'Hệ khung nhôm',
       items: heKhungNhomList.value,
-      options: heKhungNhomData.value.map(v => ({ label: v.ten, value: v.id })),
+      options: heKhungNhomData.value.map((v) => ({ label: v.ten, value: v.id })),
       data: heKhungNhomData.value,
       allowMultiple: true,
     },
@@ -294,7 +383,7 @@
       code: 'HE_DAY_DIEN',
       title: 'Hệ dây điện',
       items: heDayDienList.value,
-      options: heDayDienData.value.map(v => ({ label: v.ten, value: v.id })),
+      options: heDayDienData.value.map((v) => ({ label: v.ten, value: v.id })),
       data: heDayDienData.value,
       allowMultiple: true,
     },
@@ -302,7 +391,7 @@
       code: 'TU_DIEN',
       title: 'Tủ điện',
       items: tuDienList.value,
-      options: tuDienData.value.map(v => ({ label: v.ten, value: v.id })),
+      options: tuDienData.value.map((v) => ({ label: v.ten, value: v.id })),
       data: tuDienData.value,
       allowMultiple: true,
     },
@@ -310,7 +399,7 @@
       code: 'HE_TIEP_DIA',
       title: 'Hệ tiếp địa',
       items: heTiepDiaList.value,
-      options: heTiepDiaData.value.map(v => ({ label: v.ten, value: v.id })),
+      options: heTiepDiaData.value.map((v) => ({ label: v.ten, value: v.id })),
       data: heTiepDiaData.value,
       allowMultiple: true,
     },
@@ -318,18 +407,21 @@
       code: 'TRON_GOI_LAP_DAT',
       title: 'Trọn gói lắp đặt',
       items: tronGoiLapDatList.value,
-      options: tronGoiLapDatData.value.map(v => ({ label: v.ten, value: v.id })),
+      options: tronGoiLapDatData.value.map((v) => ({ label: v.ten, value: v.id })),
       data: tronGoiLapDatData.value,
       allowMultiple: true,
     },
   ]);
 
   // Watch cơ sở thay đổi để cập nhật giá
-  watch(() => formState.coSoId, (newCoSoId) => {
-    if (newCoSoId) {
-      updateAllPricesByCoSo();
-    }
-  });
+  watch(
+    () => formState.coSoId,
+    (newCoSoId) => {
+      if (newCoSoId) {
+        updateAllPricesByCoSo();
+      }
+    },
+  );
 
   const [registerModal, { closeModal }] = useModalInner(async () => {
     resetForm();
@@ -358,7 +450,7 @@
       tongGia: 0,
       vatTuHopDongs: [],
     });
-    
+
     tamPinList.value = [];
     bienTanList.value = [];
     pinLuuTruList.value = [];
@@ -378,7 +470,9 @@
       ]);
 
       if (coSoRes.status === 'fulfilled' && coSoRes.value?.data) {
-        const list = Array.isArray(coSoRes.value.data) ? coSoRes.value.data : coSoRes.value.data.content || [];
+        const list = Array.isArray(coSoRes.value.data)
+          ? coSoRes.value.data
+          : coSoRes.value.data.content || [];
         coSoOptions.value = list.map((item: any) => ({
           label: item.ten || item.ma,
           value: item.id,
@@ -387,7 +481,9 @@
       }
 
       if (nghanhHangRes.status === 'fulfilled' && nghanhHangRes.value?.data) {
-        const list = Array.isArray(nghanhHangRes.value.data) ? nghanhHangRes.value.data : nghanhHangRes.value.data.content || [];
+        const list = Array.isArray(nghanhHangRes.value.data)
+          ? nghanhHangRes.value.data
+          : nghanhHangRes.value.data.content || [];
         nghanhHangOptions.value = list.map((item: any) => ({
           label: item.ten,
           value: item.id,
@@ -395,7 +491,9 @@
       }
 
       if (nguoiDungRes.status === 'fulfilled' && nguoiDungRes.value?.data) {
-        const list = Array.isArray(nguoiDungRes.value.data) ? nguoiDungRes.value.data : nguoiDungRes.value.data.content || [];
+        const list = Array.isArray(nguoiDungRes.value.data)
+          ? nguoiDungRes.value.data
+          : nguoiDungRes.value.data.content || [];
         nguoiDungOptions.value = list.map((item: any) => ({
           label: item.hoVaTen || item.email,
           value: item.id,
@@ -417,30 +515,37 @@
         { code: 'HE_DAY_DIEN', dataRef: heDayDienData, listRef: heDayDienList, init: false },
         { code: 'TU_DIEN', dataRef: tuDienData, listRef: tuDienList, init: false },
         { code: 'HE_TIEP_DIA', dataRef: heTiepDiaData, listRef: heTiepDiaList, init: false },
-        { code: 'TRON_GOI_LAP_DAT', dataRef: tronGoiLapDatData, listRef: tronGoiLapDatList, init: false },
+        {
+          code: 'TRON_GOI_LAP_DAT',
+          dataRef: tronGoiLapDatData,
+          listRef: tronGoiLapDatList,
+          init: false,
+        },
       ];
 
       for (const group of groups) {
         const response = await filterVatTu(group.code);
-        
+
         if (response?.data?.content && response.data.content.length > 0) {
           group.dataRef.value = response.data.content;
-          
+
           if (group.init) {
             const firstVatTu = response.data.content[0];
             const latestGia = firstVatTu.thongTinGias[firstVatTu.thongTinGias.length - 1];
             const giaInfo = latestGia?.dsGia.find((g: any) => g.maCoSo === selectedCoSoMa.value);
-            
-            group.listRef.value = [{
-              vatTuId: firstVatTu.id,
-              moTa: firstVatTu.moTaBaoGia || '',
-              soLuong: 1,
-              giaBan: giaInfo?.giaBan || 0,
-              gm: firstVatTu.nhomVatTu.gm,
-              thoiGianBaoHanh: 0,
-              duocBaoHanh: true,
-              trangThai: 1,
-            }];
+
+            group.listRef.value = [
+              {
+                vatTuId: firstVatTu.id,
+                moTa: firstVatTu.moTaBaoGia || '',
+                soLuong: 1,
+                giaBan: giaInfo?.giaBan || 0,
+                gm: firstVatTu.nhomVatTu.gm,
+                thoiGianBaoHanh: 0,
+                duocBaoHanh: true,
+                trangThai: 1,
+              },
+            ];
           }
         }
       }
@@ -477,7 +582,7 @@
 
     allLists.forEach(({ list, data }) => {
       list.value.forEach((item, index) => {
-        const vatTu = data.value.find(v => v.id === item.vatTuId);
+        const vatTu = data.value.find((v) => v.id === item.vatTuId);
         if (vatTu) {
           const latestGia = vatTu.thongTinGias[vatTu.thongTinGias.length - 1];
           const giaInfo = latestGia?.dsGia.find((g: any) => g.maCoSo === selectedCoSoMa.value);
@@ -538,12 +643,13 @@
       trangThai: 1,
     };
 
-    group.list.value.push(newItem);
-    
-    // Nếu là hệ khung nhôm, tính lại số lượng
     if (code === 'HE_KHUNG_NHOM') {
-      updateHeKhungNhomQuantities();
+      newItem.soLuong = calculateHeKhungNhomQuantity(firstVatTu.ma, tamPinList.value[0].soLuong)
     }
+
+    group.list.value.push(newItem);
+
+    // Nếu là hệ khung nhôm, tính lại số lượng
   }
 
   function handleRemoveVatTu(code: string, index: number) {
@@ -561,7 +667,7 @@
   }
 
   function handleUpdateVatTu(code: string, index: number, value: VatTuHopDongCreatingDto) {
-    const listMap: Record<string, any> = {
+    const listMap: Record<string, Ref<VatTuHopDongCreatingDto[]>> = {
       TAM_PIN: tamPinList,
       BIEN_TAN: bienTanList,
       PIN_LUU_TRU: pinLuuTruList,
@@ -572,18 +678,22 @@
       TRON_GOI_LAP_DAT: tronGoiLapDatList,
     };
 
-    if (listMap[code]) {
+    if (code == 'HE_KHUNG_NHOM') {
+      if(listMap[code].value[index].vatTuId == value.vatTuId){
+        listMap[code].value[index] = value;
+      } else {
+        for(const vatTuFinding of heKhungNhomData.value){
+          if(value.vatTuId == vatTuFinding.id){
+            console.log('Đi qua 3')
+            value.soLuong = calculateHeKhungNhomQuantity(vatTuFinding.ma,tamPinList.value[0].soLuong);
+            listMap[code].value[index] = value;
+            return;
+          }
+        }
+      }
+    } else {
+      console.log('Đi qua 4')
       listMap[code].value[index] = value;
-      
-      // Nếu thay đổi tấm pin, cập nhật số lượng hệ khung nhôm
-      if (code === 'TAM_PIN') {
-        updateHeKhungNhomQuantities();
-      }
-      
-      // Nếu thay đổi loại vật tư hệ khung nhôm, cập nhật số lượng
-      if (code === 'HE_KHUNG_NHOM') {
-        updateHeKhungNhomQuantities();
-      }
     }
   }
 
@@ -603,12 +713,12 @@
     if (tamPinList.value.length === 0) return;
 
     heKhungNhomList.value.forEach((item, index) => {
-      const vatTu = heKhungNhomData.value.find(v => v.id === item.vatTuId);
+      const vatTu = heKhungNhomData.value.find((v) => v.id === item.vatTuId);
       if (!vatTu) return;
 
       const ma = vatTu.ma;
       const tamPinQty = tamPinList.value[0].soLuong;
-      
+
       const newQty = calculateHeKhungNhomQuantity(ma, tamPinQty);
       heKhungNhomList.value[index].soLuong = newQty;
     });
@@ -627,7 +737,7 @@
     ];
 
     let total = formState.giaKhungSat || 0;
-    allVatTu.forEach(v => {
+    allVatTu.forEach((v) => {
       total += (v.giaBan || 0) * (v.soLuong || 0);
     });
 
@@ -662,7 +772,7 @@
       };
 
       const result = await createHopDong(submitData);
-      
+
       if (result.status === 200 || result.status === 201) {
         message.success('Tạo mới thành công');
         closeModal();
