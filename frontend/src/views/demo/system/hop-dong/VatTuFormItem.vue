@@ -45,7 +45,6 @@
         <FormItem :label="`Giá bán ${region}`" :required="true">
           <InputNumber
             :value="modelValue.giaBan"
-            disabled
             :min="0"
             :formatter="formatNumber"
             :parser="parseNumber"
