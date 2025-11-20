@@ -24,6 +24,7 @@
               show-search
               :filter-option="filterOption"
               :options="coSoOptions"
+              @change="handleChangCoSo"
             />
           </FormItem>
         </Col>
@@ -186,7 +187,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed, watch } from 'vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import {
     Button, Col, Divider, Form, FormItem, Input, 
@@ -196,7 +197,7 @@
   import {
     createHopDong, getAllCoSo, getAllNganhHang, getAllNguoiDung, filterVatTu,
     type HopDongCreateDto, type VatTuHopDongCreatingDto, type VatTuDto
-  } from './hopDong';
+  } from './hopDong.ts';
   import { ceil } from 'lodash-es';
 
   defineOptions({ name: 'CreateHopDongModal' });
@@ -209,7 +210,7 @@
     coSoId: undefined,
     nghanhHangId: undefined,
     ten: '',
-    loaiHeThong: undefined,
+    loaiHeThong: 'On-Grid',
     loaiPha: '1 pha',
     sanLuongToiThieu: 0,
     sanLuongToiDa: 0,
@@ -323,6 +324,13 @@
     },
   ]);
 
+  // Watch cơ sở thay đổi để cập nhật giá
+  watch(() => formState.coSoId, (newCoSoId) => {
+    if (newCoSoId) {
+      updateAllPricesByCoSo();
+    }
+  });
+
   const [registerModal, { closeModal }] = useModalInner(async () => {
     resetForm();
     await loadOptions();
@@ -334,7 +342,7 @@
       coSoId: undefined,
       nghanhHangId: undefined,
       ten: '',
-      loaiHeThong: undefined,
+      loaiHeThong: 'On-Grid',
       loaiPha: '1 pha',
       sanLuongToiThieu: 0,
       sanLuongToiDa: 0,
@@ -454,6 +462,40 @@
     return value.replace(/\$\s?|(,*)/g, '');
   }
 
+  // Cập nhật giá tất cả vật tư khi đổi cơ sở
+  function updateAllPricesByCoSo() {
+    const allLists = [
+      { list: tamPinList, data: tamPinData },
+      { list: bienTanList, data: bienTanData },
+      { list: pinLuuTruList, data: pinLuuTruData },
+      { list: heKhungNhomList, data: heKhungNhomData },
+      { list: heDayDienList, data: heDayDienData },
+      { list: tuDienList, data: tuDienData },
+      { list: heTiepDiaList, data: heTiepDiaData },
+      { list: tronGoiLapDatList, data: tronGoiLapDatData },
+    ];
+
+    allLists.forEach(({ list, data }) => {
+      list.value.forEach((item, index) => {
+        const vatTu = data.value.find(v => v.id === item.vatTuId);
+        if (vatTu) {
+          const latestGia = vatTu.thongTinGias[vatTu.thongTinGias.length - 1];
+          const giaInfo = latestGia?.dsGia.find((g: any) => g.maCoSo === selectedCoSoMa.value);
+          if (giaInfo) {
+            list.value[index].giaBan = giaInfo.giaBan || 0;
+          }
+        }
+      });
+    });
+
+    message.success('Đã cập nhật giá theo cơ sở mới');
+  }
+
+  function handleChangCoSo() {
+    // Hàm này được gọi khi thay đổi cơ sở
+    // Watch sẽ tự động xử lý việc cập nhật giá
+  }
+
   async function handleSoPhaChange() {
     const response = await filterVatTu('TU_DIEN');
     if (response?.data?.content) {
@@ -485,7 +527,7 @@
     const latestGia = firstVatTu.thongTinGias[firstVatTu.thongTinGias.length - 1];
     const giaInfo = latestGia?.dsGia.find((g: any) => g.maCoSo === selectedCoSoMa.value);
 
-    group.list.value.push({
+    const newItem: VatTuHopDongCreatingDto = {
       vatTuId: firstVatTu.id,
       moTa: firstVatTu.moTaBaoGia || '',
       soLuong: 1,
@@ -494,7 +536,14 @@
       thoiGianBaoHanh: 0,
       duocBaoHanh: true,
       trangThai: 1,
-    });
+    };
+
+    group.list.value.push(newItem);
+    
+    // Nếu là hệ khung nhôm, tính lại số lượng
+    if (code === 'HE_KHUNG_NHOM') {
+      updateHeKhungNhomQuantities();
+    }
   }
 
   function handleRemoveVatTu(code: string, index: number) {
@@ -526,11 +575,28 @@
     if (listMap[code]) {
       listMap[code].value[index] = value;
       
-      // Auto-calculate for tam pin
+      // Nếu thay đổi tấm pin, cập nhật số lượng hệ khung nhôm
       if (code === 'TAM_PIN') {
         updateHeKhungNhomQuantities();
       }
+      
+      // Nếu thay đổi loại vật tư hệ khung nhôm, cập nhật số lượng
+      if (code === 'HE_KHUNG_NHOM') {
+        updateHeKhungNhomQuantities();
+      }
     }
+  }
+
+  function calculateHeKhungNhomQuantity(ma: string, tamPinQty: number): number {
+    if (ma.includes('kep_bien')) return ceil(tamPinQty / 5) * 4 + 4;
+    if (ma.includes('kep_giua')) return ceil(tamPinQty / 5) * 8 + 4;
+    if (ma.includes('full_rail')) return ceil((tamPinQty * 1.2 * 2) / 4);
+    if (ma.includes('thanh_noi')) return ceil((tamPinQty * 1.2 * 2) / 4) * 2 + 4;
+    if (ma.includes('chan_l')) return ceil((tamPinQty * 1.2 * 2) / 4) * 6;
+    if (ma.includes('kep_tiep_dia')) return ceil(tamPinQty / 5) + 1;
+    if (ma.includes('la_tiep_dia')) return (ceil(tamPinQty / 5) * 8 + 4) / 2;
+    if (ma.includes('kep_day_dien')) return tamPinQty * 4;
+    return 1;
   }
 
   function updateHeKhungNhomQuantities() {
@@ -543,16 +609,7 @@
       const ma = vatTu.ma;
       const tamPinQty = tamPinList.value[0].soLuong;
       
-      let newQty = 1;
-      if (ma.includes('kep_bien')) newQty = ceil(tamPinQty / 5) * 4 + 4;
-      else if (ma.includes('kep_giua')) newQty = ceil(tamPinQty / 5) * 8 + 4;
-      else if (ma.includes('full_rail')) newQty = ceil((tamPinQty * 1.2 * 2) / 4);
-      else if (ma.includes('thanh_noi')) newQty = ceil((tamPinQty * 1.2 * 2) / 4) * 2 + 4;
-      else if (ma.includes('chan_l')) newQty = ceil((tamPinQty * 1.2 * 2) / 4) * 6;
-      else if (ma.includes('kep_tiep_dia')) newQty = ceil(tamPinQty / 5) + 1;
-      else if (ma.includes('la_tiep_dia')) newQty = (ceil(tamPinQty / 5) * 8 + 4) / 2;
-      else if (ma.includes('kep_day_dien')) newQty = tamPinQty * 4;
-
+      const newQty = calculateHeKhungNhomQuantity(ma, tamPinQty);
       heKhungNhomList.value[index].soLuong = newQty;
     });
   }

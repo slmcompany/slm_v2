@@ -10,7 +10,7 @@
         <FormItem label="Vật tư" :required="true">
           <Select
             :value="modelValue.vatTuId"
-            @update:value:="handleVatTuChange"
+            @change="value => handleVatTuChange(value)"
             placeholder="Chọn vật tư"
             show-search
             :filter-option="filterOption"
@@ -45,9 +45,11 @@
         <FormItem :label="`Giá bán ${region}`" :required="true">
           <InputNumber
             :value="modelValue.giaBan"
+            @update:value="updateField('giaBan', $event)"
             :min="0"
             :formatter="formatNumber"
             :parser="parseNumber"
+            placeholder="Nhập giá bán"
             style="width: 100%"
           />
         </FormItem>
@@ -90,6 +92,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { computed } from 'vue';
   import { DeleteOutlined } from '@ant-design/icons-vue';
   import {
     Button, Card, Col, FormItem, InputNumber, 
@@ -144,3 +147,9 @@
     });
   };
 </script>
+
+<style lang="less" scoped>
+  :deep(.ant-card-body) {
+    padding: 12px;
+  }
+</style>
