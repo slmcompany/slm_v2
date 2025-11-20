@@ -3,9 +3,8 @@ package com.devmam.slmapiv2.dto.response;
 import com.devmam.slmapiv2.dto.response.entities.TepTinDto;
 import com.devmam.slmapiv2.entities.NguoiDung;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -15,19 +14,23 @@ import java.time.Instant;
  */
 @AllArgsConstructor
 @Getter
-@EqualsAndHashCode
+@Setter
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@EqualsAndHashCode(of = {"id"})
 public class BaiVietDto implements Serializable {
-    private final Integer id;
+    Integer id;
     @Size(max = 200)
-    private final String loaiBaiViet;
+    String loaiBaiViet;
     @Size(max = 500)
-    private final String tieuDe;
-    private final TepTinDto anhBia;
-    private final TepTinDto noiDung;
-    private final NguoiDung taoBoi;
+    String tieuDe;
+    TepTinDto anhBia;
+    TepTinDto noiDung;
+    NguoiDung taoBoi;
     @Size(max = 500)
-    private final String lienQuan;
-    private final Boolean hoatDong;
-    private final Instant taoLuc;
-    private final Integer trangThai;
+    String lienQuan;
+    Boolean hoatDong;
+    Instant taoLuc;
+    Integer trangThai;
 }

@@ -56,6 +56,10 @@ public class TronGoi implements Serializable {
     @Column(name = "san_luong_toi_da")
     private Double sanLuongToiDa;
 
+    @ColumnDefault("0")
+    @Column(name = "gia_khung_sat")
+    private Double giaKhungSat;
+
     @Column(name = "mo_ta", length = Integer.MAX_VALUE)
     private String moTa;
 

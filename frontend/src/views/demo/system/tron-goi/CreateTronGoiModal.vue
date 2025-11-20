@@ -1290,6 +1290,27 @@
       <Row :gutter="16">
         <Col :span="12">
           <FormItem
+            label="Giá khung sắt (VND)"
+            name="tongGia"
+            :rules="[{ required: true, message: 'Vui lòng nhập giá khung sắt' }]"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
+            <InputNumber
+              v-model:value="formState.giaKhungSat"
+              placeholder="Nhập giá khung sắt"
+              :min="0"
+              :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+              :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+              style="width: 100%"
+            ></InputNumber>
+          </FormItem>
+        </Col>
+      </Row>
+
+      <Row :gutter="16">
+        <Col :span="12">
+          <FormItem
             label="Công suất hệ thống (kW)"
             name="congSuatHeThong"
             :rules="[{ required: true, message: 'Vui lòng nhập công suất hệ thống' }]"
@@ -1384,7 +1405,10 @@
       </Row>
 
       <Divider orientation="center">Hình ảnh</Divider>
-      <FormItem label="Tải ảnh lên" :wrapper-col="{ span: 18 }">
+      <FormItem label="Tải ảnh lên" 
+      :wrapper-col="{ span: 18 }"
+      :rules="[{ required: true, message: 'Vui lòng chọn 1 ảnh' }]"
+      >
         <Upload
           v-model:file-list="fileList"
           list-type="picture-card"
@@ -1456,6 +1480,7 @@
     nhomTronGoiId: undefined as number | undefined,
     loaiHeThong: undefined as string | undefined,
     loaiPha: '1 pha',
+    giaKhungSat: 0,
     moTa: '',
     tongGiaMienBac: 0,
     tongGiaMienNam: 0,
@@ -1511,6 +1536,7 @@
       nhomTronGoiId: undefined,
       loaiHeThong: undefined,
       loaiPha: '1 pha',
+      giaKhungSat: 0,
       moTa: '',
       tongGia: 0,
       gmTong: 0,

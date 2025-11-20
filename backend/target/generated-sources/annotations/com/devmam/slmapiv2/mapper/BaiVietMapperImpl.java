@@ -3,9 +3,7 @@ package com.devmam.slmapiv2.mapper;
 import com.devmam.slmapiv2.dto.response.BaiVietDto;
 import com.devmam.slmapiv2.dto.response.entities.TepTinDto;
 import com.devmam.slmapiv2.entities.BaiViet;
-import com.devmam.slmapiv2.entities.NguoiDung;
 import com.devmam.slmapiv2.entities.TepTin;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -13,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-19T17:51:38+0700",
+    date = "2025-11-20T14:35:48+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -25,31 +23,20 @@ public class BaiVietMapperImpl implements BaiVietMapper {
             return null;
         }
 
-        Integer id = null;
-        String loaiBaiViet = null;
-        String tieuDe = null;
-        TepTinDto anhBia = null;
-        TepTinDto noiDung = null;
-        NguoiDung taoBoi = null;
-        String lienQuan = null;
-        Boolean hoatDong = null;
-        Instant taoLuc = null;
-        Integer trangThai = null;
+        BaiVietDto.BaiVietDtoBuilder baiVietDto = BaiVietDto.builder();
 
-        id = baiViet.getId();
-        loaiBaiViet = baiViet.getLoaiBaiViet();
-        tieuDe = baiViet.getTieuDe();
-        anhBia = tepTinToTepTinDto( baiViet.getAnhBia() );
-        noiDung = tepTinToTepTinDto( baiViet.getNoiDung() );
-        taoBoi = baiViet.getTaoBoi();
-        lienQuan = baiViet.getLienQuan();
-        hoatDong = baiViet.getHoatDong();
-        taoLuc = baiViet.getTaoLuc();
-        trangThai = baiViet.getTrangThai();
+        baiVietDto.id( baiViet.getId() );
+        baiVietDto.loaiBaiViet( baiViet.getLoaiBaiViet() );
+        baiVietDto.tieuDe( baiViet.getTieuDe() );
+        baiVietDto.anhBia( tepTinToTepTinDto( baiViet.getAnhBia() ) );
+        baiVietDto.noiDung( tepTinToTepTinDto( baiViet.getNoiDung() ) );
+        baiVietDto.taoBoi( baiViet.getTaoBoi() );
+        baiVietDto.lienQuan( baiViet.getLienQuan() );
+        baiVietDto.hoatDong( baiViet.getHoatDong() );
+        baiVietDto.taoLuc( baiViet.getTaoLuc() );
+        baiVietDto.trangThai( baiViet.getTrangThai() );
 
-        BaiVietDto baiVietDto = new BaiVietDto( id, loaiBaiViet, tieuDe, anhBia, noiDung, taoBoi, lienQuan, hoatDong, taoLuc, trangThai );
-
-        return baiVietDto;
+        return baiVietDto.build();
     }
 
     @Override

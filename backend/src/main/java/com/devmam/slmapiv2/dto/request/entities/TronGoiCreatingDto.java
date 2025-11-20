@@ -20,6 +20,7 @@ public class TronGoiCreatingDto {
     String loaiHeThong;
     String loaiPha;
     Double congSuatHeThong;
+    Double giaKhungSat;
     String moTa;
     Double tongGiaMienBac;
     Double tongGiaMienNam;
@@ -35,6 +36,7 @@ public class TronGoiCreatingDto {
                 .loaiHeThong(dto.getLoaiHeThong())
                 .loaiPha(dto.getLoaiPha())
                 .congSuatHeThong(dto.getCongSuatHeThong())
+                .giaKhungSat(dto.getGiaKhungSat())
                 .moTa(dto.getMoTa())
                 .gmTong(dto.getGmTong())
                 .banChay(dto.getBanChay())

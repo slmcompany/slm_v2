@@ -126,6 +126,15 @@ const system: AppRouteModule = {
       },
       component: () => import('@/views/demo/system/bai-viet/index.vue'),
     },
+    {
+      path: 'hop-dong',
+      name: 'HopDongManagement',
+      meta: {
+        title: t('routes.demo.system.hopDong'),
+        ignoreKeepAlive: false,
+      },
+      component: () => import('@/views/demo/system/hop-dong/index.vue'),
+    },
   ],
 };
 

@@ -207,6 +207,7 @@ export interface TronGoiCreateDto {
   ten: string;
   loaiHeThong: string;
   loaiPha: string;
+  giaKhungSat: number
   moTa: string;
   tongGiaMienBac: number;
   tongGiaMienNam: number;

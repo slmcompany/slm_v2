@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -51,9 +52,6 @@ public class HopDong implements Serializable {
     @Column(name = "gia_khung_sat")
     private Double giaKhungSat;
 
-    @Column(name = "gia_lap_khung_sat")
-    private Double giaLapKhungSat;
-
     @Column(name = "mo_ta", length = Integer.MAX_VALUE)
     private String moTa;
 
@@ -75,5 +73,8 @@ public class HopDong implements Serializable {
     @ColumnDefault("0")
     @Column(name = "trang_thai")
     private Integer trangThai;
+
+    @OneToMany(mappedBy = "hopDong", fetch = FetchType.LAZY)
+    List<VatTuHopDong> vatTuHopDongs;
 
 }
