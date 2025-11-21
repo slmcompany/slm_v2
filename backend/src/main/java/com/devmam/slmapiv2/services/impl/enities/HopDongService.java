@@ -163,8 +163,8 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
 
         HoaHong hoaHongCreating = HoaHong.builder()
                 .hopDong(hopDongCreating)
-                .phanTram(5.0)
-                .thanhTien(hopDongCreating.getTongGia() * 5 / 100)
+                .phanTram(nguoiGioiThieu.getPhanTramHoaHong())
+                .thanhTien(hopDongCreating.getTongGia() * nguoiGioiThieu.getPhanTramHoaHong() / 100)
                 .daTra(true)
                 .taoLuc(dto.getTaoLuc())
                 .trangThai(1)
@@ -176,7 +176,7 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
             throw new CommonException("Tạo hợp đồng thất bại, sđt khách hàng: " + dto.getSdtKhachHang());
         }
 
-        nguoiGioiThieu.setTongHoaHong(nguoiGioiThieu.getTongHoaHong() + 5 * hopDongCreating.getTongGia() / 100);
+        nguoiGioiThieu.setTongHoaHong(nguoiGioiThieu.getTongHoaHong() + nguoiGioiThieu.getPhanTramHoaHong() * hopDongCreating.getTongGia() / 100);
         if(nguoiGioiThieu.getPhanQuyen().equals(RoleType.CUSTOMER.name())){
             nguoiGioiThieu.setPhanQuyen(RoleType.AGENT.name());
         }

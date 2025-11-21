@@ -717,6 +717,7 @@
     if (ma.includes('kep_tiep_dia')) return ceil(tamPinQty / 5) + 1;
     if (ma.includes('la_tiep_dia')) return (ceil(tamPinQty / 5) * 8 + 4) / 2;
     if (ma.includes('kep_day_dien')) return tamPinQty * 4;
+    if (ma.includes('mini_rail')) return ceil(tamPinQty / 5) * 12 + 8;
     return 1;
   }
 

@@ -1,5 +1,7 @@
 package com.devmam.slmapiv2.controller;
 
+import com.devmam.slmapiv2.dto.request.entities.LoginRequest;
+import com.devmam.slmapiv2.dto.request.entities.NguoiDungUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.NguoiDungDto;
 import com.devmam.slmapiv2.entities.NguoiDung;
@@ -7,9 +9,7 @@ import com.devmam.slmapiv2.mapper.NguoiDungMapper;
 import com.devmam.slmapiv2.services.impl.enities.NguoiDungService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,4 +34,15 @@ public class NguoiDungController {
                         .build()
         );
     }
+
+
+    @GetMapping("/login")
+    public ResponseEntity<ResponseData<NguoiDungDto>> login(@RequestBody LoginRequest loginRequest){
+        return nguoiDungService.login(loginRequest);
+    }
+
+//    @PutMapping("/update")
+//    public ResponseEntity<ResponseData<NguoiDungDto>> update(@RequestBody NguoiDungUpdatingDto dto){
+//        return null;
+//    }
 }
