@@ -153,7 +153,7 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
                     .giaHienThi(vatTuHopDongCreatingDto.getGiaBan())
                     .thoiGianBaoHanh(vatTuHopDongCreatingDto.getThoiGianBaoHanh())
                     .baoHanhBatDau(dto.getTaoLuc())
-                    .baoHanhKetThuc(dto.getTaoLuc().plus(vatTuHopDongCreatingDto.getThoiGianBaoHanh(), ChronoUnit.YEARS))
+                    .baoHanhKetThuc(dto.getTaoLuc().plus(vatTuHopDongCreatingDto.getThoiGianBaoHanh(), ChronoUnit.MONTHS))
                     .duocBaoHanh(vatTuHopDongCreatingDto.getDuocBaoHanh())
                     .taoLuc(dto.getTaoLuc())
                     .trangThai(1)
