@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
@@ -129,11 +130,13 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
                 .taoLuc(dto.getTaoLuc())
                 .trangThai(1)
                 .build();
+        NguoiDung nguoiGioiThieu = nguoiGioiThieuFinding.get();
 
         hopDongCreating = create(hopDongCreating);
         if (hopDongCreating == null) {
             throw new CommonException("Tạo hợp đồng thất bại, sđt khách hàng: " + dto.getSdtKhachHang());
         }
+
 
         for (VatTuHopDongCreatingDto vatTuHopDongCreatingDto : dto.getVatTuHopDongs()) {
             Optional<VatTu> vatTuFinding = vatTuService.getOne(vatTuHopDongCreatingDto.getVatTuId());
@@ -149,8 +152,8 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
                     .giaHeThong(vatTuHopDongCreatingDto.getGiaBan())
                     .giaHienThi(vatTuHopDongCreatingDto.getGiaBan())
                     .thoiGianBaoHanh(vatTuHopDongCreatingDto.getThoiGianBaoHanh())
-                    .baoHanhBatDau(vatTuHopDongCreatingDto.getBaoHanhBatDau())
-                    .baoHanhKetThuc(vatTuHopDongCreatingDto.getBaoHanhKetThuc())
+                    .baoHanhBatDau(dto.getTaoLuc())
+                    .baoHanhKetThuc(dto.getTaoLuc().plus(vatTuHopDongCreatingDto.getThoiGianBaoHanh(), ChronoUnit.YEARS))
                     .duocBaoHanh(vatTuHopDongCreatingDto.getDuocBaoHanh())
                     .taoLuc(dto.getTaoLuc())
                     .trangThai(1)
@@ -169,9 +172,11 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
         hoaHongService.create(hoaHongCreating);
         Optional<HopDong> hopDongFinding = getOne(hopDongCreating.getId());
 
-        if(hopDongFinding.isEmpty()){
-            throw new CommonException("Tạo hợp đồng thất bại, sđt khách hàng: "+dto.getSdtKhachHang() );
+        if (hopDongFinding.isEmpty()) {
+            throw new CommonException("Tạo hợp đồng thất bại, sđt khách hàng: " + dto.getSdtKhachHang());
         }
+
+        nguoiGioiThieu.setTongHoaHong(nguoiGioiThieu.getTongHoaHong() + 5 * hopDongCreating.getTongGia() / 100);
 
         return ResponseEntity.ok(
                 ResponseData.<HopDongDto>builder()

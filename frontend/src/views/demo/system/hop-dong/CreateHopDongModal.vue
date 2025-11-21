@@ -12,6 +12,14 @@
       <Divider orientation="center">Thông tin cơ bản</Divider>
 
       <FormItem
+        label="Ngày bắt đầu bảo hành"
+        name="ngayTao"
+        :rules="[{ required: true, message: 'Vui lòng nhập ngày áp dụng bảo hành' }]"
+      >
+        <DatePicker v-model:value="formState.ngayTao" placeholder="Chọn ngày áp dụng bảo hành" :maxlength="400" />
+      </FormItem>
+
+      <FormItem
         label="Tên hợp đồng"
         name="ten"
         :rules="[{ required: true, message: 'Vui lòng nhập tên' }]"
@@ -264,6 +272,7 @@
   import {
     Button,
     Col,
+    DatePicker,
     Divider,
     Form,
     FormItem,

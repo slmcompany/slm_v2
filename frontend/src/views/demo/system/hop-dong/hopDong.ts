@@ -102,6 +102,7 @@ export interface HopDongCreateDto {
   sinhNhatKhachHang: string | null;
   diaChiKhachHang: string;
   tongGia: number;
+  ngayTao: string;
   vatTuHopDongs: VatTuHopDongCreatingDto[];
 }
 

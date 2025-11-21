@@ -14,16 +14,12 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class VatTuHopDongCreatingDto {
-    Integer id;
     Integer vatTuId;
-    @Size(max = 500)
     String moTa;
     Integer soLuong;
-    Double gm;
     Double giaBan;
+    Double gm;
     Integer thoiGianBaoHanh;
-    Instant baoHanhBatDau;
-    Instant baoHanhKetThuc;
     Boolean duocBaoHanh;
     Integer trangThai;
 }
