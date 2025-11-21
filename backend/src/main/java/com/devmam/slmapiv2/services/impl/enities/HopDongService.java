@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
@@ -76,6 +77,11 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
             throw new CommonException("Không tìm thấy người giới thiệu id: " + dto.getNguoiGioiThieuId());
         }
 
+        ;
+
+        if(dto.getEmailKhachHang() == null || dto.getEmailKhachHang().isEmpty()){
+            dto.setEmailKhachHang(dto.getSdtKhachHang()) ;
+        }
         KhachHang khachHangCreating = KhachHang.builder()
                 .email(dto.getEmailKhachHang())
                 .sdt(dto.getSdtKhachHang())
@@ -93,6 +99,7 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
         if (khachHangCreating == null) {
             throw new CommonException("Tạo khách hànng thất bại, sđt khach hàng: " + dto.getSdtKhachHang());
         }
+
 
         NguoiDung taiKhoanKhachHangMoi = NguoiDung.builder()
                 .coSo(coSoFinding.get())
@@ -153,7 +160,12 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
                     .giaHienThi(vatTuHopDongCreatingDto.getGiaBan())
                     .thoiGianBaoHanh(vatTuHopDongCreatingDto.getThoiGianBaoHanh())
                     .baoHanhBatDau(dto.getTaoLuc())
-                    .baoHanhKetThuc(dto.getTaoLuc().plus(vatTuHopDongCreatingDto.getThoiGianBaoHanh(), ChronoUnit.MONTHS))
+                    .baoHanhKetThuc(
+                            dto.getTaoLuc()
+                                    .atZone(ZoneId.systemDefault()) // Chuyển Instant -> ZonedDateTime
+                                    .plusMonths(vatTuHopDongCreatingDto.getThoiGianBaoHanh())
+                                    .toInstant() // Chuyển lại thành Instant
+                    )
                     .duocBaoHanh(vatTuHopDongCreatingDto.getDuocBaoHanh())
                     .taoLuc(dto.getTaoLuc())
                     .trangThai(1)
