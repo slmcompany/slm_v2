@@ -177,7 +177,10 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
         }
 
         nguoiGioiThieu.setTongHoaHong(nguoiGioiThieu.getTongHoaHong() + 5 * hopDongCreating.getTongGia() / 100);
-
+        if(nguoiGioiThieu.getPhanQuyen().equals(RoleType.CUSTOMER.name())){
+            nguoiGioiThieu.setPhanQuyen(RoleType.AGENT.name());
+        }
+        nguoiDungService.update(nguoiGioiThieu.getId(), nguoiGioiThieu);
         return ResponseEntity.ok(
                 ResponseData.<HopDongDto>builder()
                         .status(200)
