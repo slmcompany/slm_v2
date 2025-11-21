@@ -13,10 +13,10 @@
 
       <FormItem
         label="Ngày bắt đầu bảo hành"
-        name="ngayTao"
+        name="taoLuc"
         :rules="[{ required: true, message: 'Vui lòng nhập ngày áp dụng bảo hành' }]"
       >
-        <DatePicker v-model:value="formState.taoLuc" placeholder="Chọn ngày áp dụng bảo hành" :maxlength="400" />
+        <DatePicker v-model:value="formState.taoLuc" placeholder="Chọn ngày áp dụng bảo hành"/>
       </FormItem>
 
       <FormItem
@@ -458,6 +458,7 @@
       sinhNhatKhachHang: null,
       diaChiKhachHang: '',
       tongGia: 0,
+      taoLuc: '',
       vatTuHopDongs: [],
     });
 
