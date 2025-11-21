@@ -147,6 +147,12 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
 
     @Override
     @Transactional
+    public void delete(List<T> entities){
+        repository.deleteAll(entities);
+    }
+
+    @Override
+    @Transactional
     public T changeStatus(ID id, Integer status) {
         Optional<T> optional = repository.findById(id);
         T entity = optional.orElseThrow(() -> new IllegalArgumentException("Entity not found for id: " + id));

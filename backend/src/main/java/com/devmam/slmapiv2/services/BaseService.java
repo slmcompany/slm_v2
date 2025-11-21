@@ -15,6 +15,8 @@ public interface BaseService<T, ID> {
 
     void delete(ID id);
 
+    void delete(List<T> entities);
+
     T changeStatus(ID id, Integer status);
 
     List<T> getAll();

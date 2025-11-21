@@ -104,7 +104,7 @@ export function convertToFilterRequest(params: any): BaseFilterRequest {
   if (params.ten) {
     filters.push({
       fieldName: 'ten',
-      operation: 'LIKE',
+      operation: 'ILIKE',
       value: params.ten,
     });
   }
@@ -112,7 +112,7 @@ export function convertToFilterRequest(params: any): BaseFilterRequest {
   if (params.ma) {
     filters.push({
       fieldName: 'ma',
-      operation: 'LIKE',
+      operation: 'ILIKE',
       value: params.ma,
     });
   }

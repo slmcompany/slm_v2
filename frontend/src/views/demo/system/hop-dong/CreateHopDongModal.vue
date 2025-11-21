@@ -16,7 +16,12 @@
         name="taoLuc"
         :rules="[{ required: true, message: 'Vui lòng nhập ngày áp dụng bảo hành' }]"
       >
-        <DatePicker v-model:value="formState.taoLuc" placeholder="Chọn ngày áp dụng bảo hành"/>
+        <DatePicker
+          v-model:value="formState.taoLuc"
+          placeholder="Chọn ngày áp dụng bảo hành"
+          valueFormat="YYYY-MM-DDTHH:mm:ss[Z]"
+          showTime
+        />
       </FormItem>
 
       <FormItem
@@ -655,7 +660,7 @@
     };
 
     if (code === 'HE_KHUNG_NHOM') {
-      newItem.soLuong = calculateHeKhungNhomQuantity(firstVatTu.ma, tamPinList.value[0].soLuong)
+      newItem.soLuong = calculateHeKhungNhomQuantity(firstVatTu.ma, tamPinList.value[0].soLuong);
     }
 
     group.list.value.push(newItem);
@@ -690,20 +695,23 @@
     };
 
     if (code == 'HE_KHUNG_NHOM') {
-      if(listMap[code].value[index].vatTuId == value.vatTuId){
+      if (listMap[code].value[index].vatTuId == value.vatTuId) {
         listMap[code].value[index] = value;
       } else {
-        for(const vatTuFinding of heKhungNhomData.value){
-          if(value.vatTuId == vatTuFinding.id){
-            console.log('Đi qua 3')
-            value.soLuong = calculateHeKhungNhomQuantity(vatTuFinding.ma,tamPinList.value[0].soLuong);
+        for (const vatTuFinding of heKhungNhomData.value) {
+          if (value.vatTuId == vatTuFinding.id) {
+            console.log('Đi qua 3');
+            value.soLuong = calculateHeKhungNhomQuantity(
+              vatTuFinding.ma,
+              tamPinList.value[0].soLuong,
+            );
             listMap[code].value[index] = value;
             return;
           }
         }
       }
     } else {
-      console.log('Đi qua 4')
+      console.log('Đi qua 4');
       listMap[code].value[index] = value;
     }
   }
