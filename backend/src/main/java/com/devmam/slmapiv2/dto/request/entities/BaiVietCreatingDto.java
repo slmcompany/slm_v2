@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class BaiVietCreatingDto {
     String loaiBaiViet;
     String tieuDe;
+    String duongDanYoutube;
     Integer taoBoi;
     String lienQuan;
     Integer trangThai;

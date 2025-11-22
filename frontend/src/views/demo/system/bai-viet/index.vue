@@ -25,6 +25,19 @@
       />
     </FormItem>
 
+    <!-- ĐƯờng dẫn youtube -->
+    <FormItem
+      label="Đường dẫn Youtube"
+      name="duongDanYoutube"
+    >
+      <Textarea
+        v-model:value="duongDanYoutube"
+        placeholder="Nhập đường dẫn Youtube"
+        :maxlength="1000"
+        :auto-size="{ minRows: 2, maxRows: 4 }"
+      />
+    </FormItem>
+
     <!-- Ảnh bìa -->
     <FormItem label="Ảnh bìa" name="anhBia">
       <div class="upload-container">
@@ -91,6 +104,7 @@
   const editorRef = shallowRef();
   const loaiBaiViet = ref('MEGA_STORY');
   const tieuDe = ref('');
+  const duongDanYoutube = ref('')
   const selectedFile = ref<File | null>(null);
   const fileList = ref<any[]>([]);
   const valueHtml = ref('');
@@ -488,6 +502,7 @@
       const dto = {
         loaiBaiViet: loaiBaiViet.value,
         tieuDe: tieuDe.value,
+        duongDanYoutube: duongDanYoutube.value,
         taoBoi: null,
         lienQuan: '',
         trangThai: 1,
@@ -505,7 +520,7 @@
 
       // Gửi request - THAY URL NÀY BẰNG API THỰC TẾ CỦA BẠN
       // let host = 'http://localhost:8080'
-      let host = 'http://103.161.16.66/api'
+      let host = 'http://171.244.142.43/api'
 
       const response = await fetch(host+'/basic-api/bai-viet/create', {
         method: 'POST',

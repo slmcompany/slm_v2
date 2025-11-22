@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-22T15:17:33+0700",
+    date = "2025-11-22T16:16:16+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -29,6 +29,7 @@ public class BaiVietMapperImpl implements BaiVietMapper {
         baiVietDto.loaiBaiViet( baiViet.getLoaiBaiViet() );
         baiVietDto.tieuDe( baiViet.getTieuDe() );
         baiVietDto.anhBia( tepTinToTepTinDto( baiViet.getAnhBia() ) );
+        baiVietDto.duongDanYoutube( baiViet.getDuongDanYoutube() );
         baiVietDto.noiDung( tepTinToTepTinDto( baiViet.getNoiDung() ) );
         baiVietDto.taoBoi( baiViet.getTaoBoi() );
         baiVietDto.lienQuan( baiViet.getLienQuan() );

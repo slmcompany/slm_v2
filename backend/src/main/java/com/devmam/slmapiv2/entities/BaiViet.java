@@ -34,6 +34,10 @@ public class BaiViet implements Serializable {
     @JoinColumn(name = "anh_bia")
     private TepTin anhBia;
 
+    @Size(max = 1000)
+    @Column(name = "duong_dan_youtube")
+    private String duongDanYoutube;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "noi_dung")
     private TepTin noiDung;
