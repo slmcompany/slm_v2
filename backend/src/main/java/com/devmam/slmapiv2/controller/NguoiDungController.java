@@ -1,7 +1,7 @@
 package com.devmam.slmapiv2.controller;
 
-import com.devmam.slmapiv2.dto.request.entities.LoginRequest;
-import com.devmam.slmapiv2.dto.request.entities.NguoiDungUpdatingDto;
+import com.devmam.slmapiv2.dto.request.LoginRequest;
+import com.devmam.slmapiv2.dto.request.RegisterRequest;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.NguoiDungDto;
 import com.devmam.slmapiv2.entities.NguoiDung;
@@ -39,6 +39,11 @@ public class NguoiDungController {
     @GetMapping("/login")
     public ResponseEntity<ResponseData<NguoiDungDto>> login(@RequestBody LoginRequest loginRequest){
         return nguoiDungService.login(loginRequest);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ResponseData<NguoiDungDto>> register(@RequestBody RegisterRequest registerRequest) {
+        return nguoiDungService.register(registerRequest);
     }
 
 //    @PutMapping("/update")

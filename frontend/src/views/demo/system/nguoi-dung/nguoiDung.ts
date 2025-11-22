@@ -61,6 +61,39 @@ export interface CoSoDto {
   trangThai: number;
 }
 
+
+export interface KhachHangDto{
+  id: number;
+  email: string;
+  sdt: string;
+  hoVaTen: string;
+  gioiTinh: boolean;
+  sinhNhat: string;
+  diaChi: string;
+  daBanDuocHang: boolean;
+  taoLuc: string;
+  trangThai: string;
+}
+
+export interface NguoiDungDto{
+  id: number;
+  coSo: CoSoDto;
+  phanQuyen: string;
+  email: string;
+  sdt: string;
+  matKhau: string;
+  hoVaTen: string;
+  gioiTinh: boolean;
+  sinhNhat: string;
+  phanTramHoaHong: number;
+  tongHoaHong: number;
+  diaChi: string;
+  nganHang: string;
+  maNganHang: string;
+  taoLuc: string;
+  trangThai: number;
+  khachHangs: KhachHangDto[];
+}
 export function convertToFilterRequest(params: any): BaseFilterRequest {
   const filters: FilterCriteria[] = [];
   const sorts: SortCriteria[] = [];
@@ -88,3 +121,19 @@ export function convertToFilterRequest(params: any): BaseFilterRequest {
   };
 }
 
+export function filterNguoiDung(params: any) {
+  const filterRequest = convertToFilterRequest(params);
+  return realHttp
+    .post<ResponseData<PageResponse<NguoiDungDto>>>(
+      {
+        url: Api.Filter,
+        data: filterRequest,
+      },
+      {
+        isTransformResponse: false,
+      },
+    )
+    .then((res: any) => {
+      return res as ResponseData<PageResponse<NguoiDungDto>>;
+    });
+}

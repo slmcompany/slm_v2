@@ -1,4 +1,4 @@
-package com.devmam.slmapiv2.dto.request.entities;
+package com.devmam.slmapiv2.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,7 +10,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @ToString
-public class LoginRequest {
+public class RegisterRequest {
     String sdt;
     String matKhau;
+    String hoVaTen;
 }

@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div>
     <BasicTable @register="">
       <template #toolbar>
@@ -45,6 +45,8 @@
 <script setup lang="ts">
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { PlusOutlined, ReloadOutlined } from '@ant-design/icons-vue';
+  import { filterNguoiDung } from './nguoiDung';
+  import {columns} from './nguoiDung.data'
 
   defineOptions({ name: 'NguoiDungManagement' });
 
@@ -52,7 +54,7 @@
     title: 'Danh sách nhóm vật tư',
     api: async (params) => {
       try {
-        const response = await filterNhomVatTu(params);
+        const response = await filterNguoiDung(params);
 
         return {
           items: response.data.content,
@@ -69,7 +71,7 @@
     columns,
     formConfig: {
       labelWidth: 120,
-      schemas: searchFormSchema,
+      // schemas: searchFormSchema,
       autoSubmitOnEnter: true,
       submitFunc: async () => {
         await reload();
@@ -101,26 +103,9 @@
   });
 
 
-
-
   function handleRefresh() {
     reload();
   }
 </script>
 
-<style scoped></style> -->
-
-
-<template>
-  <div>
-
-  </div>
-</template>
-
-<script setup lang="ts">
-
-</script>
-
-<style scoped>
-
-</style>
+<style scoped></style>
