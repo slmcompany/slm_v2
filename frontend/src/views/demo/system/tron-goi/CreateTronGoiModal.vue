@@ -236,13 +236,15 @@
                     />
                   </FormItem>
                 </Col>
-                <Col :span="12">
+                <Col :span="6">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
                   </FormItem>
+                </Col>
+                <Col :span="6">
                   <FormItem label="Được xem">
                     <RadioGroup v-model:value="item.duocXem" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -386,13 +388,15 @@
                     />
                   </FormItem>
                 </Col>
-                <Col :span="12">
+                <Col :span="6">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
                   </FormItem>
+                </Col>
+                <Col :span="6">
                   <FormItem label="Được xem">
                     <RadioGroup v-model:value="item.duocXem" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -536,14 +540,15 @@
                     />
                   </FormItem>
                 </Col>
-                <Col :span="12">
+                <Col :span="6">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
                   </FormItem>
-
+                </Col>
+                <Col :span="6">
                   <FormItem label="Được xem">
                     <RadioGroup v-model:value="item.duocXem" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -695,13 +700,15 @@
                     />
                   </FormItem>
                 </Col>
-                <Col :span="12">
+                <Col :span="6">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
                   </FormItem>
+                </Col>
+                <Col :span="6">
                   <FormItem label="Được xem">
                     <RadioGroup v-model:value="item.duocXem" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -845,13 +852,15 @@
                     />
                   </FormItem>
                 </Col>
-                <Col :span="12">
+                <Col :span="6">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
                   </FormItem>
+                </Col>
+                <Col :span="6">
                   <FormItem label="Được xem">
                     <RadioGroup v-model:value="item.duocXem" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -995,13 +1004,15 @@
                     />
                   </FormItem>
                 </Col>
-                <Col :span="12">
+                <Col :span="6">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
                   </FormItem>
+                </Col>
+                <Col :span="6">
                   <FormItem label="Được xem">
                     <RadioGroup v-model:value="item.duocXem" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -1145,13 +1156,15 @@
                     />
                   </FormItem>
                 </Col>
-                <Col :span="12">
+                <Col :span="6">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
                   </FormItem>
+                </Col>
+                <Col :span="6">
                   <FormItem label="Được xem">
                     <RadioGroup v-model:value="item.duocXem" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -1299,13 +1312,15 @@
                     />
                   </FormItem>
                 </Col>
-                <Col :span="12">
+                <Col :span="6">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
                   </FormItem>
+                </Col>
+                <Col :span="6">
                   <FormItem label="Được xem">
                     <RadioGroup v-model:value="item.duocXem" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
