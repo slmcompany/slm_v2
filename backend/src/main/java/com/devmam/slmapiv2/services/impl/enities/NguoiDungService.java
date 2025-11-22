@@ -46,13 +46,14 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
 
         Optional<NguoiDung> findingNguoiDung = repo.findBySdt(loginRequest.getSdt());
         if (findingNguoiDung.isPresent() && findingNguoiDung.get().getMatKhau().equals(loginRequest.getMatKhau())) {
-            findingNguoiDung.get().setMatKhau("");
+            NguoiDungDto dto = nguoiDungMapper.toDto(findingNguoiDung.get());
+            dto.setMatKhau("");
             return ResponseEntity.ok(
                     ResponseData.<NguoiDungDto>builder()
                             .status(200)
                             .error(null)
                             .message("Success")
-                            .data(nguoiDungMapper.toDto(findingNguoiDung.get()))
+                            .data(dto)
                             .build()
             );
         }
