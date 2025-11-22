@@ -3,7 +3,7 @@ package com.devmam.slmapiv2.controller;
 
 import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
 import com.devmam.slmapiv2.dto.request.entities.QuangCaoCreatingDto;
-import com.devmam.slmapiv2.dto.request.entities.QuangCaoUpdateDto;
+import com.devmam.slmapiv2.dto.request.entities.QuangCaoUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.QuangCaoDto;
 import com.devmam.slmapiv2.mapper.QuangCaoMapper;
@@ -68,7 +68,7 @@ public class QuangCaoController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<ResponseData<QuangCaoDto>> update(
-            @RequestPart(value = "dto", required = true) QuangCaoUpdateDto dto,
+            @RequestPart(value = "dto", required = true) QuangCaoUpdatingDto dto,
             @RequestPart(value = "anh_bia", required = true) MultipartFile file
     ) {
         return quangCaoService.update(dto, file);

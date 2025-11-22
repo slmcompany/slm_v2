@@ -2,6 +2,7 @@ package com.devmam.slmapiv2.controller;
 
 import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
 import com.devmam.slmapiv2.dto.request.entities.VatTuCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.VatTuUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.VatTuDto;
 import com.devmam.slmapiv2.entities.VatTu;
@@ -73,6 +74,16 @@ public class VatTuController {
     public ResponseEntity<ResponseData<VatTuDto>> create(@RequestPart("dto") VatTuCreatingDto dto,
                                                          @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         return vatTuService.create(dto, files);
+    }
+
+
+    @PostMapping(
+            value = "/update",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<ResponseData<VatTuDto>> update(@RequestPart("dto") VatTuUpdatingDto dto,
+                                                         @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        return vatTuService.update(dto, files);
     }
 
     @DeleteMapping("/{id}")

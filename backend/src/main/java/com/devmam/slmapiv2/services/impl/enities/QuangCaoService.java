@@ -2,7 +2,7 @@ package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.FileType;
 import com.devmam.slmapiv2.dto.request.entities.QuangCaoCreatingDto;
-import com.devmam.slmapiv2.dto.request.entities.QuangCaoUpdateDto;
+import com.devmam.slmapiv2.dto.request.entities.QuangCaoUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.QuangCaoDto;
 import com.devmam.slmapiv2.entities.NganhHang;
@@ -116,7 +116,7 @@ public class QuangCaoService extends BaseServiceImpl<QuangCao, Integer> {
 
 
     @Transactional
-    public ResponseEntity<ResponseData<QuangCaoDto>> update(QuangCaoUpdateDto dto, MultipartFile file) {
+    public ResponseEntity<ResponseData<QuangCaoDto>> update(QuangCaoUpdatingDto dto, MultipartFile file) {
         Optional<QuangCao> quangCaoFinding = getOne(dto.getId());
 
         if (quangCaoFinding.isEmpty()) {

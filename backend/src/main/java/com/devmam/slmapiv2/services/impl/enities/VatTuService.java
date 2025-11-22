@@ -2,6 +2,7 @@ package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.FileType;
 import com.devmam.slmapiv2.dto.request.entities.VatTuCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.VatTuUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.VatTuDto;
 import com.devmam.slmapiv2.entities.*;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +56,6 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
     private VatTuMapper vatTuMapper;
 
 
-
     public VatTuService(JpaRepository<VatTu, Integer> repository) {
         super(repository);
     }
@@ -67,17 +68,16 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
 
     @Transactional
     public ResponseEntity<ResponseData<VatTuDto>> create(VatTuCreatingDto dto, List<MultipartFile> files) {
-//        Integer userId = jwtService.getUserId(jwtService.getTokenFromAuthHeader(request.getHeader("Authorization")));
 
         VatTu creatingVattu = VatTuCreatingDto.toEntity(dto);
         Optional<NhomVatTu> nhomVatTu = nhomVatTuService.getOne(dto.getNhomVatTuId());
 
-        if(nhomVatTu.isEmpty()){
-            throw new CommonException("Không tìm thấy nhóm vật tư id: "+dto.getNhomVatTuId());
+        if (nhomVatTu.isEmpty()) {
+            throw new CommonException("Không tìm thấy nhóm vật tư id: " + dto.getNhomVatTuId());
         }
         Optional<ThuongHieu> thuongHieu = thuongHieuService.getOne(dto.getThuongHieuId());
-        if(thuongHieu.isEmpty()){
-            throw new CommonException("Không tìm thấy thương hiệu id: "+dto.getThuongHieuId());
+        if (thuongHieu.isEmpty()) {
+            throw new CommonException("Không tìm thấy thương hiệu id: " + dto.getThuongHieuId());
         }
         creatingVattu.setThuongHieu(thuongHieu.get());
         creatingVattu.setNhomVatTu(nhomVatTu.get());
@@ -85,15 +85,15 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         creatingVattu = create(creatingVattu);
 
         int i = 0;
-        if(files != null){
+        if (files != null) {
             for (MultipartFile file : files) {
                 i++;
                 try {
-                    String objectName = minioService.upload(file, "vat_tu_"+creatingVattu.getTen()+"_"+i);
+                    String objectName = minioService.upload(file, "vat_tu_" + creatingVattu.getTen() + "_" + i);
                     TepTin creatingTepTin = tepTinService.create(
                             TepTin.builder()
-                                    .tenTepGoc(creatingVattu.getTen()+"_"+i)
-                                    .tenTaiLen(creatingVattu.getTen()+"_"+i)
+                                    .tenTepGoc(creatingVattu.getTen() + "_" + i)
+                                    .tenTaiLen(creatingVattu.getTen() + "_" + i)
                                     .tenLuuTru(objectName)
                                     .duongDan(minioService.getPublicUrl(objectName))
                                     .loaiTepTin(FileType.IMAGE.toString())
@@ -140,10 +140,103 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
     }
 
     @Transactional
+    public ResponseEntity<ResponseData<VatTuDto>> update(VatTuUpdatingDto dto, List<MultipartFile> files) {
+        Optional<VatTu> vatTuFinding = getOne(dto.getId());
+        if (vatTuFinding.isEmpty()) {
+            throw new CommonException("Không tìm thấy vật tư id: " + dto.getId());
+        }
+        List<AnhVatTu> dsAnhVatTu = vatTuFinding.get().getAnhVatTus();
+
+
+        int i = 0;
+        for (MultipartFile file : files) {
+            AnhVatTu anhVatTu = null;
+            TepTin tepTin = null;
+            String objectName = null;
+            try {
+                objectName = minioService.upload(file, "vat_tu_" + dto.getTen() + "_" + (i + 1));
+            } catch (Exception e) {
+                log.error("Lỗi tạo tệp tin cho vật tư: {}", dto.getTen(), e);
+                throw new RuntimeException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
+            }
+            if (i <= dsAnhVatTu.size() - 1) {
+                anhVatTu = dsAnhVatTu.get(i);
+                tepTin = anhVatTu.getTepTin();
+                tepTin.setTenLuuTru(objectName);
+                tepTin.setDuongDan(minioService.getPublicUrl(objectName));
+                tepTin.setTenTepGoc(dto.getTen() + "_" + (i + 1));
+                tepTin.setTenTaiLen(dto.getTen() + "_" + (i + 1));
+                tepTin.setLoaiTepTin(FileType.IMAGE.toString());
+                try {
+                    tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
+                } catch (Exception ignored) {
+                }
+                tepTinService.update(tepTin.getId(), tepTin);
+                i++;
+            } else {
+                tepTin = TepTin.builder()
+                        .tenTepGoc(dto.getTen() + "_" + (i + 1))
+                        .tenTaiLen(dto.getTen() + "_" + (i + 1))
+                        .tenLuuTru(objectName)
+                        .duongDan(minioService.getPublicUrl(objectName))
+                        .loaiTepTin(FileType.IMAGE.toString())
+                        .trangThai(1)
+                        .build();
+                try {
+                    tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
+                } catch (Exception e) {
+                    tepTin.setDuoiTep("jpg");
+                }
+                tepTin = tepTinService.create(tepTin);
+                anhVatTuService.create(
+                        AnhVatTu.builder()
+                                .vatTu(vatTuFinding.get())
+                                .tepTin(tepTin)
+                                .anhChinh(i == 0)
+                                .trangThai(1)
+                                .taoLuc(Instant.now())
+                                .build()
+                );
+                i++;
+            }
+        }
+
+        int j = 0;
+        for (AnhVatTu anhVatTu : dsAnhVatTu) {
+            TepTin tepTin = anhVatTu.getTepTin();
+            minioService.delete(tepTin.getTenLuuTru());
+            if(j > i) {
+                anhVatTuService.delete(anhVatTu.getId());
+                tepTinService.delete(tepTin.getId());
+            }
+            j++;
+        }
+
+        vatTuFinding = getOne(dto.getId());
+
+        return ResponseEntity.ok(
+                ResponseData.<VatTuDto>builder()
+                        .error(null)
+                        .status(200)
+                        .message("Update success")
+                        .data(vatTuMapper.toDto(vatTuFinding.get()))
+                        .build()
+        );
+    }
+
+    @Transactional
     public ResponseEntity<ResponseData<VatTuDto>> deleteVatTu(Integer id) {
 
         VatTu vatTu = getOne(id)
                 .orElseThrow(() -> new CommonException("Không tìm thấy vật tư id: " + id));
+
+        List<AnhVatTu> dsAnhVatTu = vatTu.getAnhVatTus();
+        for (AnhVatTu anhVatTu : dsAnhVatTu) {
+            TepTin tepTin = anhVatTu.getTepTin();
+            minioService.delete(tepTin.getTenLuuTru());
+            anhVatTuService.delete(anhVatTu.getId());
+            tepTinService.delete(tepTin.getId());
+        }
 
         VatTuDto vatTuDto = VatTuDto.builder()
                 .id(vatTu.getId())

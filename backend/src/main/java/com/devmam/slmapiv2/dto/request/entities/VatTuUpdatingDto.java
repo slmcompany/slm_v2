@@ -9,11 +9,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class QuangCaoUpdateDto {
+public class VatTuUpdatingDto {
     Integer id;
-    Integer nganhHangId;
-    String tieuDe;
-    String viTri;
-    Boolean hoatDong;
+    String ten;
+    String sheetLink;
     Integer trangThai;
 }
