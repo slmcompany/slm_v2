@@ -46,7 +46,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
 
         Optional<NguoiDung> findingNguoiDung = repo.findBySdt(loginRequest.getSdt());
         if (findingNguoiDung.isPresent() && findingNguoiDung.get().getMatKhau().equals(loginRequest.getMatKhau())) {
-            findingNguoiDung.get().setMatKhau(null);
+            findingNguoiDung.get().setMatKhau("");
             return ResponseEntity.ok(
                     ResponseData.<NguoiDungDto>builder()
                             .status(200)
