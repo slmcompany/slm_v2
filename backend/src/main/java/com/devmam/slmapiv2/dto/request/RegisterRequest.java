@@ -14,4 +14,5 @@ public class RegisterRequest {
     String sdt;
     String matKhau;
     String hoVaTen;
+    String maCoSo;
 }

@@ -61,7 +61,10 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
 
     public ResponseEntity<ResponseData<NguoiDungDto>> register(RegisterRequest registerRequest) {
         NguoiDungRepository repo = (NguoiDungRepository) super.getRepository();
-        Optional<CoSo> coSoFinding = coSoService.findByMa("HN");
+        if (registerRequest.getMaCoSo() == null || registerRequest.getMaCoSo().isEmpty()) {
+            registerRequest.setMaCoSo("HN");
+        }
+        Optional<CoSo> coSoFinding = coSoService.findByMa(registerRequest.getMaCoSo());
         if (coSoFinding.isEmpty()) {
             throw new CommonException("Không tim thaấy cơ sở ma: HN");
         }
