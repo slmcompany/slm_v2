@@ -36,7 +36,7 @@ public class NguoiDungController {
     }
 
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<ResponseData<NguoiDungDto>> login(@RequestBody LoginRequest loginRequest){
         return nguoiDungService.login(loginRequest);
     }
