@@ -24,7 +24,7 @@ public class QuangCao implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nghanh_hang_id")
-    private NganhHang nghanhHang;
+    private NganhHang nganhHang;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tep_tin_id")

@@ -135,6 +135,15 @@ const system: AppRouteModule = {
       },
       component: () => import('@/views/demo/system/hop-dong/index.vue'),
     },
+    {
+      path: 'quang-cao',
+      name: 'QuangCaoManagement',
+      meta: {
+        title: t('routes.demo.system.quangCao'),
+        ignoreKeepAlive: false,
+      },
+      component: () => import('@/views/demo/system/quang-cao/index.vue'),
+    },
   ],
 };
 
