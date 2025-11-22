@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BasicModal
+    <!-- <BasicModal
     v-bind="$attrs"
     @register="registerModal"
     title="Cập nhật trọn gói"
@@ -9,7 +9,7 @@
     :confirmLoading="loading"
     >
 
-    </BasicModal>
+    </BasicModal> -->
 
   </div>
 </template>
