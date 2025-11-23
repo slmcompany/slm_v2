@@ -37,7 +37,7 @@ public class VatTuController {
     private VatTuMapper vatTuMapper;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseData<VatTuDto>> getById(Integer id) {
+    public ResponseEntity<ResponseData<VatTuDto>> getById(@PathVariable("id") Integer id) {
 
         Optional<VatTu> vatTu = vatTuService.getOne(id);
 
@@ -77,11 +77,11 @@ public class VatTuController {
     }
 
 
-    @PostMapping(
+    @PutMapping(
             value = "/update",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<ResponseData<VatTuDto>> update(@RequestPart("dto") VatTuUpdatingDto dto,
+    public ResponseEntity<ResponseData<VatTuDto>> update(@RequestPart(value = "dto") VatTuUpdatingDto dto,
                                                          @RequestPart(value = "sheet", required = false) MultipartFile sheet,
                                                          @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         return vatTuService.update(dto, sheet, files);

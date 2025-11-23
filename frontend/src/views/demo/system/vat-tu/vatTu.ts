@@ -4,7 +4,7 @@ enum Api {
   Filter = '/vat-tu/filter',
   GetById = '/vat-tu/',
   Create = '/vat-tu/create',
-  Update = '/vat-tu/update/',
+  Update = '/vat-tu/update',
   Delete = '/vat-tu/',
   GetAllNhomVatTu = '/nhom-vat-tu/filter',
   GetAllThuongHieu = '/thuong-hieu/all',
@@ -71,6 +71,7 @@ export interface TepTinDto {
   taoLuc: string;
   suaLuc: string;
   trangThai: number;
+  url?: string;
 }
 
 export interface AnhVatTuDto {
@@ -135,6 +136,12 @@ export interface VatTuCreateDto {
   duLieuRieng?: Record<string, ThuocTinh>;
   trangThai: number;
   dsGia?: GiaCreatingDto[];
+}
+
+export interface VatTuUpdateDto {
+  id: number;
+  ten: string;
+  trangThai: number;
 }
 
 export interface PageResponse<T> {
@@ -281,20 +288,26 @@ export function createVatTu(data: VatTuCreateDto, files: File[]) {
     .then((res: any) => res as ResponseData<VatTuDto>);
 }
 
-export function updateVatTu(id: number, data: VatTuCreateDto, files: File[]) {
+export function updateVatTu(data: VatTuUpdateDto, sheetFile: File | null, imageFiles: File[]) {
   const formData = new FormData();
 
   const jsonBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
   formData.append('dto', jsonBlob);
 
-  files.forEach((file) => {
+  // Thêm file PDF sheet nếu có
+  if (sheetFile) {
+    formData.append('sheet', sheetFile);
+  }
+
+  // Thêm các file ảnh
+  imageFiles.forEach((file) => {
     formData.append('files', file);
   });
 
   return realHttp
     .put<ResponseData<VatTuDto>>(
       {
-        url: `${Api.Update}${id}`,
+        url: Api.Update,
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -349,31 +362,3 @@ export function getAllThuongHieu() {
     }
   ).then((res: any) => res as ResponseData<ThuongHieuDto[]>);
 }
-
-// Temporary: return fake ThuongHieu data for development
-// export function getAllThuongHieu(): Promise<ResponseData<ThuongHieuDto[]>> {
-//   const fake: ResponseData<ThuongHieuDto[]> = {
-//     status: 200,
-//     data: [
-//       { id: 1, ten: 'Thương hiệu A', tenQuocTe: 'Brand A' },
-//       { id: 2, ten: 'Thương hiệu B', tenQuocTe: 'Brand B' },
-//     ],
-//     message: 'ok',
-//     timestamp: new Date().toISOString(),
-//   };
-//   return Promise.resolve(fake);
-// }
-
-// // Temporary: return fake NhaCungCap data for development
-// export function getAllNhaCungCap(): Promise<ResponseData<NhaCungCapDto[]>> {
-//   const fake: ResponseData<NhaCungCapDto[]> = {
-//     status: 200,
-//     data: [
-//       { id: 1, ten: 'Nhà cung cấp X', tenQuocTe: 'Supplier X' },
-//       { id: 2, ten: 'Nhà cung cấp Y', tenQuocTe: 'Supplier Y' },
-//     ],
-//     message: 'ok',
-//     timestamp: new Date().toISOString(),
-//   };
-//   return Promise.resolve(fake);
-// }
