@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.Normalizer;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,7 +91,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
             for (MultipartFile file : files) {
                 i++;
                 try {
-                    String objectName = minioService.upload(file, "vat_tu_" + creatingVattu.getTen() + "_" + i);
+                    String objectName = minioService.upload(file, "vat_tu_anh" + creatingVattu.getTen() + "_" + i);
                     TepTin creatingTepTin = tepTinService.create(
                             TepTin.builder()
                                     .tenTepGoc(creatingVattu.getTen() + "_" + i)
@@ -140,64 +142,89 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
     }
 
     @Transactional
-    public ResponseEntity<ResponseData<VatTuDto>> update(VatTuUpdatingDto dto, List<MultipartFile> files) {
+    public ResponseEntity<ResponseData<VatTuDto>> update(VatTuUpdatingDto dto, MultipartFile sheet, List<MultipartFile> files) {
         Optional<VatTu> vatTuFinding = getOne(dto.getId());
+
         if (vatTuFinding.isEmpty()) {
             throw new CommonException("Không tìm thấy vật tư id: " + dto.getId());
         }
-        List<AnhVatTu> dsAnhVatTu = vatTuFinding.get().getAnhVatTus();
 
+        VatTu vatTu = vatTuFinding.get();
 
-        int i = 0;
-        for (MultipartFile file : files) {
-            AnhVatTu anhVatTu = null;
-            TepTin tepTin = null;
-            String objectName = null;
+        if (sheet != null) {
             try {
-                objectName = minioService.upload(file, "vat_tu_" + dto.getTen() + "_" + (i + 1));
-            } catch (Exception e) {
-                log.error("Lỗi tạo tệp tin cho vật tư: {}", dto.getTen(), e);
-                throw new RuntimeException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
-            }
-            if (i <= dsAnhVatTu.size() - 1) {
-                anhVatTu = dsAnhVatTu.get(i);
-                tepTin = anhVatTu.getTepTin();
-                tepTin.setTenLuuTru(objectName);
-                tepTin.setDuongDan(minioService.getPublicUrl(objectName));
-                tepTin.setTenTepGoc(dto.getTen() + "_" + (i + 1));
-                tepTin.setTenTaiLen(dto.getTen() + "_" + (i + 1));
-                tepTin.setLoaiTepTin(FileType.IMAGE.toString());
-                try {
-                    tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
-                } catch (Exception ignored) {
-                }
-                tepTinService.update(tepTin.getId(), tepTin);
-                i++;
-            } else {
-                tepTin = TepTin.builder()
-                        .tenTepGoc(dto.getTen() + "_" + (i + 1))
-                        .tenTaiLen(dto.getTen() + "_" + (i + 1))
-                        .tenLuuTru(objectName)
-                        .duongDan(minioService.getPublicUrl(objectName))
-                        .loaiTepTin(FileType.IMAGE.toString())
-                        .trangThai(1)
-                        .build();
-                try {
-                    tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
-                } catch (Exception e) {
-                    tepTin.setDuoiTep("jpg");
-                }
-                tepTin = tepTinService.create(tepTin);
-                anhVatTuService.create(
-                        AnhVatTu.builder()
-                                .vatTu(vatTuFinding.get())
-                                .tepTin(tepTin)
-                                .anhChinh(i == 0)
+                String objectName = minioService.upload(sheet, "vat_tu_sheet" + dto.getTen());
+                TepTin creatingTepTin = tepTinService.create(
+                        TepTin.builder()
+                                .tenTepGoc(dto.getTen())
+                                .tenTaiLen(dto.getTen())
+                                .tenLuuTru(objectName)
+                                .duongDan(minioService.getPublicUrl(objectName))
+                                .loaiTepTin(FileType.PDF.toString())
                                 .trangThai(1)
-                                .taoLuc(Instant.now())
                                 .build()
                 );
-                i++;
+                tepTinService.create(creatingTepTin);
+                vatTu.setSheetLink(minioService.getPublicUrl(objectName));
+            } catch (Exception e) {
+                throw new CommonException("Lỗi tạo data sheet cho vật tư: " + dto.getTen(), e);
+            }
+        }
+
+        List<AnhVatTu> dsAnhVatTu = vatTuFinding.get().getAnhVatTus();
+
+        int i = 0;
+        if (files != null) {
+            for (MultipartFile file : files) {
+                AnhVatTu anhVatTu = null;
+                TepTin tepTin = null;
+                String objectName = null;
+                try {
+                    objectName = minioService.upload(file, "vat_tu_anh" + dto.getTen() + "_" + (i + 1));
+                } catch (Exception e) {
+                    log.error("Lỗi tạo tệp tin cho vật tư: {}", dto.getTen(), e);
+                    throw new RuntimeException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
+                }
+                if (i <= dsAnhVatTu.size() - 1) {
+                    anhVatTu = dsAnhVatTu.get(i);
+                    tepTin = anhVatTu.getTepTin();
+                    tepTin.setTenLuuTru(objectName);
+                    tepTin.setDuongDan(minioService.getPublicUrl(objectName));
+                    tepTin.setTenTepGoc(dto.getTen() + "_" + (i + 1));
+                    tepTin.setTenTaiLen(dto.getTen() + "_" + (i + 1));
+                    tepTin.setLoaiTepTin(FileType.IMAGE.toString());
+                    try {
+                        tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
+                    } catch (Exception ignored) {
+                    }
+                    tepTinService.update(tepTin.getId(), tepTin);
+                    i++;
+                } else {
+                    tepTin = TepTin.builder()
+                            .tenTepGoc(dto.getTen() + "_" + (i + 1))
+                            .tenTaiLen(dto.getTen() + "_" + (i + 1))
+                            .tenLuuTru(objectName)
+                            .duongDan(minioService.getPublicUrl(objectName))
+                            .loaiTepTin(FileType.IMAGE.toString())
+                            .trangThai(1)
+                            .build();
+                    try {
+                        tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
+                    } catch (Exception e) {
+                        tepTin.setDuoiTep("jpg");
+                    }
+                    tepTin = tepTinService.create(tepTin);
+                    anhVatTuService.create(
+                            AnhVatTu.builder()
+                                    .vatTu(vatTuFinding.get())
+                                    .tepTin(tepTin)
+                                    .anhChinh(i == 0)
+                                    .trangThai(1)
+                                    .taoLuc(Instant.now())
+                                    .build()
+                    );
+                    i++;
+                }
             }
         }
 
@@ -205,12 +232,15 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         for (AnhVatTu anhVatTu : dsAnhVatTu) {
             TepTin tepTin = anhVatTu.getTepTin();
             minioService.delete(tepTin.getTenLuuTru());
-            if(j > i) {
+            if (j > i) {
                 anhVatTuService.delete(anhVatTu.getId());
                 tepTinService.delete(tepTin.getId());
             }
             j++;
         }
+        vatTu.setTen(dto.getTen());
+        vatTu.setMa(genMaVatTu(dto.getTen()));
+        vatTu.setTrangThai(dto.getTrangThai());
 
         vatTuFinding = getOne(dto.getId());
 
@@ -252,5 +282,20 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                         .error(null)
                         .build()
         );
+    }
+
+
+    public String genMaVatTu(String tenString) {
+        // Bỏ dấu tiếng Việt
+        String khongDau = Normalizer.normalize(tenString, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
+        // Chuyển về chữ thường
+        khongDau = khongDau.toLowerCase();
+
+        // Thay thế khoảng trắng bằng dấu gạch dưới
+        String ma = khongDau.replaceAll("\\s+", "_");
+
+        return ma + '_' + new Date().getTime();
     }
 }

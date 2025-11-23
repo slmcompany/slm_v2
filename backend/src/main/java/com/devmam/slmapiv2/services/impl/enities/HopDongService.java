@@ -77,8 +77,6 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
             throw new CommonException("Không tìm thấy người giới thiệu id: " + dto.getNguoiGioiThieuId());
         }
 
-        ;
-
         if(dto.getEmailKhachHang() == null || dto.getEmailKhachHang().isEmpty()){
             dto.setEmailKhachHang(dto.getSdtKhachHang()) ;
         }

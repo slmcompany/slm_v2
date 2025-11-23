@@ -82,12 +82,13 @@ public class VatTuController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<ResponseData<VatTuDto>> update(@RequestPart("dto") VatTuUpdatingDto dto,
+                                                         @RequestPart(value = "sheet", required = false) MultipartFile sheet,
                                                          @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-        return vatTuService.update(dto, files);
+        return vatTuService.update(dto, sheet, files);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseData<VatTuDto>> delete(@PathVariable Integer id){
+    public ResponseEntity<ResponseData<VatTuDto>> delete(@PathVariable Integer id) {
         return vatTuService.deleteVatTu(id);
     }
 }

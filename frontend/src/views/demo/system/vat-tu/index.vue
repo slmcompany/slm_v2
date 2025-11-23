@@ -125,9 +125,20 @@
                 v-for="anh in record.anhVatTus"
                 :key="anh.id"
                 :width="100"
-                :src="anh.tepTin?.url || ''"
+                :src="anh.tepTin?.url || anh.tepTin?.duongDan || ''"
                 :preview="true"
               />
+            </div>
+          </div>
+
+          <a-divider v-if="record.sheetLink" />
+
+          <div v-if="record.sheetLink">
+            <strong>Sheet Link:</strong>
+            <div style="margin-top: 8px">
+              <a :href="record.sheetLink" target="_blank" rel="noopener noreferrer">
+                {{ record.sheetLink }}
+              </a>
             </div>
           </div>
         </div>
@@ -138,6 +149,10 @@
       @success="handleSuccess"
       :nhomVatTuOptions="nhomVatTuOptions"
       :thuongHieuOptions="thuongHieuOptions"
+    />
+    <UpdateVatTuModal
+      @register="registerUpdateModal"
+      @success="handleSuccess"
     />
   </div>
 </template>
@@ -151,8 +166,9 @@
   import { filterVatTu, deleteVatTu, getAllNhomVatTu, getAllThuongHieu } from './vatTu';
   import type { VatTuDto } from './vatTu';
   import VatTuModal from './VatTuModal.vue';
+  import UpdateVatTuModal from './UpdateVatTuModal.vue';
   import { message } from 'ant-design-vue';
-  import {computed} from 'vue';
+  import { computed } from 'vue';
 
   defineOptions({ name: 'VatTuManagement' });
 
@@ -173,6 +189,7 @@
   });
 
   const [registerModal, { openModal }] = useModal();
+  const [registerUpdateModal, { openModal: openUpdateModal }] = useModal();
   const [registerTable, { reload, getForm }] = useTable({
     title: 'Danh sách vật tư',
     api: async (params) => {
@@ -276,7 +293,6 @@
         // do not set fatal loadError for optional lists
       }
 
-
       // update search form options (defensive)
       try {
         const form = getForm();
@@ -326,11 +342,8 @@
 
   function handleEdit(record: VatTuDto) {
     try {
-      openModal(true, {
+      openUpdateModal(true, {
         record,
-        isUpdate: true,
-        nhomVatTuOptions: nhomVatTuOptions.value,
-        thuongHieuOptions: thuongHieuOptions.value,
       });
     } catch (err) {
       console.error('handleEdit error:', err);

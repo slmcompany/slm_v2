@@ -12,6 +12,5 @@ import lombok.experimental.FieldDefaults;
 public class VatTuUpdatingDto {
     Integer id;
     String ten;
-    String sheetLink;
     Integer trangThai;
 }

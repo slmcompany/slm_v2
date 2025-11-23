@@ -2,7 +2,7 @@
   <BasicModal
     v-bind="$attrs"
     @register="registerModal"
-    :title="getTitle"
+    title="Tạo vật tư"
     :width="1000"
     @ok="handleSubmit"
   >
@@ -164,13 +164,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, unref, watch } from 'vue';
+  import { ref, watch } from 'vue';
   import { Upload, InputNumber, Empty, Select, SelectOption } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form';
   import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue';
   import { formSchema } from './vatTu.data';
-  import { createVatTu, updateVatTu, GiaInfo, ThuocTinh } from './vatTu';
+  import { createVatTu, GiaInfo, ThuocTinh } from './vatTu';
   import { message } from 'ant-design-vue';
   import type { UploadProps } from 'ant-design-vue';
 
@@ -187,17 +187,9 @@
 
   const emit = defineEmits(['success', 'register']);
 
-  const isUpdate = ref(false);
-  const recordId = ref<number>();
   const duLieuRiengList = ref<Array<ThuocTinh & { key?: string }>>([]);
   const dsGiaList = ref<GiaInfo[]>([]);
   const fileList = ref<any[]>([]);
-
-  // Options cho select cơ sở
-  const coSoOptions = ref([
-    { label: 'HN - Hà Nội', value: 'HN' },
-    { label: 'HCM - Hồ Chí Minh', value: 'HCM' },
-  ]);
 
   const nativeFileInput = ref<HTMLInputElement | null>(null);
   const antUpload = ref<any>(null);
@@ -213,11 +205,11 @@
   const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
     resetFields();
     setModalProps({ confirmLoading: false });
-    isUpdate.value = !!data?.isUpdate;
     duLieuRiengList.value = [];
     dsGiaList.value = [];
     fileList.value = [];
 
+    // Cập nhật options cho các select
     updateSchema([
       {
         field: 'nhomVatTuId',
@@ -233,59 +225,6 @@
         },
       },
     ]);
-
-    if (unref(isUpdate)) {
-      recordId.value = data.record.id;
-
-      // Load dữ liệu riêng TRƯỚC
-      if (data.record.duLieuRieng && Object.keys(data.record.duLieuRieng).length > 0) {
-        duLieuRiengList.value = Object.entries(data.record.duLieuRieng).map(([key, value]) => {
-          const v = value as any;
-          return {
-            key,
-            ten: v.ten ?? key,
-            donVi: v.donVi ?? '',
-            giaTri: v.giaTri ?? null,
-          };
-        });
-      }
-
-      if (data.record.thongTinGias && data.record.thongTinGias.length > 0) {
-        dsGiaList.value = (data.record.thongTinGias[0].dsGia || []).map((g: any) => ({
-          maCoSo: g.maCoSo || '',
-          tenCoSo: g.tenCoSo || '',
-          giaNhap: g.giaNhap != null ? Number(g.giaNhap) : 0,
-          giaBan: g.giaBan != null ? Number(g.giaBan) : 0,
-        }));
-      }
-
-      if (Array.isArray(data.record.anhVatTus) && data.record.anhVatTus.length > 0) {
-        fileList.value = data.record.anhVatTus.map((a: any, i: number) => {
-          const duongDan = a.tepTin?.duongDan || '';
-          return {
-            uid: String(a.id ?? `exist-${i}`),
-            name: a.tepTin?.tenTepGoc || a.tepTin?.tenLuuTru || `img-${i}`,
-            status: 'done',
-            url: duongDan,
-            thumbUrl: duongDan,
-            response: { url: duongDan },
-            type: a.tepTin?.loaiTepTin || 'image/jpeg',
-            isExisting: true,
-          };
-        });
-      }
-
-      // Set form values SAU (để trigger watch và merge dữ liệu)
-      setFieldsValue({
-        ...data.record,
-        nhomVatTuId: data.record.nhomVatTu?.id,
-        thuongHieuId: data.record.thuongHieu?.id,
-      });
-
-      // Không cần gọi handleNhomChange ở đây vì watch sẽ xử lý
-    } else {
-      duLieuRiengList.value = [];
-    }
   });
 
   function handleNhomChange(newNhomVatTuId: any) {
@@ -298,43 +237,19 @@
         (opt) => String(opt.value) === String(newNhomVatTuId),
       );
       if (selectedNhom?.thuocTinhRieng) {
-        // Nếu đang update, giữ nguyên giá trị đã có, chỉ merge template
-        if (unref(isUpdate) && duLieuRiengList.value.length > 0) {
-          // Tạo map của dữ liệu hiện tại theo key
-          const existingDataMap = new Map(duLieuRiengList.value.map((item) => [item.key, item]));
-
-          // Merge với template mới
-          duLieuRiengList.value = Object.entries(selectedNhom.thuocTinhRieng).map(
-            ([key, value]) => {
-              const v = value as any;
-              const existingItem = existingDataMap.get(key);
-
-              return {
-                key,
-                ten: v.ten ?? key,
-                donVi: v.donVi ?? '',
-                giaTri: existingItem?.giaTri ?? v.giaTri ?? null, // Ưu tiên giá trị đã có
-              };
-            },
-          );
-        } else {
-          // Tạo mới hoặc chưa có dữ liệu: dùng giá trị mặc định
-          duLieuRiengList.value = Object.entries(selectedNhom.thuocTinhRieng).map(
-            ([key, value]) => {
-              const v = value as any;
-              return {
-                key,
-                ten: v.ten ?? key,
-                donVi: v.donVi ?? '',
-                giaTri: v.giaTri ?? null,
-              };
-            },
-          );
-        }
+        duLieuRiengList.value = Object.entries(selectedNhom.thuocTinhRieng).map(
+          ([key, value]) => {
+            const v = value as any;
+            return {
+              key,
+              ten: v.ten ?? key,
+              donVi: v.donVi ?? '',
+              giaTri: v.giaTri ?? null,
+            };
+          },
+        );
       } else {
-        if (!unref(isUpdate)) {
-          duLieuRiengList.value = [];
-        }
+        duLieuRiengList.value = [];
       }
     } catch (err) {
       console.error('handleNhomChange error', err);
@@ -351,58 +266,10 @@
       }
     },
     (newNhomVatTuId) => {
-      try {
-        if (!newNhomVatTuId) {
-          duLieuRiengList.value = [];
-          return;
-        }
-        const selectedNhom = props.nhomVatTuOptions.find(
-          (opt) => String(opt.value) === String(newNhomVatTuId),
-        );
-        if (selectedNhom?.thuocTinhRieng) {
-          // Nếu đang update và đã có dữ liệu, giữ nguyên giá trị
-          if (unref(isUpdate) && duLieuRiengList.value.length > 0) {
-            const existingDataMap = new Map(duLieuRiengList.value.map((item) => [item.key, item]));
-
-            duLieuRiengList.value = Object.entries(selectedNhom.thuocTinhRieng).map(
-              ([key, value]) => {
-                const v = value as any;
-                const existingItem = existingDataMap.get(key);
-
-                return {
-                  key,
-                  ten: v.ten ?? key,
-                  donVi: v.donVi ?? '',
-                  giaTri: existingItem?.giaTri ?? v.giaTri ?? null,
-                };
-              },
-            );
-          } else {
-            duLieuRiengList.value = Object.entries(selectedNhom.thuocTinhRieng).map(
-              ([key, value]) => {
-                const v = value as any;
-                return {
-                  key,
-                  ten: v.ten ?? key,
-                  donVi: v.donVi ?? '',
-                  giaTri: v.giaTri ?? null,
-                };
-              },
-            );
-          }
-        } else {
-          if (!unref(isUpdate)) {
-            duLieuRiengList.value = [];
-          }
-        }
-      } catch (err) {
-        console.error('watch nhomVatTuId error', err);
-      }
+      handleNhomChange(newNhomVatTuId);
     },
-    { immediate: true },
+    { immediate: false },
   );
-
-  const getTitle = computed(() => (!unref(isUpdate) ? 'Tạo vật tư' : 'Chỉnh sửa vật tư'));
 
   function handleAddGia() {
     const newGia = {
@@ -459,7 +326,7 @@
       try {
         const url = URL.createObjectURL(f);
         const newFile = {
-          uid: f.uid ?? `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+          uid: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
           name: f.name,
           status: 'done',
           originFileObj: f,
@@ -565,15 +432,12 @@
         duLieuRiengList.value.forEach((item) => {
           const key = item.key || `thuoctinh_${Math.random().toString(36).substr(2, 9)}`;
 
-          // Xử lý giá trị: tự động parse thành number nếu có thể, giữ nguyên string nếu không
           let processedValue = item.giaTri;
           if (processedValue !== null && processedValue !== undefined && processedValue !== '') {
-            // Thử convert sang number
             const numValue = Number(processedValue);
             if (!isNaN(numValue)) {
               processedValue = numValue;
             }
-            // Nếu không phải số, giữ nguyên string
           }
 
           duLieuRiengMap[key] = {
@@ -608,16 +472,10 @@
       };
 
       const files = fileList.value.map((f) => f.originFileObj).filter(Boolean);
-
-      let result;
-      if (unref(isUpdate)) {
-        result = await updateVatTu(recordId.value!, submitData, files);
-      } else {
-        result = await createVatTu(submitData, files);
-      }
+      const result = await createVatTu(submitData, files);
 
       if (result.status === 200 || result.status === 201) {
-        message.success(unref(isUpdate) ? 'Cập nhật thành công' : 'Tạo mới thành công');
+        message.success('Tạo mới thành công');
         closeModal();
         emit('success');
       } else {
@@ -629,19 +487,6 @@
     } finally {
       setModalProps({ confirmLoading: false });
     }
-  }
-
-  function formatNumber(value: number | null | undefined) {
-    if (value === null || value === undefined || isNaN(Number(value))) return '';
-    return new Intl.NumberFormat('en-US').format(Number(value));
-  }
-
-  function parseNumberFromString(raw: string) {
-    if (!raw && raw !== '0') return null;
-    const cleaned = String(raw).replace(/[^\d.-]/g, '');
-    if (cleaned === '') return null;
-    const n = Number(cleaned);
-    return Number.isFinite(n) ? n : null;
   }
 
   function handleRemoveFile(file: any) {
