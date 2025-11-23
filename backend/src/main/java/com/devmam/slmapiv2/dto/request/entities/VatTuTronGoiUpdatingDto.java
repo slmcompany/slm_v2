@@ -1,0 +1,19 @@
+package com.devmam.slmapiv2.dto.request.entities;
+
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+public class VatTuTronGoiUpdatingDto {
+    Integer id;
+    Integer thoiGianBaoHanh;
+    Boolean duocBaoHanh;
+    Boolean duocXem;
+    Integer trangThai;
+}

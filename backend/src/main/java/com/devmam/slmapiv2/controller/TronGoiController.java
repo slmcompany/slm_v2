@@ -2,12 +2,14 @@ package com.devmam.slmapiv2.controller;
 
 import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
 import com.devmam.slmapiv2.dto.request.entities.TronGoiCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.TronGoiUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.TronGoiDto;
 import com.devmam.slmapiv2.entities.TronGoi;
 import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.TronGoiMapper;
 import com.devmam.slmapiv2.services.impl.enities.TronGoiService;
+import com.devmam.slmapiv2.services.impl.enities.VatTuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -26,12 +28,14 @@ public class TronGoiController {
     private TronGoiService tronGoiService;
     @Autowired
     private TronGoiMapper tronGoiMapper;
+    @Autowired
+    private VatTuService vatTuService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseData<TronGoiDto>> getById(@PathVariable Integer id) {
         Optional<TronGoi> tronGoi = tronGoiService.getOne(id);
 
-        if(tronGoi.isEmpty()){
+        if (tronGoi.isEmpty()) {
             throw new CommonException("Vat tu not found for id: " + id);
         }
 
@@ -62,12 +66,20 @@ public class TronGoiController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<ResponseData<List<TronGoiDto>>> create(@RequestPart("dto") TronGoiCreatingDto dto, @RequestPart("file") MultipartFile file) {
-        return tronGoiService.create(dto,file);
+        return tronGoiService.create(dto, file);
+    }
+
+    @PutMapping(
+            value = "/update",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<ResponseData<TronGoiDto>> update(@RequestPart("dto") TronGoiUpdatingDto dto, @RequestPart("file") MultipartFile file) {
+        return tronGoiService.update(dto, file);
     }
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseData<TronGoiDto>> delete(@PathVariable Integer id){
+    public ResponseEntity<ResponseData<TronGoiDto>> delete(@PathVariable Integer id) {
         return tronGoiService.deleteTronGoi(id);
     }
 

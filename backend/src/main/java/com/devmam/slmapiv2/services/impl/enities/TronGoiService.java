@@ -1,9 +1,7 @@
 package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.FileType;
-import com.devmam.slmapiv2.dto.request.entities.ThongTinTronGoiCoSoCreatingDto;
-import com.devmam.slmapiv2.dto.request.entities.TronGoiCreatingDto;
-import com.devmam.slmapiv2.dto.request.entities.VatTuTronGoiCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.*;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.TronGoiDto;
 import com.devmam.slmapiv2.entities.*;
@@ -154,6 +152,22 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                         .error(null)
                         .message("Success")
                         .data(results)
+                        .build()
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<TronGoiDto>> update(TronGoiUpdatingDto dto, MultipartFile file){
+        Optional<TronGoi> tronGoiFinding = getOne(dto.getId());
+
+        if (tronGoiFinding.isEmpty()) {
+            throw new CommonException("Không tìm thấy trọn gói id: " + dto.getId());
+        }
+        return ResponseEntity.ok(
+                ResponseData.<TronGoiDto>builder()
+                        .status(200)
+                        .message("Success")
+                        .data(tronGoiMapper.toDto(tronGoiFinding.get()))
                         .build()
         );
     }

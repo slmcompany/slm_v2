@@ -67,12 +67,12 @@ public class SecurityConfig implements WebMvcConfigurer {
 //        source.registerCorsConfiguration("/**", config);
 //        return source;
 //    }
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                // allow all origins, methods, and headers
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*");
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                // allow all origins, methods, and headers
+//                .allowedOrigins("*")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+//                .allowedHeaders("*");
+//    }
 }
