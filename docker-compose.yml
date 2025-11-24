@@ -2,12 +2,26 @@ version: '3.9'
 
 services:
 
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: always
+    ports:
+      - "80:80"
+      - "81:81"   # UI login
+      - "443:443"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - app-network
+
   backend:
     build: ./backend
     container_name: backend
     restart: always
-    expose:
-      - "8080"   # expose cho Nginx Proxy, không phải publish
+    ports:
+      - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
     networks:
@@ -18,28 +32,34 @@ services:
     container_name: frontend
     restart: always
     environment:
-      - VIRTUAL_HOST=v2.slmglobal.vn
-      - LETSENCRYPT_HOST=v2.slmglobal.vn
-      - LETSENCRYPT_EMAIL=admin@slmglobal.vn
+      - VG_BASE_URL=${VG_BASE_URL:-http://103.161.16.66}
+      - VG_SUB_DOMAIN=${VG_SUB_DOMAIN}
+      - VG_DEFAULT_USER=${VG_DEFAULT_USER}
+      - VG_DEFAULT_PASSWORD=${VG_DEFAULT_PASSWORD}
     volumes:
-      - frontend_dist:/usr/share/nginx/html:ro
+      - frontend_dist:/shared  # Mount volume vào /shared
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "test", "-f", "/shared/index.html"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   nginx:
     image: nginx:1.27
     container_name: nginx
     restart: always
+    ports:
+      - "80:80"
     depends_on:
-      - frontend
-      - backend
+      frontend:
+        condition: service_healthy  # Đợi frontend copy xong
+      backend:
+        condition: service_started
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - frontend_dist:/usr/share/nginx/html:ro
-    expose:
-      - "80"
-    environment:
-      - VIRTUAL_HOST=v2.slmglobal.vn
+      - frontend_dist:/usr/share/nginx/html:ro  # Đọc từ volume
     networks:
       - app-network
 
