@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/basic-api/quang-cao")
+@RequestMapping("/api/basic-api/quang-cao")
 public class QuangCaoController {
 
     @Autowired

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/basic-api/co-so")
+@RequestMapping("/api/basic-api/co-so")
 public class CoSoController {
     @Autowired
     private CoSoService coSoService;

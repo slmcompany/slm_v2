@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/basic-api/nhom-tron-goi")
+@RequestMapping("/api/basic-api/nhom-tron-goi")
 public class NhomTronGoiController {
 
     @Autowired

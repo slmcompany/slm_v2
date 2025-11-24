@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/basic-api/nhom-vat-tu")
+@RequestMapping("/api/basic-api/nhom-vat-tu")
 public class NhomVatTuController {
 
     @Autowired

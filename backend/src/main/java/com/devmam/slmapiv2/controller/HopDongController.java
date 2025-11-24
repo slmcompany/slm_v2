@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/basic-api/hop-dong")
+@RequestMapping("/api/basic-api/hop-dong")
 public class HopDongController {
 
     @Autowired

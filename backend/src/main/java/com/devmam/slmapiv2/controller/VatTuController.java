@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/basic-api/vat-tu")
+@RequestMapping("/api/basic-api/vat-tu")
 public class VatTuController {
 
     @Autowired

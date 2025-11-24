@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/basic-api/nguoi-dung")
+@RequestMapping("/api/basic-api/nguoi-dung")
 public class NguoiDungController {
     @Autowired
     private NguoiDungService nguoiDungService;
