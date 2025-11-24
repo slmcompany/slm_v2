@@ -185,6 +185,14 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             tepTin = TepTin.builder().build();
         }
 
+        try {
+            if(!isNew) {
+                minioService.delete(tepTin.getTenLuuTru());
+            }
+        } catch (Exception ignored) {
+
+        }
+
         if (file != null) {
             try {
                 tronGoi.setTen(dto.getTen());
@@ -197,10 +205,10 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 tronGoi.setGmTong(dto.getGmTong());
                 tronGoi.setBanChay(dto.getBanChay());
                 tronGoi.setTrangThai(dto.getTrangThai());
-                minioService.delete(tepTin.getTenLuuTru());
+
                 String objectName = minioService.upload(file, "tron_goi" + "_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa()) + "_" + new Date().getTime();
                 tepTin.setTenLuuTru(objectName);
-                tepTin.setTenTepGoc("tron_goi_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa());
+                tepTin.setTenTepGoc(objectName);
                 tepTin.setDuongDan(minioService.getPublicUrl(objectName));
                 tepTin.setLoaiTepTin(FileType.IMAGE.toString());
                 tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
