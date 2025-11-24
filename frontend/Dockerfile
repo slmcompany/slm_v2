@@ -14,8 +14,8 @@ WORKDIR /usr/share/nginx/html
 # Copy dist files
 COPY --from=build-stage /app/dist ./
 
-# Copy nginx.conf vào đúng vị trí (nginx.conf chính)
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy vào conf.d/default.conf (KHÔNG phải nginx.conf)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
