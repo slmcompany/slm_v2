@@ -186,7 +186,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
         }
 
         try {
-            if(!isNew) {
+            if (!isNew) {
                 minioService.delete(tepTin.getTenLuuTru());
             }
         } catch (Exception ignored) {
@@ -206,7 +206,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 tronGoi.setBanChay(dto.getBanChay());
                 tronGoi.setTrangThai(dto.getTrangThai());
 
-                String objectName = minioService.upload(file, "tron_goi" + "_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa()) + "_" + new Date().getTime();
+                String objectName = minioService.upload(file, "tron_goi" + "_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa() + "_" + new Date().getTime());
                 tepTin.setTenLuuTru(objectName);
                 tepTin.setTenTepGoc(objectName);
                 tepTin.setDuongDan(minioService.getPublicUrl(objectName));
