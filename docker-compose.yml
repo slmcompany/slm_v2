@@ -1,75 +1,44 @@
-version: '3.9'
+version: '3.8'
 
 services:
-
-
-  backend:
-    build: ./backend
-    container_name: backend
-    restart: always
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
-    networks:
-      - app-network
-
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    restart: always
-    environment:
-      - VG_BASE_URL=${VG_BASE_URL:-http://103.161.16.66}
-      - VG_SUB_DOMAIN=${VG_SUB_DOMAIN}
-      - VG_DEFAULT_USER=${VG_DEFAULT_USER}
-      - VG_DEFAULT_PASSWORD=${VG_DEFAULT_PASSWORD}
-    volumes:
-      - frontend_dist:/shared  # Mount volume vào /shared
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "test", "-f", "/shared/index.html"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-  
-  nginx-proxy-manager:
+  # ===============================
+  # NGINX PROXY MANAGER
+  # ===============================
+  nginxproxymanager:
     image: jc21/nginx-proxy-manager:latest
     container_name: nginx-proxy-manager
-    restart: always
+    restart: unless-stopped
     ports:
-      - "80:80"
-      - "81:81"   # UI login
-      - "443:443"
-    depends_on:
-      frontend:
-        condition: service_healthy  # Đợi frontend copy xong
-      backend:
-        condition: service_started
+      - "80:80"       # HTTP
+      - "443:443"     # HTTPS
+      - "81:81"       # UI dashboard
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
-    networks:
-      - app-network
-  # nginx:
-  #   image: nginx:1.27
-  #   container_name: nginx
-  #   restart: always
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     frontend:
-  #       condition: service_healthy  # Đợi frontend copy xong
-  #     backend:
-  #       condition: service_started
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-  #     - frontend_dist:/usr/share/nginx/html:ro  # Đọc từ volume
-  #   networks:
-  #     - app-network
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+
+  # ===============================
+  # BACKEND (Spring Boot)
+  # ===============================
+  backend:
+    image: your_backend_image
+    container_name: backend
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    expose:
+      - "8080"
+
+  # ===============================
+  # FRONTEND (React / Vue / Angular)
+  # chạy build static bằng nginx
+  # ===============================
+  frontend:
+    image: your_frontend_image
+    container_name: frontend
+    restart: always
+    expose:
+      - "80"
 
 volumes:
-  frontend_dist:
-
-networks:
-  app-network:
+  npm_data:
+  npm_letsencrypt:
