@@ -13,7 +13,7 @@ public interface TepTinMapper {
         String duongDan = tepTin.getDuongDan();
         // nếu đường dẫn bắt đầu bằng http://171.244.142.43 thay bằng https://v2.slmglobal.vn
         if(duongDan != null && duongDan.startsWith("http://171.244.142.43")){
-            duongDan = "http://v2.slmglobal.vn" + duongDan.substring(21);
+            duongDan = "https://v2.slmglobal.vn/slm" + duongDan.substring(21);
         }
         return TepTinDto.builder()
                 .id(tepTin.getId())
