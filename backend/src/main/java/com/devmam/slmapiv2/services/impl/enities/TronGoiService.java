@@ -127,11 +127,11 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             }
 
             try {
-                String objectName = minioService.upload(file);
+                String objectName = minioService.upload(file, "tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa());
                 TepTin creatingTepTin = tepTinService.create(
                         TepTin.builder()
-                                .tenTepGoc(tronGoi.getTen() + "_" + coSo.get().getMa())
-                                .tenTaiLen(tronGoi.getTen() + "_" + coSo.get().getMa())
+                                .tenTepGoc("tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa())
+                                .tenTaiLen("tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa())
                                 .tenLuuTru(objectName)
                                 .duongDan(minioService.getPublicUrl(objectName))
                                 .loaiTepTin(FileType.IMAGE.toString())
@@ -157,17 +157,70 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
     }
 
     @Transactional
-    public ResponseEntity<ResponseData<TronGoiDto>> update(TronGoiUpdatingDto dto, MultipartFile file){
+    public ResponseEntity<ResponseData<TronGoiDto>> update(TronGoiUpdatingDto dto, MultipartFile file) {
         Optional<TronGoi> tronGoiFinding = getOne(dto.getId());
 
         if (tronGoiFinding.isEmpty()) {
             throw new CommonException("Không tìm thấy trọn gói id: " + dto.getId());
         }
+        TronGoi tronGoi = tronGoiFinding.get();
+        List<VatTuTronGoiUpdatingDto> dsVatTuTronGoiUpdatingDtos = dto.getVatTuTronGois();
+        List<VatTuTronGoi> dsVatTuTronGoi = tronGoi.getVatTuTronGois();
+
+        for (VatTuTronGoi vatTuTronGoi : dsVatTuTronGoi) {
+            for (VatTuTronGoiUpdatingDto vatTuTronGoiUpdatingDto : dsVatTuTronGoiUpdatingDtos) {
+                if (vatTuTronGoi.getId().equals(vatTuTronGoiUpdatingDto.getId())) {
+                    vatTuTronGoi.setDuocBaoHanh(vatTuTronGoiUpdatingDto.getDuocBaoHanh());
+                    vatTuTronGoi.setDuocXem(vatTuTronGoiUpdatingDto.getDuocXem());
+                    vatTuTronGoi.setTrangThai(vatTuTronGoiUpdatingDto.getTrangThai());
+                }
+            }
+        }
+
+        TepTin tepTin = tronGoi.getTepTin();
+        boolean isNew = false;
+        if (tepTin == null) {
+            isNew = true;
+            tepTin = TepTin.builder().build();
+        }
+
+        if (file != null) {
+            try {
+                tronGoi.setTen(dto.getTen());
+                tronGoi.setLoaiHeThong(dto.getLoaiHeThong());
+                tronGoi.setLoaiPha(dto.getLoaiPha());
+                tronGoi.setCongSuatHeThong(dto.getCongSuatHeThong());
+                tronGoi.setSanLuongToiThieu(dto.getSanLuongToiThieu());
+                tronGoi.setSanLuongToiDa(dto.getSanLuongToiDa());
+                tronGoi.setTongGia(dto.getTongGia());
+                tronGoi.setGmTong(dto.getGmTong());
+                tronGoi.setBanChay(dto.getBanChay());
+                tronGoi.setTrangThai(dto.getTrangThai());
+                minioService.delete(tepTin.getTenLuuTru());
+                String objectName = minioService.upload(file, "tron_goi" + "_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa());
+                tepTin.setTenLuuTru(objectName);
+                tepTin.setTenTepGoc("tron_goi_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa());
+                tepTin.setDuongDan(minioService.getPublicUrl(objectName));
+                tepTin.setLoaiTepTin(FileType.IMAGE.toString());
+                tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
+                tepTin = tepTinService.update(tepTin.getId(), tepTin);
+                if(isNew){
+                    tepTin = tepTinService.create(tepTin);
+                } else {
+                    tepTin = tepTinService.update(tepTin.getId(), tepTin);
+                }
+
+                tronGoi.setTepTin(tepTin);
+                tronGoi = update(tronGoi.getId(), tronGoi);
+            } catch (Exception e) {
+                throw new RuntimeException("Lỗi trong quá trình upload file: ", e);
+            }
+        }
         return ResponseEntity.ok(
                 ResponseData.<TronGoiDto>builder()
                         .status(200)
                         .message("Success")
-                        .data(tronGoiMapper.toDto(tronGoiFinding.get()))
+                        .data(tronGoiMapper.toDto(tronGoi))
                         .build()
         );
     }

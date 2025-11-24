@@ -2,22 +2,24 @@ package com.devmam.slmapiv2.mapper;
 
 import com.devmam.slmapiv2.dto.response.entities.NganhHangDto;
 import com.devmam.slmapiv2.dto.response.entities.QuangCaoDto;
-import com.devmam.slmapiv2.dto.response.entities.TepTinDto;
 import com.devmam.slmapiv2.entities.NganhHang;
 import com.devmam.slmapiv2.entities.QuangCao;
-import com.devmam.slmapiv2.entities.TepTin;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-23T17:57:16+0700",
+    date = "2025-11-24T13:40:27+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class QuangCaoMapperImpl implements QuangCaoMapper {
+
+    @Autowired
+    private TepTinMapper tepTinMapper;
 
     @Override
     public QuangCaoDto toDto(QuangCao quangCao) {
@@ -29,7 +31,7 @@ public class QuangCaoMapperImpl implements QuangCaoMapper {
 
         quangCaoDto.id( quangCao.getId() );
         quangCaoDto.nganhHang( nganhHangToNganhHangDto( quangCao.getNganhHang() ) );
-        quangCaoDto.tepTin( tepTinToTepTinDto( quangCao.getTepTin() ) );
+        quangCaoDto.tepTin( tepTinMapper.toDto( quangCao.getTepTin() ) );
         quangCaoDto.tieuDe( quangCao.getTieuDe() );
         quangCaoDto.viTri( quangCao.getViTri() );
         quangCaoDto.hoatDong( quangCao.getHoatDong() );
@@ -70,28 +72,5 @@ public class QuangCaoMapperImpl implements QuangCaoMapper {
         nganhHangDto.trangThai( nganhHang.getTrangThai() );
 
         return nganhHangDto.build();
-    }
-
-    protected TepTinDto tepTinToTepTinDto(TepTin tepTin) {
-        if ( tepTin == null ) {
-            return null;
-        }
-
-        TepTinDto.TepTinDtoBuilder tepTinDto = TepTinDto.builder();
-
-        tepTinDto.id( tepTin.getId() );
-        tepTinDto.tenTepGoc( tepTin.getTenTepGoc() );
-        tepTinDto.tenTaiLen( tepTin.getTenTaiLen() );
-        tepTinDto.tenLuuTru( tepTin.getTenLuuTru() );
-        tepTinDto.duongDan( tepTin.getDuongDan() );
-        tepTinDto.loaiTepTin( tepTin.getLoaiTepTin() );
-        tepTinDto.duoiTep( tepTin.getDuoiTep() );
-        tepTinDto.kichCo( tepTin.getKichCo() );
-        tepTinDto.moTa( tepTin.getMoTa() );
-        tepTinDto.taoLuc( tepTin.getTaoLuc() );
-        tepTinDto.suaLuc( tepTin.getSuaLuc() );
-        tepTinDto.trangThai( tepTin.getTrangThai() );
-
-        return tepTinDto.build();
     }
 }

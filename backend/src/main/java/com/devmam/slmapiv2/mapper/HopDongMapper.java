@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring" , uses = {TepTinMapper.class})
 public interface HopDongMapper {
     HopDongDto toDto(HopDong hopDong);
     List<HopDongDto> toDtoList(List<HopDong> hopDongList);

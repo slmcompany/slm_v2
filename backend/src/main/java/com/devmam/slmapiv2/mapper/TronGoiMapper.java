@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
 
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {TepTinMapper.class})
 public interface TronGoiMapper {
 //    TronGoiMapper INSTANCE = Mappers.getMapper(TronGoiMapper.class);
 

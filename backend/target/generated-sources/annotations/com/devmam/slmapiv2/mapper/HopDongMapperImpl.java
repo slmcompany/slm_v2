@@ -7,7 +7,6 @@ import com.devmam.slmapiv2.dto.response.entities.KhachHangDto;
 import com.devmam.slmapiv2.dto.response.entities.NganhHangDto;
 import com.devmam.slmapiv2.dto.response.entities.NguoiDungDto;
 import com.devmam.slmapiv2.dto.response.entities.NhomVatTuDto;
-import com.devmam.slmapiv2.dto.response.entities.TepTinDto;
 import com.devmam.slmapiv2.dto.response.entities.ThongTinGiaDto;
 import com.devmam.slmapiv2.dto.response.entities.ThuongHieuDto;
 import com.devmam.slmapiv2.dto.response.entities.VatTuDto;
@@ -19,7 +18,6 @@ import com.devmam.slmapiv2.entities.KhachHang;
 import com.devmam.slmapiv2.entities.NganhHang;
 import com.devmam.slmapiv2.entities.NguoiDung;
 import com.devmam.slmapiv2.entities.NhomVatTu;
-import com.devmam.slmapiv2.entities.TepTin;
 import com.devmam.slmapiv2.entities.ThongTinGia;
 import com.devmam.slmapiv2.entities.ThuongHieu;
 import com.devmam.slmapiv2.entities.VatTu;
@@ -30,15 +28,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-23T17:57:16+0700",
+    date = "2025-11-24T13:40:27+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class HopDongMapperImpl implements HopDongMapper {
+
+    @Autowired
+    private TepTinMapper tepTinMapper;
 
     @Override
     public HopDongDto toDto(HopDong hopDong) {
@@ -222,29 +224,6 @@ public class HopDongMapperImpl implements HopDongMapper {
         return thuongHieuDto.build();
     }
 
-    protected TepTinDto tepTinToTepTinDto(TepTin tepTin) {
-        if ( tepTin == null ) {
-            return null;
-        }
-
-        TepTinDto.TepTinDtoBuilder tepTinDto = TepTinDto.builder();
-
-        tepTinDto.id( tepTin.getId() );
-        tepTinDto.tenTepGoc( tepTin.getTenTepGoc() );
-        tepTinDto.tenTaiLen( tepTin.getTenTaiLen() );
-        tepTinDto.tenLuuTru( tepTin.getTenLuuTru() );
-        tepTinDto.duongDan( tepTin.getDuongDan() );
-        tepTinDto.loaiTepTin( tepTin.getLoaiTepTin() );
-        tepTinDto.duoiTep( tepTin.getDuoiTep() );
-        tepTinDto.kichCo( tepTin.getKichCo() );
-        tepTinDto.moTa( tepTin.getMoTa() );
-        tepTinDto.taoLuc( tepTin.getTaoLuc() );
-        tepTinDto.suaLuc( tepTin.getSuaLuc() );
-        tepTinDto.trangThai( tepTin.getTrangThai() );
-
-        return tepTinDto.build();
-    }
-
     protected AnhVatTuDto anhVatTuToAnhVatTuDto(AnhVatTu anhVatTu) {
         if ( anhVatTu == null ) {
             return null;
@@ -253,7 +232,7 @@ public class HopDongMapperImpl implements HopDongMapper {
         AnhVatTuDto.AnhVatTuDtoBuilder anhVatTuDto = AnhVatTuDto.builder();
 
         anhVatTuDto.id( anhVatTu.getId() );
-        anhVatTuDto.tepTin( tepTinToTepTinDto( anhVatTu.getTepTin() ) );
+        anhVatTuDto.tepTin( tepTinMapper.toDto( anhVatTu.getTepTin() ) );
         anhVatTuDto.anhChinh( anhVatTu.getAnhChinh() );
         anhVatTuDto.trangThai( anhVatTu.getTrangThai() );
 

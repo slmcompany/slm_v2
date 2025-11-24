@@ -30,15 +30,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-23T17:57:16+0700",
+    date = "2025-11-24T13:40:27+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class TronGoiMapperImpl implements TronGoiMapper {
+
+    @Autowired
+    private TepTinMapper tepTinMapper;
 
     @Override
     public TronGoiDto toDto(TronGoi tronGoi) {
@@ -52,7 +56,7 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         tronGoiDto.nhomTronGoi( nhomTronGoiToNhomTronGoiDto( tronGoi.getNhomTronGoi() ) );
         tronGoiDto.coSo( coSoToCoSoDto( tronGoi.getCoSo() ) );
         tronGoiDto.ten( tronGoi.getTen() );
-        tronGoiDto.tepTin( tepTinToTepTinDto( tronGoi.getTepTin() ) );
+        tronGoiDto.tepTin( tepTinMapper.toDto( tronGoi.getTepTin() ) );
         tronGoiDto.loaiHeThong( tronGoi.getLoaiHeThong() );
         tronGoiDto.loaiPha( tronGoi.getLoaiPha() );
         tronGoiDto.congSuatHeThong( tronGoi.getCongSuatHeThong() );
@@ -172,29 +176,6 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         return coSoDto.build();
     }
 
-    protected TepTinDto tepTinToTepTinDto(TepTin tepTin) {
-        if ( tepTin == null ) {
-            return null;
-        }
-
-        TepTinDto.TepTinDtoBuilder tepTinDto = TepTinDto.builder();
-
-        tepTinDto.id( tepTin.getId() );
-        tepTinDto.tenTepGoc( tepTin.getTenTepGoc() );
-        tepTinDto.tenTaiLen( tepTin.getTenTaiLen() );
-        tepTinDto.tenLuuTru( tepTin.getTenLuuTru() );
-        tepTinDto.duongDan( tepTin.getDuongDan() );
-        tepTinDto.loaiTepTin( tepTin.getLoaiTepTin() );
-        tepTinDto.duoiTep( tepTin.getDuoiTep() );
-        tepTinDto.kichCo( tepTin.getKichCo() );
-        tepTinDto.moTa( tepTin.getMoTa() );
-        tepTinDto.taoLuc( tepTin.getTaoLuc() );
-        tepTinDto.suaLuc( tepTin.getSuaLuc() );
-        tepTinDto.trangThai( tepTin.getTrangThai() );
-
-        return tepTinDto.build();
-    }
-
     protected NhomVatTuDto nhomVatTuToNhomVatTuDto(NhomVatTu nhomVatTu) {
         if ( nhomVatTu == null ) {
             return null;
@@ -226,7 +207,7 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         AnhVatTuDto.AnhVatTuDtoBuilder anhVatTuDto = AnhVatTuDto.builder();
 
         anhVatTuDto.id( anhVatTu.getId() );
-        anhVatTuDto.tepTin( tepTinToTepTinDto( anhVatTu.getTepTin() ) );
+        anhVatTuDto.tepTin( tepTinMapper.toDto( anhVatTu.getTepTin() ) );
         anhVatTuDto.anhChinh( anhVatTu.getAnhChinh() );
         anhVatTuDto.trangThai( anhVatTu.getTrangThai() );
 

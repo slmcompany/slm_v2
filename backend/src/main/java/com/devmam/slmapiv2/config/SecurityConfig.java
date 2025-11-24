@@ -67,6 +67,8 @@ public class SecurityConfig implements WebMvcConfigurer {
 //        source.registerCorsConfiguration("/**", config);
 //        return source;
 //    }
+
+
 //    @Override
 //    public void addCorsMappings(CorsRegistry registry) {
 //        registry.addMapping("/**")

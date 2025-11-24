@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {TepTinMapper.class})
 public interface QuangCaoMapper {
 
     QuangCaoDto toDto(QuangCao quangCao);

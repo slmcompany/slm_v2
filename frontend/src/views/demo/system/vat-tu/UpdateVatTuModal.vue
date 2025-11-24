@@ -40,10 +40,7 @@
             accept="image/*"
             :show-upload-list="true"
           >
-            <div
-              v-if="fileList.length < 8"
-              style="cursor: pointer"
-            >
+            <div v-if="fileList.length < 8" style="cursor: pointer">
               <PlusOutlined />
               <div style="margin-top: 8px">Tải ảnh lên</div>
             </div>
@@ -57,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, onUnmounted  } from 'vue';
   import { Upload } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form';
@@ -75,6 +72,7 @@
   const sheetFileList = ref<any[]>([]);
   const sheetFile = ref<File | null>(null);
   const antUpload = ref<any>(null);
+  const blobUrls = ref<string[]>([]);
 
   const updateFormSchema = [
     {
@@ -132,18 +130,56 @@
       recordId.value = data.record.id;
 
       // Load ảnh hiện có
+      blobUrls.value.forEach((url) => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          console.error('Error revoking blob URL:', e);
+        }
+      });
+      blobUrls.value = [];
+
+      // Load ảnh hiện có
       if (Array.isArray(data.record.anhVatTus) && data.record.anhVatTus.length > 0) {
-        fileList.value = data.record.anhVatTus.map((a: any, i: number) => {
+        // Xử lý từng ảnh
+        const promises = data.record.anhVatTus.map(async (a: any, i: number) => {
           const duongDan = a.tepTin?.duongDan || a.tepTin?.url || '';
-          return {
-            uid: String(a.id ?? `exist-${i}`),
-            name: a.tepTin?.tenTepGoc || a.tepTin?.tenLuuTru || `img-${i}`,
-            status: 'done',
-            url: duongDan,
-            thumbUrl: duongDan,
-            type: a.tepTin?.loaiTepTin || 'image/jpeg',
-            isExisting: true,
-          };
+          const fileName = a.tepTin?.tenTepGoc || a.tepTin?.tenLuuTru || `img-${i}`;
+
+          try {
+            // Fetch ảnh và tạo blob URL
+            const response = await fetch(duongDan);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            blobUrls.value.push(blobUrl); // Lưu để revoke sau
+
+            return {
+              uid: String(a.id ?? `exist-${i}`),
+              name: fileName,
+              status: 'done',
+              url: duongDan,
+              thumbUrl: blobUrl, // Dùng blob URL cho preview
+              type: blob.type || a.tepTin?.loaiTepTin || 'image/jpeg',
+              isExisting: true,
+            };
+          } catch (error) {
+            console.error('Failed to load image:', duongDan, error);
+            // Fallback nếu fetch thất bại
+            return {
+              uid: String(a.id ?? `exist-${i}`),
+              name: fileName,
+              status: 'done',
+              url: duongDan,
+              thumbUrl: duongDan,
+              type: a.tepTin?.loaiTepTin || 'image/jpeg',
+              isExisting: true,
+            };
+          }
+        });
+
+        // Đợi tất cả ảnh load xong
+        Promise.all(promises).then((loadedFiles) => {
+          fileList.value = loadedFiles;
         });
       }
 
@@ -167,7 +203,7 @@
       message.error('Kích thước file phải nhỏ hơn 10MB!');
       return false;
     }
-    
+
     sheetFile.value = file as File;
     sheetFileList.value = [
       {
@@ -246,22 +282,26 @@
   }
 
   function handleRemoveFile(file: any) {
-    try {
-      fileList.value = fileList.value.filter(
-        (f: any) => !(f.uid === file.uid || f.name === file.name),
-      );
+  try {
+    fileList.value = fileList.value.filter(
+      (f: any) => !(f.uid === file.uid || f.name === file.name),
+    );
+    
+    // Revoke blob URL
+    const thumbUrl = file.thumbUrl;
+    if (thumbUrl && thumbUrl.startsWith && thumbUrl.startsWith('blob:')) {
       try {
-        const url = file.url || file.thumbUrl;
-        if (url && url.startsWith && url.startsWith('blob:')) {
-          URL.revokeObjectURL(url);
-        }
+        URL.revokeObjectURL(thumbUrl);
+        // Xóa khỏi danh sách blob URLs
+        blobUrls.value = blobUrls.value.filter(url => url !== thumbUrl);
       } catch (e) {
-        // ignore
+        console.error('Error revoking blob URL:', e);
       }
-    } catch (err) {
-      console.error('handleRemoveFile error', err);
     }
+  } catch (err) {
+    console.error('handleRemoveFile error', err);
   }
+}
 
   async function handleSubmit() {
     try {
@@ -276,13 +316,23 @@
 
       // Chỉ lấy các file mới (không phải existing)
       const imageFiles = fileList.value
-        .filter(f => !f.isExisting && f.originFileObj)
+        .filter((f) => !f.isExisting && f.originFileObj)
         .map((f) => f.originFileObj)
         .filter(Boolean);
 
       const result = await updateVatTu(updateData, sheetFile.value, imageFiles);
 
       if (result.status === 200 || result.status === 201) {
+        // Revoke tất cả blob URLs
+        blobUrls.value.forEach(url => {
+          try {
+            URL.revokeObjectURL(url);
+          } catch (e) {
+            console.error('Error revoking blob URL:', e);
+          }
+        });
+        blobUrls.value = [];
+        
         message.success('Cập nhật thành công');
         closeModal();
         emit('success');
@@ -296,6 +346,17 @@
       setModalProps({ confirmLoading: false });
     }
   }
+  onUnmounted(() => {
+  // Cleanup tất cả blob URLs khi component unmount
+  blobUrls.value.forEach(url => {
+    try {
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Error revoking blob URL on unmount:', e);
+    }
+  });
+  blobUrls.value = [];
+});
 </script>
 
 <style lang="less" scoped>

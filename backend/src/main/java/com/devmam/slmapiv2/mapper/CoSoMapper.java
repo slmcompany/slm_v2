@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {TepTinMapper.class})
 public interface CoSoMapper {
     CoSoDto toDto(CoSo coSo);
     List<CoSoDto> toDtoList(List<CoSo> coSoList);

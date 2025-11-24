@@ -73,7 +73,7 @@ public class TronGoiController {
             value = "/update",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<ResponseData<TronGoiDto>> update(@RequestPart("dto") TronGoiUpdatingDto dto, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<ResponseData<TronGoiDto>> update(@RequestPart("dto") TronGoiUpdatingDto dto, @RequestPart(value = "file", required = false) MultipartFile file) {
         return tronGoiService.update(dto, file);
     }
 

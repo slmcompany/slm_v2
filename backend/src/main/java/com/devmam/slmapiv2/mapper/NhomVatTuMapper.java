@@ -5,7 +5,7 @@ import com.devmam.slmapiv2.entities.NhomVatTu;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {TepTinMapper.class})
 public interface NhomVatTuMapper {
 
     NhomVatTuDto toDto(NhomVatTu nhomVatTu);

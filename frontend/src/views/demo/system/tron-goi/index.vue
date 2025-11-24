@@ -1,20 +1,34 @@
 <template>
   <div>
     <!-- Debug / Error banner -->
-    <div v-if="loadError" style="margin-bottom:12px;padding:12px;border:1px solid #ffa39e;border-radius:6px;background:#fff1f0;color:#a8071a">
+    <div
+      v-if="loadError"
+      style="
+        margin-bottom: 12px;
+        padding: 12px;
+        border: 1px solid #ffa39e;
+        border-radius: 6px;
+        background: #fff1f0;
+        color: #a8071a;
+      "
+    >
       <strong>Lỗi tải dữ liệu:</strong> {{ loadError }}
-      <pre style="max-height:200px;margin-top:8px;overflow:auto;white-space:pre-wrap;">{{ lastResultsDebug }}</pre>
+      <pre style="max-height: 200px; margin-top: 8px; overflow: auto; white-space: pre-wrap">{{
+        lastResultsDebug
+      }}</pre>
     </div>
 
     <a-alert
       v-if="showDebug && !loadError"
       type="info"
       show-icon
-      style="margin-bottom:12px"
+      style="margin-bottom: 12px"
       :message="'Debug: ' + (debugNote || 'no note')"
     >
       <template #description>
-        <pre style="max-height:200px;overflow:auto;white-space:pre-wrap;">{{ lastResultsDebug }}</pre>
+        <pre style="max-height: 200px; overflow: auto; white-space: pre-wrap">{{
+          lastResultsDebug
+        }}</pre>
       </template>
     </a-alert>
 
@@ -32,7 +46,7 @@
           </template>
           Làm mới
         </a-button>
-        <a-button style="margin-left:8px" @click="toggleDebug">
+        <a-button style="margin-left: 8px" @click="toggleDebug">
           {{ showDebug ? 'Hide debug' : 'Show debug' }}
         </a-button>
       </template>
@@ -107,9 +121,7 @@
                     <template v-else-if="column.key === 'gia'">
                       {{ formatCurrency(vatTu.gia) }}
                     </template>
-                    <template v-else-if="column.key === 'gm'">
-                      {{ vatTu.gm || 0 }}%
-                    </template>
+                    <template v-else-if="column.key === 'gm'"> {{ vatTu.gm || 0 }}% </template>
                     <template v-else-if="column.key === 'thoiGianBaoHanh'">
                       {{ vatTu.thoiGianBaoHanh || 0 }} tháng
                     </template>
@@ -126,9 +138,7 @@
               </a-descriptions-item>
             </template>
             <template v-else>
-              <a-descriptions-item label="Thông tin">
-                Chưa có vật tư
-              </a-descriptions-item>
+              <a-descriptions-item label="Thông tin"> Chưa có vật tư </a-descriptions-item>
             </template>
           </a-descriptions>
 
@@ -137,28 +147,18 @@
           <div v-if="record.tepTin?.url">
             <strong>Hình ảnh:</strong>
             <div style="margin-top: 8px">
-              <a-image
-                :width="200"
-                :src="record.tepTin.url"
-                :preview="true"
-              />
+              <a-image :width="200" :src="record.tepTin.url" :preview="true" />
             </div>
           </div>
         </div>
       </template>
     </BasicTable>
-    
+
     <!-- Create Modal -->
-    <CreateTronGoiModal
-      @register="registerCreateModal"
-      @success="handleSuccess"
-    />
-    
+    <CreateTronGoiModal @register="registerCreateModal" @success="handleSuccess" />
+
     <!-- Update Modal -->
-    <UpdateTronGoiModal
-      @register="registerUpdateModal"
-      @success="handleSuccess"
-    />
+    <UpdateTronGoiModal @register="registerUpdateModal" @success="handleSuccess" />
   </div>
 </template>
 
@@ -234,7 +234,7 @@
 
   const [registerCreateModal, { openModal: openCreateModal }] = useModal();
   const [registerUpdateModal, { openModal: openUpdateModal }] = useModal();
-  
+
   const [registerTable, { reload, getForm }] = useTable({
     title: 'Danh sách trọn gói',
     api: async (params) => {
@@ -305,9 +305,7 @@
     lastResults.value = null;
     debugNote.value = 'start loadOptions';
     try {
-      const settled = await Promise.allSettled([
-        getAllNhomTronGoi(),
-      ]);
+      const settled = await Promise.allSettled([getAllNhomTronGoi()]);
       lastResults.value = settled;
       debugNote.value = 'after allSettled';
 
@@ -321,7 +319,8 @@
         }));
       } else {
         console.error('getAllNhomTronGoi failed', nhomTronGoiRes.reason);
-        loadError.value = 'Không tải được danh sách nhóm trọn gói: ' + String(nhomTronGoiRes.reason);
+        loadError.value =
+          'Không tải được danh sách nhóm trọn gói: ' + String(nhomTronGoiRes.reason);
       }
 
       try {
@@ -378,11 +377,8 @@
 
   async function handleDelete(record: TronGoiDto) {
     try {
-      // Note: Delete API not implemented in tronGoi.ts yet
-      // message.info('Chức năng xóa chưa được triển khai');
-      // Uncomment when API is ready:
       const result = await deleteTronGoi(record.id);
-      if (result && (result.status === 200)) {
+      if (result && result.status === 200) {
         message.success('Xóa thành công');
         reload();
       } else {
@@ -394,12 +390,14 @@
     }
   }
 
-  function handleRefresh() {
-    reload();
+  async function handleRefresh() {
+    await reload();
+    message.success('Đã làm mới dữ liệu');
   }
 
-  function handleSuccess() {
-    reload();
+  async function handleSuccess() {
+    await reload();
+    message.success('Đã làm mới dữ liệu');
   }
 
   function onWindowError(e: ErrorEvent) {

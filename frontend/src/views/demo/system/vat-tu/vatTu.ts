@@ -71,7 +71,6 @@ export interface TepTinDto {
   taoLuc: string;
   suaLuc: string;
   trangThai: number;
-  url?: string;
 }
 
 export interface AnhVatTuDto {

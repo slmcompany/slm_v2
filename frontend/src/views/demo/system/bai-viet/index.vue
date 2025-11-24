@@ -99,6 +99,7 @@
   import { FormItem, Input, Textarea, Upload, Button, message, Select, SelectOption } from 'ant-design-vue';
   import type { UploadProps } from 'ant-design-vue';
   import { PlusOutlined } from '@ant-design/icons-vue';
+  import { realHttp } from '@/utils/http/axios';
 
   // ============ STATES ============
   const editorRef = shallowRef();
@@ -520,7 +521,7 @@
 
       // Gửi request - THAY URL NÀY BẰNG API THỰC TẾ CỦA BẠN
       // let host = 'http://localhost:8080'
-      let host = 'http://171.244.142.43/api'
+      let host = realHttp.getAxios().defaults.baseURL as string
 
       const response = await fetch(host+'/basic-api/bai-viet/create', {
         method: 'POST',

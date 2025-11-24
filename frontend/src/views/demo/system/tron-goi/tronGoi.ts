@@ -1,10 +1,11 @@
 import { realHttp } from '@/utils/http/axios';
 import { c } from 'node_modules/vite/dist/node/types.d-aGj9QkWt';
+import { TepTinDto } from '../vat-tu/vatTu';
 enum Api {
   Filter = '/tron-goi/filter',
   GetById = '/tron-goi/',
   Create = '/tron-goi/create',
-  Update = '/tron-goi/update/',
+  Update = '/tron-goi/update',
   Delete = '/tron-goi/delete/',
   GetAllCoSo = '/co-so/all',
 
@@ -59,10 +60,18 @@ export interface GiaInfo {
 
 export interface TepTinDto {
   id: number;
-  url: string;
-  ten: string;
+  tenTepGoc: string;
+  tenTaiLen: string;
+  tenLuuTru: string;
+  duongDan: string;
+  loaiTepTin: string;
+  duoiTep: string;
+  kichCo: number;
+  moTa: string;
+  taoLuc: string;
+  suaLuc: string;
+  trangThai: number;
 }
-
 export interface AnhVatTuDto {
   id: number;
   tepTin: TepTinDto;
@@ -150,6 +159,7 @@ export interface VatTuTronGoiDto {
   taoLuc: string;
   thoiGianBaoHanh: number;
   duocBaoHanh: boolean;
+  duocXem?: boolean;
   trangThai: number;
 }
 export interface VatTuTronGoiCreatingDto {
@@ -185,11 +195,13 @@ export interface TronGoiDto {
   tepTin: TepTinDto;
   loaiHeThong: string;
   loaiPha: string;
+  congSuatHeThong?: number;
   sanLuongToiThieu: number;
   sanLuongToiDa: number;
   moTa: string;
   taoLuc: string;
   tongGia: number;
+  gmTong?: number;
   banChay: boolean;
   trangThai: number;
   vatTuTronGois: VatTuTronGoiDto[];
@@ -213,6 +225,26 @@ export interface TronGoiCreateDto {
   tongGiaMienNam: number;
   banChay: boolean;
   vatTuTronGois: VatTuTronGoiCreatingDto[];
+}
+
+export interface TronGoiUpdateDto {
+  id: number;
+  ten: string;
+  loaiHeThong: string;
+  loaiPha: string;
+  congSuatHeThong: number;
+  sanLuongToiThieu: number;
+  sanLuongToiDa: number;
+  tongGia: number;
+  gmTong: number;
+  banChay: boolean;
+  trangThai: number;
+  vatTuTronGois: Array<{
+    id: number;
+    duocBaoHanh: boolean;
+    duocXem: boolean;
+    trangThai: number;
+  }>;
 }
 
 export interface PageResponse<T> {
@@ -432,9 +464,10 @@ export function createTronGoi(data: TronGoiCreateDto, file: File | null) {
     });
 }
 
-export function updateTronGoi(id: number, data: TronGoiCreateDto, file: File | null) {
+export function updateTronGoi(id: number, data: TronGoiUpdateDto, file: File | null) {
   const formData = new FormData();
-  formData.append('data', JSON.stringify(data));
+  const jsonBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  formData.append('dto', jsonBlob);
   if (file) {
     formData.append('file', file);
   }
@@ -442,7 +475,7 @@ export function updateTronGoi(id: number, data: TronGoiCreateDto, file: File | n
   return realHttp
     .put<ResponseData<TronGoiDto>>(
       {
-        url: Api.Update + id,
+        url: Api.Update,
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data',
