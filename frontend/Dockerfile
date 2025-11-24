@@ -8,11 +8,14 @@ RUN npm install pnpm -g && \
     pnpm install --no-frozen-lockfile && \
     pnpm build
 
-# nginx 部署
 FROM nginx:1.23.3-alpine as production-stage
 WORKDIR /usr/share/nginx/html
+
+# Copy dist files
 COPY --from=build-stage /app/dist ./
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy nginx.conf vào đúng vị trí (nginx.conf chính)
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
