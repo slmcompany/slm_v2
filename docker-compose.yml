@@ -1,3 +1,4 @@
+version: '3.8'
 
 services:
   # ===============================
@@ -19,7 +20,7 @@ services:
   # BACKEND (Spring Boot)
   # ===============================
   backend:
-    image: your_backend_image
+    build: ./backend
     container_name: backend
     restart: always
     environment:
@@ -32,7 +33,7 @@ services:
   # chạy build static bằng nginx
   # ===============================
   frontend:
-    image: your_frontend_image
+    build: ./frontend
     container_name: frontend
     restart: always
     expose:
