@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -197,14 +198,14 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 tronGoi.setBanChay(dto.getBanChay());
                 tronGoi.setTrangThai(dto.getTrangThai());
                 minioService.delete(tepTin.getTenLuuTru());
-                String objectName = minioService.upload(file, "tron_goi" + "_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa());
+                String objectName = minioService.upload(file, "tron_goi" + "_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa()) + "_" + new Date().getTime();
                 tepTin.setTenLuuTru(objectName);
                 tepTin.setTenTepGoc("tron_goi_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa());
                 tepTin.setDuongDan(minioService.getPublicUrl(objectName));
                 tepTin.setLoaiTepTin(FileType.IMAGE.toString());
                 tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
                 tepTin = tepTinService.update(tepTin.getId(), tepTin);
-                if(isNew){
+                if (isNew) {
                     tepTin = tepTinService.create(tepTin);
                 } else {
                     tepTin = tepTinService.update(tepTin.getId(), tepTin);
