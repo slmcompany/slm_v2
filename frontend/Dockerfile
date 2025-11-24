@@ -1,28 +1,18 @@
-# node 构建
 FROM node:18-alpine as build-stage
-MAINTAINER Adoin 'adoin@qq.com'
 WORKDIR /app
 COPY . ./
 RUN npm config set registry https://registry.npmmirror.com
 ENV NODE_OPTIONS=--max-old-space-size=16384
 
-# Build bình thường - mock đã bật trong .env.production
 RUN npm install pnpm -g && \
     pnpm install --no-frozen-lockfile && \
     pnpm build
 
-RUN echo "🎉 编 🎉 译 🎉 成 🎉 功 🎉"
-
 # nginx 部署
 FROM nginx:1.23.3-alpine as production-stage
-WORKDIR /output
+WORKDIR /usr/share/nginx/html
 COPY --from=build-stage /app/dist ./
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-CMD sh -c '\
-    if [ -d /shared ]; then \
-        echo "Copying dist to shared volume..."; \
-        cp -r /output/* /shared/; \
-        sed -i "s|__vg_base_url|${VG_BASE_URL:-http://localhost}|g" /shared/assets/entry/index-*.js /shared/_app.config.js 2>/dev/null || true; \
-        echo "Frontend files ready!"; \
-    fi; \
-    tail -f /dev/null'
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

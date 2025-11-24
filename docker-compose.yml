@@ -1,24 +1,20 @@
 version: '3.8'
 
 services:
-  # ===============================
-  # NGINX PROXY MANAGER
-  # ===============================
   nginxproxymanager:
     image: jc21/nginx-proxy-manager:latest
     container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
-      - "80:80"       # HTTP
-      - "443:443"     # HTTPS
-      - "81:81"       # UI dashboard
+      - "80:80"
+      - "443:443"
+      - "81:81"
     volumes:
       - npm_data:/data
       - npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - app-network
 
-  # ===============================
-  # BACKEND (Spring Boot)
-  # ===============================
   backend:
     build: ./backend
     container_name: backend
@@ -27,18 +23,22 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
     expose:
       - "8080"
+    networks:
+      - app-network
 
-  # ===============================
-  # FRONTEND (React / Vue / Angular)
-  # chạy build static bằng nginx
-  # ===============================
   frontend:
     build: ./frontend
     container_name: frontend
     restart: always
     expose:
       - "80"
+    networks:
+      - app-network
 
 volumes:
   npm_data:
   npm_letsencrypt:
+
+networks:
+  app-network:
+    driver: bridge
