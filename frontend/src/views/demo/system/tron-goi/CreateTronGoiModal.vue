@@ -178,7 +178,6 @@
                   <FormItem label="Giá nhập miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienBac"
-                      disabled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -191,7 +190,6 @@
                   <FormItem label="Giá nhập miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienNam"
-                      disabled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -204,7 +202,7 @@
                   <FormItem label="Giá bán miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -217,7 +215,7 @@
                   <FormItem label="Giá bán miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -323,7 +321,7 @@
                   <FormItem label="Giá nhập miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -336,7 +334,7 @@
                   <FormItem label="Giá nhập miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -349,7 +347,7 @@
                   <FormItem label="Giá bán miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -362,7 +360,7 @@
                   <FormItem label="Giá bán miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -467,7 +465,7 @@
                   <FormItem label="Giá nhập miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -480,7 +478,7 @@
                   <FormItem label="Giá nhập miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -493,7 +491,7 @@
                   <FormItem label="Giá bán miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -506,7 +504,7 @@
                   <FormItem label="Giá bán miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -619,7 +617,7 @@
                   <FormItem label="Giá nhập miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -632,7 +630,7 @@
                   <FormItem label="Giá nhập miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -645,7 +643,7 @@
                   <FormItem label="Giá bán miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -658,7 +656,7 @@
                   <FormItem label="Giá bán miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -763,7 +761,7 @@
                   <FormItem label="Giá nhập miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -776,7 +774,7 @@
                   <FormItem label="Giá nhập miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -789,7 +787,7 @@
                   <FormItem label="Giá bán miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -802,7 +800,7 @@
                   <FormItem label="Giá bán miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -907,7 +905,7 @@
                   <FormItem label="Giá nhập miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -920,7 +918,7 @@
                   <FormItem label="Giá nhập miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -933,7 +931,7 @@
                   <FormItem label="Giá bán miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -946,7 +944,7 @@
                   <FormItem label="Giá bán miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -1051,7 +1049,7 @@
                   <FormItem label="Giá nhập miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -1064,7 +1062,7 @@
                   <FormItem label="Giá nhập miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -1077,7 +1075,7 @@
                   <FormItem label="Giá bán miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -1090,7 +1088,7 @@
                   <FormItem label="Giá bán miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -1199,7 +1197,7 @@
                   <FormItem label="Giá nhập miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -1212,7 +1210,7 @@
                   <FormItem label="Giá nhập miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhapMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -1225,7 +1223,7 @@
                   <FormItem label="Giá bán miền Bắc" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienBac"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
@@ -1238,7 +1236,7 @@
                   <FormItem label="Giá bán miền Nam" :required="true">
                     <InputNumber
                       v-model:value="item.giaBanMienNam"
-                      disabled
+                      bled
                       :min="0"
                       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"

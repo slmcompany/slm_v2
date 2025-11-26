@@ -13,6 +13,7 @@ import com.devmam.slmapiv2.services.MinioService;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
@@ -287,15 +288,17 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
 
 
     public String genMaVatTu(String tenString) {
-        // Bỏ dấu tiếng Việt
-        String khongDau = Normalizer.normalize(tenString, Normalizer.Form.NFD)
-                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        // Bỏ dấu tiếng Việt (bao gồm cả đ)
+        String khongDau = StringUtils.stripAccents(tenString);
 
         // Chuyển về chữ thường
         khongDau = khongDau.toLowerCase();
 
         // Thay thế khoảng trắng bằng dấu gạch dưới
         String ma = khongDau.replaceAll("\\s+", "_");
+
+        // Giữ lại chỉ các ký tự a-z, số và gạch dưới
+        ma = ma.replaceAll("[^a-z0-9_]", "");
 
         return ma + '_' + new Date().getTime();
     }

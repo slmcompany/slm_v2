@@ -5,6 +5,7 @@ import com.devmam.slmapiv2.entities.commons.GiaInfo;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.Normalizer;
 import java.time.Instant;
@@ -54,15 +55,17 @@ public class VatTuCreatingDto {
 
 
     public static String genMaVatTu(String tenString) {
-        // Bỏ dấu tiếng Việt
-        String khongDau = Normalizer.normalize(tenString, Normalizer.Form.NFD)
-                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        // Bỏ dấu tiếng Việt (bao gồm cả đ)
+        String khongDau = StringUtils.stripAccents(tenString);
 
         // Chuyển về chữ thường
         khongDau = khongDau.toLowerCase();
 
         // Thay thế khoảng trắng bằng dấu gạch dưới
         String ma = khongDau.replaceAll("\\s+", "_");
+
+        // Giữ lại chỉ các ký tự a-z, số và gạch dưới
+        ma = ma.replaceAll("[^a-z0-9_]", "");
 
         return ma;
     }
