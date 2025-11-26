@@ -2208,7 +2208,7 @@
         if (vatTu.ma.includes('kep_giua')) {
           soLuongCal = ceil(tamPinList.value[0].soLuong / 5) * 8 + 4;
         }
-        if (vatTu.ma.includes('full')&& vatTu.ma.includes('rail')) {
+        if (vatTu.ma.includes('full') && vatTu.ma.includes('rail')) {
           soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4);
         }
         if (vatTu.ma.includes('mini') && vatTu.ma.includes('rail')) {
@@ -2247,61 +2247,73 @@
 
   function handleHeDayDienChange(value: number, index: number) {
     for (const vatTu of heDayDienData.value) {
-      let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
-      let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
-      let giaNhapMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaNhap || 0;
-      let giaBanMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaBan || 0;
-      let giaBanMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaBan || 0;
-      heDayDienList.value[index].giaNhapMienBac = giaNhapMienBac;
-      heDayDienList.value[index].giaNhapMienNam = giaNhapMienNam;
-      heDayDienList.value[index].giaBanMienBac = giaBanMienBac;
-      heDayDienList.value[index].giaBanMienNam = giaBanMienNam;
-      heDayDienList.value[index].gm = vatTu.nhomVatTu.gm;
+      if (vatTu.id === value) {
+        let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
+        let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
+        let giaNhapMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaNhap || 0;
+        let giaBanMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaBan || 0;
+        let giaBanMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaBan || 0;
+        heDayDienList.value[index].giaNhapMienBac = giaNhapMienBac;
+        heDayDienList.value[index].giaNhapMienNam = giaNhapMienNam;
+        heDayDienList.value[index].giaBanMienBac = giaBanMienBac;
+        heDayDienList.value[index].giaBanMienNam = giaBanMienNam;
+        heDayDienList.value[index].gm = vatTu.nhomVatTu.gm;
+        break;
+      }
     }
   }
 
   function handleTuDienChange(value: number, index: number) {
     for (const vatTu of tuDienData.value) {
-      let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
-      let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
-      let giaNhapMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaNhap || 0;
-      let giaBanMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaBan || 0;
-      let giaBanMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaBan || 0;
-      tuDienList.value[index].giaNhapMienBac = giaNhapMienBac;
-      tuDienList.value[index].giaNhapMienNam = giaNhapMienNam;
-      tuDienList.value[index].giaBanMienBac = giaBanMienBac;
-      tuDienList.value[index].giaBanMienNam = giaBanMienNam;
-      tuDienList.value[index].gm = vatTu.nhomVatTu.gm;
+      if (vatTu.id === value) {
+        let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
+        let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
+        let giaNhapMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaNhap || 0;
+        let giaBanMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaBan || 0;
+        let giaBanMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaBan || 0;
+        tuDienList.value[index].giaNhapMienBac = giaNhapMienBac;
+        tuDienList.value[index].giaNhapMienNam = giaNhapMienNam;
+        tuDienList.value[index].giaBanMienBac = giaBanMienBac;
+        tuDienList.value[index].giaBanMienNam = giaBanMienNam;
+        tuDienList.value[index].gm = vatTu.nhomVatTu.gm;
+        break;
+      }
     }
   }
 
   function handleHeTiepDiaChange(value: number, index: number) {
     for (const vatTu of heTiepDiaData.value) {
-      let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
-      let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
-      let giaNhapMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaNhap || 0;
-      let giaBanMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaBan || 0;
-      let giaBanMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaBan || 0;
-      heTiepDiaList.value[index].giaNhapMienBac = giaNhapMienBac;
-      heTiepDiaList.value[index].giaNhapMienNam = giaNhapMienNam;
-      heTiepDiaList.value[index].giaBanMienBac = giaBanMienBac;
-      heTiepDiaList.value[index].giaBanMienNam = giaBanMienNam;
-      heTiepDiaList.value[index].gm = vatTu.nhomVatTu.gm;
+      if (vatTu.id === value) {
+        let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
+        let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
+        let giaNhapMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaNhap || 0;
+        let giaBanMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaBan || 0;
+        let giaBanMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaBan || 0;
+        heTiepDiaList.value[index].giaNhapMienBac = giaNhapMienBac;
+        heTiepDiaList.value[index].giaNhapMienNam = giaNhapMienNam;
+        heTiepDiaList.value[index].giaBanMienBac = giaBanMienBac;
+        heTiepDiaList.value[index].giaBanMienNam = giaBanMienNam;
+        heTiepDiaList.value[index].gm = vatTu.nhomVatTu.gm;
+        break;
+      }
     }
   }
 
   function handleTronGoiLapDatChange(value: number, index: number) {
     for (const vatTu of tronGoiLapDatData.value) {
-      let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
-      let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
-      let giaNhapMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaNhap || 0;
-      let giaBanMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaBan || 0;
-      let giaBanMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaBan || 0;
-      tronGoiLapDatList.value[index].giaNhapMienBac = giaNhapMienBac;
-      tronGoiLapDatList.value[index].giaNhapMienNam = giaNhapMienNam;
-      tronGoiLapDatList.value[index].giaBanMienBac = giaBanMienBac;
-      tronGoiLapDatList.value[index].giaBanMienNam = giaBanMienNam;
-      tronGoiLapDatList.value[index].gm = vatTu.nhomVatTu.gm;
+      if (vatTu.id === value) {
+        let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
+        let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
+        let giaNhapMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaNhap || 0;
+        let giaBanMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaBan || 0;
+        let giaBanMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaBan || 0;
+        tronGoiLapDatList.value[index].giaNhapMienBac = giaNhapMienBac;
+        tronGoiLapDatList.value[index].giaNhapMienNam = giaNhapMienNam;
+        tronGoiLapDatList.value[index].giaBanMienBac = giaBanMienBac;
+        tronGoiLapDatList.value[index].giaBanMienNam = giaBanMienNam;
+        tronGoiLapDatList.value[index].gm = vatTu.nhomVatTu.gm;
+        break;
+      }
     }
   }
 
