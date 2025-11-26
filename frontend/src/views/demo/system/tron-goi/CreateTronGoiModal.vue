@@ -2108,7 +2108,7 @@
         if (vatTuFinding.ma.includes('kep_giua')) {
           soLuongCal = ceil(tamPinList.value[0].soLuong / 5) * 8 + 4;
         }
-        if (vatTuFinding.ma.includes('full_rail')) {
+        if (vatTuFinding.ma.includes('full') && vatTuFinding.ma.includes('rail')) {
           soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4);
         }
         if (vatTuFinding.ma.includes('mini') && vatTuFinding.ma.includes('rail')) {
@@ -2208,7 +2208,7 @@
         if (vatTu.ma.includes('kep_giua')) {
           soLuongCal = ceil(tamPinList.value[0].soLuong / 5) * 8 + 4;
         }
-        if (vatTu.ma.includes('full_rail')) {
+        if (vatTu.ma.includes('full')&& vatTu.ma.includes('rail')) {
           soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4);
         }
         if (vatTu.ma.includes('mini') && vatTu.ma.includes('rail')) {
