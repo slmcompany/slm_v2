@@ -1405,9 +1405,10 @@
       </Row>
 
       <Divider orientation="center">Hình ảnh</Divider>
-      <FormItem label="Tải ảnh lên" 
-      :wrapper-col="{ span: 18 }"
-      :rules="[{ required: true, message: 'Vui lòng chọn 1 ảnh' }]"
+      <FormItem
+        label="Tải ảnh lên"
+        :wrapper-col="{ span: 18 }"
+        :rules="[{ required: true, message: 'Vui lòng chọn 1 ảnh' }]"
       >
         <Upload
           v-model:file-list="fileList"
@@ -1908,8 +1909,11 @@
     if (firstHeKhungNhom.ma.includes('kep_giua')) {
       soLuongCal = ceil(tamPinList.value[0].soLuong / 5) * 8 + 4;
     }
-    if (firstHeKhungNhom.ma.includes('full_rail')) {
+    if (firstHeKhungNhom.ma.includes('full') && firstHeKhungNhom.ma.includes('rail')) {
       soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4);
+    }
+    if (firstHeKhungNhom.ma.includes('mini') && firstHeKhungNhom.ma.includes('rail')) {
+      soLuongCal = ceil(tamPinList.value[0].soLuong / 5) * 12 + 8;
     }
     if (firstHeKhungNhom.ma.includes('thanh_noi')) {
       soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4) * 2 + 4;
@@ -1926,6 +1930,7 @@
     if (firstHeKhungNhom.ma.includes('kep_day_dien')) {
       soLuongCal = tamPinList.value[0].soLuong * 4;
     }
+
     heKhungNhomList.value.push({
       vatTuId: firstId,
       moTa: '',
@@ -2106,6 +2111,9 @@
         if (vatTuFinding.ma.includes('full_rail')) {
           soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4);
         }
+        if (vatTuFinding.ma.includes('mini') && vatTuFinding.ma.includes('rail')) {
+          soLuongCal = ceil(tamPinList.value[0].soLuong / 5) * 12 + 8;
+        }
         if (vatTuFinding.ma.includes('thanh_noi')) {
           soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4) * 2 + 4;
         }
@@ -2202,6 +2210,9 @@
         }
         if (vatTu.ma.includes('full_rail')) {
           soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4);
+        }
+        if (vatTu.ma.includes('mini') && vatTu.ma.includes('rail')) {
+          soLuongCal = ceil(tamPinList.value[0].soLuong / 5) * 12 + 8;
         }
         if (vatTu.ma.includes('thanh_noi')) {
           soLuongCal = ceil((tamPinList.value[0].soLuong * 1.2 * 2) / 4) * 2 + 4;
@@ -2326,10 +2337,10 @@
       ...tronGoiLapDatList.value,
     ];
     for (const vatTu of allVatTu) {
-      if(vatTu.giaBanMienBac){
+      if (vatTu.giaBanMienBac) {
         tongGiaMienBac += (vatTu.giaBanMienBac || 0) * (vatTu.soLuong || 0);
       }
-      if(vatTu.giaBanMienNam){
+      if (vatTu.giaBanMienNam) {
         tongGiaMienNam += (vatTu.giaBanMienNam || 0) * (vatTu.soLuong || 0);
       } else {
         tongGiaMienNam += (vatTu.giaBanMienBac || 0) * (vatTu.soLuong || 0);

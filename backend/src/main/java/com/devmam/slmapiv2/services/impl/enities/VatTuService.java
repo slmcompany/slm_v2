@@ -87,15 +87,16 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         creatingVattu = create(creatingVattu);
 
         int i = 0;
+        Date now = new Date();
         if (files != null) {
             for (MultipartFile file : files) {
                 i++;
                 try {
-                    String objectName = minioService.upload(file, "vat_tu_anh" + creatingVattu.getTen() + "_" + i);
+                    String objectName = minioService.upload(file, "vat_tu_anh" + creatingVattu.getTen() + "_" + now.getTime() + "_" + i);
                     TepTin creatingTepTin = tepTinService.create(
                             TepTin.builder()
-                                    .tenTepGoc(creatingVattu.getTen() + "_" + i)
-                                    .tenTaiLen(creatingVattu.getTen() + "_" + i)
+                                    .tenTepGoc(objectName)
+                                    .tenTaiLen(objectName)
                                     .tenLuuTru(objectName)
                                     .duongDan(minioService.getPublicUrl(objectName))
                                     .loaiTepTin(FileType.IMAGE.toString())

@@ -93,6 +93,8 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             }
             tronGoi = create(tronGoi);
 
+
+
             for (VatTuTronGoiCreatingDto vatTuTronGoiDto : dto.getVatTuTronGois()) {
                 Optional<VatTu> vatTu = vatTuService.getOne(vatTuTronGoiDto.getVatTuId());
                 if (vatTu.isEmpty()) {
@@ -126,9 +128,9 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                         .trangThai(vatTuTronGoiDto.getTrangThai())
                         .build());
             }
-
+            Date now = new Date();
             try {
-                String objectName = minioService.upload(file, "tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa());
+                String objectName = minioService.upload(file, "tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa() + "_" + now.getTime());
                 TepTin creatingTepTin = tepTinService.create(
                         TepTin.builder()
                                 .tenTepGoc("tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa())
@@ -240,6 +242,12 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
         if (tronGoi.isEmpty()) {
             throw new CommonException("Không tồn tại trọn gói id: " + id);
         }
+        TepTin tepTin = tronGoi.get().getTepTin();
+
+        minioService.delete(tepTin.getTenLuuTru());
+
+        tepTinService.delete(tepTin.getId());
+
         TronGoiDto dto = TronGoiDto.builder()
                 .ten(tronGoi.get().getTen())
                 .id(tronGoi.get().getId())
