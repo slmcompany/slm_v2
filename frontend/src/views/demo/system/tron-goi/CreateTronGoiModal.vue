@@ -734,7 +734,7 @@
                       show-search
                       :filter-option="filterOption"
                       :options="heDayDienOptions"
-                      @change="handleHeDayDienChange(values, itemIndex)"
+                      @change="(value) => handleHeDayDienChange(value, itemIndex)"
                     ></Select>
                   </FormItem>
                 </Col>
@@ -878,7 +878,7 @@
                       show-search
                       :filter-option="filterOption"
                       :options="tuDienOptions"
-                      @change="handleTuDienChange(values, itemIndex)"
+                      @change="(value) => handleTuDienChange(value, itemIndex)"
                     ></Select>
                   </FormItem>
                 </Col>
@@ -1022,7 +1022,7 @@
                       show-search
                       :filter-option="filterOption"
                       :options="heTiepDiaOptions"
-                      @change="handleHeTiepDiaChange(values, itemIndex)"
+                      @change="(value) => handleHeTiepDiaChange(value, itemIndex)"
                     ></Select>
                   </FormItem>
                 </Col>
@@ -1170,7 +1170,7 @@
                       show-search
                       :filter-option="filterOption"
                       :options="tronGoiLapDatOptions"
-                      @change="handleTronGoiLapDatChange(values, itemIndex)"
+                      @change="(value) => handleTronGoiLapDatChange(value, itemIndex)"
                     ></Select>
                   </FormItem>
                 </Col>
@@ -2265,7 +2265,10 @@
 
   function handleTuDienChange(value: number, index: number) {
     for (const vatTu of tuDienData.value) {
+      console.log('Tu dien changed to value:', value);
+      console.log('Checking vatTu id:', vatTu.id);
       if (vatTu.id === value) {
+        console.log('Found tu dien vat tu:', vatTu.id);
         let dsGiaVatTu = vatTu.thongTinGias[vatTu.thongTinGias.length - 1].dsGia;
         let giaNhapMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaNhap || 0;
         let giaNhapMienNam = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaNhap || 0;
