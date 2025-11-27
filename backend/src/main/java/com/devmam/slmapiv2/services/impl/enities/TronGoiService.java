@@ -94,7 +94,6 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             tronGoi = create(tronGoi);
 
 
-
             for (VatTuTronGoiCreatingDto vatTuTronGoiDto : dto.getVatTuTronGois()) {
                 Optional<VatTu> vatTu = vatTuService.getOne(vatTuTronGoiDto.getVatTuId());
                 if (vatTu.isEmpty()) {
@@ -195,19 +194,19 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
 
         }
 
-        if (file != null) {
-            try {
-                tronGoi.setTen(dto.getTen());
-                tronGoi.setLoaiHeThong(dto.getLoaiHeThong());
-                tronGoi.setLoaiPha(dto.getLoaiPha());
-                tronGoi.setCongSuatHeThong(dto.getCongSuatHeThong());
-                tronGoi.setSanLuongToiThieu(dto.getSanLuongToiThieu());
-                tronGoi.setSanLuongToiDa(dto.getSanLuongToiDa());
-                tronGoi.setTongGia(dto.getTongGia());
-                tronGoi.setGmTong(dto.getGmTong());
-                tronGoi.setBanChay(dto.getBanChay());
-                tronGoi.setTrangThai(dto.getTrangThai());
 
+        try {
+            tronGoi.setTen(dto.getTen());
+            tronGoi.setLoaiHeThong(dto.getLoaiHeThong());
+            tronGoi.setLoaiPha(dto.getLoaiPha());
+            tronGoi.setCongSuatHeThong(dto.getCongSuatHeThong());
+            tronGoi.setSanLuongToiThieu(dto.getSanLuongToiThieu());
+            tronGoi.setSanLuongToiDa(dto.getSanLuongToiDa());
+            tronGoi.setTongGia(dto.getTongGia());
+            tronGoi.setGmTong(dto.getGmTong());
+            tronGoi.setBanChay(dto.getBanChay());
+            tronGoi.setTrangThai(dto.getTrangThai());
+            if (file != null) {
                 String objectName = minioService.upload(file, "tron_goi" + "_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa() + "_" + new Date().getTime());
                 tepTin.setTenLuuTru(objectName);
                 tepTin.setTenTepGoc(objectName);
@@ -215,18 +214,20 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 tepTin.setLoaiTepTin(FileType.IMAGE.toString());
                 tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
                 tepTin = tepTinService.update(tepTin.getId(), tepTin);
-                if (isNew) {
-                    tepTin = tepTinService.create(tepTin);
-                } else {
-                    tepTin = tepTinService.update(tepTin.getId(), tepTin);
-                }
-
-                tronGoi.setTepTin(tepTin);
-                tronGoi = update(tronGoi.getId(), tronGoi);
-            } catch (Exception e) {
-                throw new RuntimeException("Lỗi trong quá trình upload file: ", e);
             }
+
+            if (isNew) {
+                tepTin = tepTinService.create(tepTin);
+            } else {
+                tepTin = tepTinService.update(tepTin.getId(), tepTin);
+            }
+
+            tronGoi.setTepTin(tepTin);
+            tronGoi = update(tronGoi.getId(), tronGoi);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi trong quá trình upload file: ", e);
         }
+
         return ResponseEntity.ok(
                 ResponseData.<TronGoiDto>builder()
                         .status(200)

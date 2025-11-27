@@ -162,7 +162,7 @@ export interface VatTuTronGoiDto {
   trangThai: number;
 }
 export interface VatTuTronGoiCreatingDto {
-  vatTuId: number| undefined;
+  vatTuId: number | undefined;
   moTa: string;
   soLuong: number;
   giaNhapMienBac: number;
@@ -218,7 +218,7 @@ export interface TronGoiCreateDto {
   ten: string;
   loaiHeThong: string;
   loaiPha: string;
-  giaKhungSat: number
+  giaKhungSat: number;
   moTa: string;
   tongGiaMienBac: number;
   tongGiaMienNam: number;
@@ -382,10 +382,10 @@ export function getAllNhomTronGoi() {
 }
 
 export function filterVatTu(
-  nhomVatTuId: number | null, 
-  maNhomVatTu:string|null,
+  nhomVatTuId: number | null,
+  maNhomVatTu: string | null,
   thuongHieuIds: number[] | null,
-  ) {
+) {
   const filters: FilterCriteria[] = [];
   const sorts: SortCriteria[] = [];
   if (thuongHieuIds) {
@@ -396,7 +396,7 @@ export function filterVatTu(
     });
   }
 
-  if(maNhomVatTu){
+  if (maNhomVatTu) {
     filters.push({
       fieldName: 'nhomVatTu.ma',
       operation: 'EQUALS',
@@ -490,8 +490,6 @@ export function updateTronGoi(id: number, data: TronGoiUpdateDto, file: File | n
     });
 }
 
-
-
 export function getAllNhomVatTu() {
   return realHttp
     .post<ResponseData<PageResponse<NhomVatTuDto>>>(
@@ -511,13 +509,90 @@ export function getAllNhomVatTu() {
     .then((res: any) => res as ResponseData<PageResponse<NhomVatTuDto>>);
 }
 
-export function deleteTronGoi(id: number){
-  return realHttp.delete<ResponseData<TronGoiDto>>(
-    {
-      url: Api.Delete+id,
-    },
-    {
-      isTransformResponse: false,
-    },
-  ).then((res: any) => res as ResponseData<TronGoiDto>);
+export function deleteTronGoi(id: number) {
+  return realHttp
+    .delete<ResponseData<TronGoiDto>>(
+      {
+        url: Api.Delete + id,
+      },
+      {
+        isTransformResponse: false,
+      },
+    )
+    .then((res: any) => res as ResponseData<TronGoiDto>);
+}
+
+// Công thức phân loại vật tư trong trọn gói
+import { ref } from 'vue';
+const tronGoi = ref<TronGoiDto>({} as TronGoiDto);
+
+const BIEN_TAN = 'BIEN_TAN';
+const TAM_PIN = 'TAM_PIN';
+const PIN_LUU_TRU = 'PIN_LUU_TRU';
+const HE_KHUNG_NHOM = 'HE_KHUNG_NHOM';
+const HE_DAY_DIEN = 'HE_DAY_DIEN';
+const TU_DIEN = 'TU_DIEN';
+const HE_TIEP_DIA = 'HE_TIEP_DIA';
+const TRON_GOI_LAP_DAT = 'TRON_GOI_LAP_DAT';
+
+const BIEN_TAN_SUB_LIST = ref<VatTuTronGoiDto[]>([]);
+const TAM_PIN_SUB_LIST = ref<VatTuTronGoiDto[]>([]);
+const PIN_LUU_TRU_SUB_LIST = ref<VatTuTronGoiDto[]>([]);
+const HE_KHUNG_NHOM_SUB_LIST = ref<VatTuTronGoiDto[]>([]);
+const HE_DAY_DIEN_SUB_LIST = ref<VatTuTronGoiDto[]>([]);
+const TU_DIEN_SUB_LIST = ref<VatTuTronGoiDto[]>([]);
+const HE_TIEP_DIA_SUB_LIST = ref<VatTuTronGoiDto[]>([]);
+const TRON_GOI_LAP_DAT_SUB_LIST = ref<VatTuTronGoiDto[]>([]);
+
+const BIEN_TAN_MAIN = ref<VatTuTronGoiDto | null>({} as VatTuTronGoiDto);
+const TAM_PIN_MAIN = ref<VatTuTronGoiDto | null>({} as VatTuTronGoiDto);
+const PIN_LUU_TRU_MAIN = ref<VatTuTronGoiDto | null>({} as VatTuTronGoiDto);
+const TU_DIEN_MAIN = ref<VatTuTronGoiDto | null>({} as VatTuTronGoiDto);
+
+for (const vt of tronGoi.value.vatTuTronGois || []) {
+  switch (vt.vatTu.nhomVatTu.ma) {
+    case BIEN_TAN:
+      if (vt.duocXem && vt.duocBaoHanh) {
+        BIEN_TAN_MAIN.value = vt;
+      } else {
+        BIEN_TAN_SUB_LIST.value.push(vt);
+      }
+      break;
+    case TAM_PIN:
+      if (vt.duocXem && vt.duocBaoHanh) {
+        TAM_PIN_MAIN.value = vt;
+      } else {
+        TAM_PIN_SUB_LIST.value.push(vt);
+      }
+      break;
+    case PIN_LUU_TRU:
+      if (vt.duocXem && vt.duocBaoHanh) {
+        PIN_LUU_TRU_MAIN.value = vt;
+      } else {
+        PIN_LUU_TRU_SUB_LIST.value.push(vt);
+      }
+      break;
+    case HE_KHUNG_NHOM:
+      HE_KHUNG_NHOM_SUB_LIST.value.push(vt);
+      break;
+    case HE_DAY_DIEN:
+      HE_DAY_DIEN_SUB_LIST.value.push(vt);
+      break;
+    case TU_DIEN:
+      TU_DIEN_SUB_LIST.value.push(vt);
+      if (vt.duocXem && vt.duocBaoHanh) {
+        TU_DIEN_MAIN.value = vt;
+      } else {
+        TU_DIEN_SUB_LIST.value.push(vt);
+      }
+      break;
+    case HE_TIEP_DIA:
+      HE_TIEP_DIA_SUB_LIST.value.push(vt);
+      break;
+    case TRON_GOI_LAP_DAT:
+      TRON_GOI_LAP_DAT_SUB_LIST.value.push(vt);
+      break;
+    default:
+      break;
+  }
 }
