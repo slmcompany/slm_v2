@@ -95,6 +95,17 @@
                   </FormItem>
                 </Col>
                 <Col :span="12">
+                  <FormItem label="Thời gian BH (tháng)">
+                    <InputNumber
+                      v-model:value="item.thoiGianBaoHanh"
+                      placeholder="Nhập thời gian bảo hành"
+                      :min="0"
+                      style="width: 100%"
+                      :disabled="!item.duocBaoHanh"
+                    />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
                   <FormItem label="Trạng thái">
                     <RadioGroup v-model:value="item.trangThai" button-style="solid">
                       <RadioButton :value="1">Kích hoạt</RadioButton>
@@ -132,6 +143,17 @@
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Thời gian BH (tháng)">
+                    <InputNumber
+                      v-model:value="item.thoiGianBaoHanh"
+                      placeholder="Nhập thời gian bảo hành"
+                      :min="0"
+                      style="width: 100%"
+                      :disabled="!item.duocBaoHanh"
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -175,6 +197,17 @@
                   </FormItem>
                 </Col>
                 <Col :span="12">
+                  <FormItem label="Thời gian BH (tháng)">
+                    <InputNumber
+                      v-model:value="item.thoiGianBaoHanh"
+                      placeholder="Nhập thời gian bảo hành"
+                      :min="0"
+                      style="width: 100%"
+                      :disabled="!item.duocBaoHanh"
+                    />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
                   <FormItem label="Trạng thái">
                     <RadioGroup v-model:value="item.trangThai" button-style="solid">
                       <RadioButton :value="1">Kích hoạt</RadioButton>
@@ -212,6 +245,17 @@
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Thời gian BH (tháng)">
+                    <InputNumber
+                      v-model:value="item.thoiGianBaoHanh"
+                      placeholder="Nhập thời gian bảo hành"
+                      :min="0"
+                      style="width: 100%"
+                      :disabled="!item.duocBaoHanh"
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -255,6 +299,17 @@
                   </FormItem>
                 </Col>
                 <Col :span="12">
+                  <FormItem label="Thời gian BH (tháng)">
+                    <InputNumber
+                      v-model:value="item.thoiGianBaoHanh"
+                      placeholder="Nhập thời gian bảo hành"
+                      :min="0"
+                      style="width: 100%"
+                      :disabled="!item.duocBaoHanh"
+                    />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
                   <FormItem label="Trạng thái">
                     <RadioGroup v-model:value="item.trangThai" button-style="solid">
                       <RadioButton :value="1">Kích hoạt</RadioButton>
@@ -292,6 +347,17 @@
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Thời gian BH (tháng)">
+                    <InputNumber
+                      v-model:value="item.thoiGianBaoHanh"
+                      placeholder="Nhập thời gian bảo hành"
+                      :min="0"
+                      style="width: 100%"
+                      :disabled="!item.duocBaoHanh"
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -335,6 +401,17 @@
                   </FormItem>
                 </Col>
                 <Col :span="12">
+                  <FormItem label="Thời gian BH (tháng)">
+                    <InputNumber
+                      v-model:value="item.thoiGianBaoHanh"
+                      placeholder="Nhập thời gian bảo hành"
+                      :min="0"
+                      style="width: 100%"
+                      :disabled="!item.duocBaoHanh"
+                    />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
                   <FormItem label="Trạng thái">
                     <RadioGroup v-model:value="item.trangThai" button-style="solid">
                       <RadioButton :value="1">Kích hoạt</RadioButton>
@@ -372,6 +449,17 @@
                       <RadioButton :value="true">Có</RadioButton>
                       <RadioButton :value="false">Không</RadioButton>
                     </RadioGroup>
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Thời gian BH (tháng)">
+                    <InputNumber
+                      v-model:value="item.thoiGianBaoHanh"
+                      placeholder="Nhập thời gian bảo hành"
+                      :min="0"
+                      style="width: 100%"
+                      :disabled="!item.duocBaoHanh"
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -561,6 +649,7 @@
     vatTuTen: string;
     nhomVatTuMa: string;
     duocBaoHanh: boolean;
+    thoiGianBaoHanh: number; // ← THÊM DÒNG NÀY
     duocXem: boolean;
     trangThai: number;
   };
@@ -684,11 +773,13 @@
     // Load và phân nhóm vật tư
     if (record.vatTuTronGois && record.vatTuTronGois.length > 0) {
       record.vatTuTronGois.forEach((item) => {
+        // Tìm dòng này trong hàm loadRecordData:
         const vatTuItem: VatTuUpdateItem = {
           id: item.id,
           vatTuTen: item.vatTu?.ten || 'N/A',
           nhomVatTuMa: item.vatTu?.nhomVatTu?.ma || '',
           duocBaoHanh: item.duocBaoHanh ?? true,
+          thoiGianBaoHanh: item.thoiGianBaoHanh || 0, // ← THÊM DÒNG NÀY
           duocXem: item.duocXem ?? true,
           trangThai: item.trangThai ?? 1,
         };
@@ -800,7 +891,7 @@
           URL.revokeObjectURL(currentBlobUrl.value);
           currentBlobUrl.value = null;
         }
-        
+
         message.success('Cập nhật thành công');
         closeModal();
         emit('success', result.data);

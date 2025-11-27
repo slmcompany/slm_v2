@@ -123,6 +123,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                         .gia(giaBanTheoKhuVuc)
                         .gm(vatTuTronGoiDto.getGm())
                         .duocBaoHanh(vatTuTronGoiDto.getDuocBaoHanh())
+                        .thoiGianBaoHanh(vatTuTronGoiDto.getThoiGianBaoHanh())
                         .duocXem(vatTuTronGoiDto.getDuocXem())
                         .trangThai(vatTuTronGoiDto.getTrangThai())
                         .build());
@@ -132,8 +133,8 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 String objectName = minioService.upload(file, "tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa() + "_" + now.getTime());
                 TepTin creatingTepTin = tepTinService.create(
                         TepTin.builder()
-                                .tenTepGoc("tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa())
-                                .tenTaiLen("tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa())
+                                .tenTepGoc(objectName)
+                                .tenTaiLen(objectName)
                                 .tenLuuTru(objectName)
                                 .duongDan(minioService.getPublicUrl(objectName))
                                 .loaiTepTin(FileType.IMAGE.toString())
@@ -173,6 +174,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             for (VatTuTronGoiUpdatingDto vatTuTronGoiUpdatingDto : dsVatTuTronGoiUpdatingDtos) {
                 if (vatTuTronGoi.getId().equals(vatTuTronGoiUpdatingDto.getId())) {
                     vatTuTronGoi.setDuocBaoHanh(vatTuTronGoiUpdatingDto.getDuocBaoHanh());
+                    vatTuTronGoi.setThoiGianBaoHanh(vatTuTronGoiUpdatingDto.getThoiGianBaoHanh());
                     vatTuTronGoi.setDuocXem(vatTuTronGoiUpdatingDto.getDuocXem());
                     vatTuTronGoi.setTrangThai(vatTuTronGoiUpdatingDto.getTrangThai());
                 }

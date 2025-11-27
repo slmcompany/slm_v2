@@ -92,7 +92,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
             for (MultipartFile file : files) {
                 i++;
                 try {
-                    String objectName = minioService.upload(file, "vat_tu_anh" + creatingVattu.getTen() + "_" + now.getTime() + "_" + i);
+                    String objectName = minioService.upload(file, "vat_tu_anh_" + creatingVattu.getTen() + "_" + now.getTime() + "_" + i);
                     TepTin creatingTepTin = tepTinService.create(
                             TepTin.builder()
                                     .tenTepGoc(objectName)
@@ -183,7 +183,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 TepTin tepTin = null;
                 String objectName = null;
                 try {
-                    objectName = minioService.upload(file, "vat_tu_anh" + dto.getTen() + "_" + now.getTime() + "_" + (i + 1));
+                    objectName = minioService.upload(file, "vat_tu_anh_" + dto.getTen() + "_" + now.getTime() + "_" + (i + 1));
                 } catch (Exception e) {
                     log.error("Lỗi tạo tệp tin cho vật tư: {}", dto.getTen(), e);
                     throw new RuntimeException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);

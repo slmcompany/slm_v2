@@ -241,6 +241,7 @@ export interface TronGoiUpdateDto {
   vatTuTronGois: Array<{
     id: number;
     duocBaoHanh: boolean;
+    thoiGianBaoHanh: number;
     duocXem: boolean;
     trangThai: number;
   }>;
