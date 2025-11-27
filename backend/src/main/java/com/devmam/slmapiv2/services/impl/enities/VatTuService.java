@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.text.Normalizer;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -152,14 +151,15 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         }
 
         VatTu vatTu = vatTuFinding.get();
+        Date now = new Date();
 
         if (sheet != null) {
             try {
-                String objectName = minioService.upload(sheet, "vat_tu_sheet" + dto.getTen());
+                String objectName = minioService.upload(sheet, "vat_tu_sheet" + dto.getTen()+"_"+ now.getTime());
                 TepTin creatingTepTin = tepTinService.create(
                         TepTin.builder()
-                                .tenTepGoc(dto.getTen())
-                                .tenTaiLen(dto.getTen())
+                                .tenTepGoc(objectName)
+                                .tenTaiLen(objectName)
                                 .tenLuuTru(objectName)
                                 .duongDan(minioService.getPublicUrl(objectName))
                                 .loaiTepTin(FileType.PDF.toString())
@@ -175,6 +175,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
 
         List<AnhVatTu> dsAnhVatTu = vatTuFinding.get().getAnhVatTus();
 
+
         int i = 0;
         if (files != null) {
             for (MultipartFile file : files) {
@@ -182,7 +183,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 TepTin tepTin = null;
                 String objectName = null;
                 try {
-                    objectName = minioService.upload(file, "vat_tu_anh" + dto.getTen() + "_" + (i + 1));
+                    objectName = minioService.upload(file, "vat_tu_anh" + dto.getTen() + "_" + now.getTime() + "_" + (i + 1));
                 } catch (Exception e) {
                     log.error("Lỗi tạo tệp tin cho vật tư: {}", dto.getTen(), e);
                     throw new RuntimeException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
@@ -192,8 +193,8 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                     tepTin = anhVatTu.getTepTin();
                     tepTin.setTenLuuTru(objectName);
                     tepTin.setDuongDan(minioService.getPublicUrl(objectName));
-                    tepTin.setTenTepGoc(dto.getTen() + "_" + (i + 1));
-                    tepTin.setTenTaiLen(dto.getTen() + "_" + (i + 1));
+                    tepTin.setTenTepGoc(objectName);
+                    tepTin.setTenTaiLen(objectName);
                     tepTin.setLoaiTepTin(FileType.IMAGE.toString());
                     try {
                         tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
@@ -203,8 +204,8 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                     i++;
                 } else {
                     tepTin = TepTin.builder()
-                            .tenTepGoc(dto.getTen() + "_" + (i + 1))
-                            .tenTaiLen(dto.getTen() + "_" + (i + 1))
+                            .tenTepGoc(objectName)
+                            .tenTaiLen(objectName)
                             .tenLuuTru(objectName)
                             .duongDan(minioService.getPublicUrl(objectName))
                             .loaiTepTin(FileType.IMAGE.toString())
