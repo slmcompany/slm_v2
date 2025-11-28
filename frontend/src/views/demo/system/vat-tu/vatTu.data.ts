@@ -40,38 +40,63 @@ export const columns: BasicColumn[] = [
       if (!record.duLieuRieng || Object.keys(record.duLieuRieng).length === 0) {
         return h('span', { style: { color: '#999' } }, '-');
       }
-      
+
       const duLieuList = Object.values(record.duLieuRieng);
-      
-      const tooltipContent = h('div', { style: { maxWidth: '300px' } }, 
+
+      const tooltipContent = h(
+        'div',
+        { style: { maxWidth: '300px' } },
         duLieuList.map((item: any, index: number) => {
           let text = item.ten;
           if (item.giaTri) text += `: ${item.giaTri}`;
           if (item.donVi) text += ` (${item.donVi})`;
-          return h('div', { 
-            key: index,
-            style: { 
-              marginBottom: index < duLieuList.length - 1 ? '8px' : '0',
-              lineHeight: '1.5'
-            } 
-          }, text);
-        })
+          return h(
+            'div',
+            {
+              key: index,
+              style: {
+                marginBottom: index < duLieuList.length - 1 ? '8px' : '0',
+                lineHeight: '1.5',
+              },
+            },
+            text,
+          );
+        }),
       );
-      
+
       return h(
         Tooltip,
-        { 
+        {
           placement: 'topLeft',
-          overlayInnerStyle: { maxWidth: '350px' }
+          overlayInnerStyle: { maxWidth: '350px' },
         },
         {
           title: () => tooltipContent,
-          default: () => h(
-            Tag, 
-            { color: 'blue', style: { cursor: 'pointer' } }, 
-            { default: () => `${duLieuList.length} thuộc tính` }
-          )
-        }
+          default: () =>
+            h(
+              Tag,
+              { color: 'blue', style: { cursor: 'pointer' } },
+              { default: () => `${duLieuList.length} thuộc tính` },
+            ),
+        },
+      );
+    },
+  },
+  {
+    dataIndex: 'sheetLink',
+    width: 100,
+    customRender: ({ record }) => {
+      if (!record.sheetLink) {
+        return h('span', { style: { color: '#999' } }, '-');
+      }
+      return h(
+        'a',
+        {
+          href: record.sheetLink,
+          target: '_blank',
+          style: { color: '#1890ff' },
+        },
+        'Link',
       );
     },
   },
@@ -81,10 +106,8 @@ export const columns: BasicColumn[] = [
     width: 120,
     customRender: ({ record }) => {
       const status = record.trangThai === 1;
-      return h(
-        Tag,
-        { color: status ? 'success' : 'error' },
-        () => status ? 'Kích hoạt' : 'Vô hiệu'
+      return h(Tag, { color: status ? 'success' : 'error' }, () =>
+        status ? 'Kích hoạt' : 'Vô hiệu',
       );
     },
   },
@@ -247,7 +270,7 @@ export const formSchema: FormSchema[] = [
     slot: 'duLieuRieng',
     colProps: { span: 24 },
   } as FormSchema,
-  // Thông tin giá - dùng slot  
+  // Thông tin giá - dùng slot
   {
     field: 'dsGia',
     label: 'Thông tin giá',
