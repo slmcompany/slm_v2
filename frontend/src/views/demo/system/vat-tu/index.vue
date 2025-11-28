@@ -121,11 +121,11 @@
           <div v-if="record.anhVatTus && record.anhVatTus.length > 0">
             <strong>Hình ảnh:</strong>
             <div style="display: flex; flex-wrap: wrap; margin-top: 8px; gap: 8px">
-              <a-image
+              <Image
                 v-for="anh in record.anhVatTus"
                 :key="anh.id"
                 :width="100"
-                :src="anh.tepTin?.url || anh.tepTin?.duongDan || ''"
+                :src="anh.tepTin?.duongDan"
                 :preview="true"
               />
             </div>
@@ -167,7 +167,7 @@
   import type { VatTuDto } from './vatTu';
   import VatTuModal from './VatTuModal.vue';
   import UpdateVatTuModal from './UpdateVatTuModal.vue';
-  import { Alert, Button, Descriptions, DescriptionsItem, Divider, message } from 'ant-design-vue';
+  import { Alert, Button, Descriptions, DescriptionsItem, Divider, Image, message } from 'ant-design-vue';
   import { computed } from 'vue';
 
   defineOptions({ name: 'VatTuManagement' });

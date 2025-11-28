@@ -142,12 +142,12 @@
             </template>
           </Descriptions>
 
-          <Divider v-if="record.tepTin?.url" />
+          <Divider v-if="record.tepTin?.duongDan" />
 
-          <div v-if="record.tepTin?.url">
+          <div v-if="record.tepTin?.duongDan">
             <strong>Hình ảnh:</strong>
             <div style="margin-top: 8px">
-              <a-image :width="200" :src="record.tepTin.url" :preview="true" />
+              <Image :width="200" :src="record.tepTin.duongDan" :preview="true" />
             </div>
           </div>
         </div>
@@ -171,7 +171,7 @@
   import { filterTronGoi, getAllNhomTronGoi, TronGoiDto, deleteTronGoi } from './tronGoi';
   import CreateTronGoiModal from './CreateTronGoiModal.vue';
   import UpdateTronGoiModal from './UpdateTronGoiModal.vue';
-  import { Alert, Button, Descriptions, DescriptionsItem, message, Table } from 'ant-design-vue';
+  import { Alert, Button, Descriptions, DescriptionsItem, Divider, Image, message, Table } from 'ant-design-vue';
 
   defineOptions({ name: 'TronGoiManagement' });
 
