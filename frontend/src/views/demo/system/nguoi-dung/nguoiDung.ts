@@ -1,11 +1,10 @@
-import { defHttp } from '@/utils/http/axios';
 import { realHttp } from '@/utils/http/axios';
 
-
 enum Api {
-  Filter = '/nguoi-dung/filter'
+  Filter = '/nguoi-dung/filter',
+  GetAll = '/nguoi-dung/all',
+  GetById = '/nguoi-dung/',
 }
-
 
 export interface FilterCriteria {
   fieldName: string;
@@ -50,19 +49,15 @@ export interface ResponseData<T> {
   error?: any;
 }
 
-
 export interface CoSoDto {
   id: number;
-  ma: string;
   ten: string;
-  dcVanPhong: string;
-  dcKho: string;
-  taoLuc: string;
+  diaChi: string;
+  sdt: string;
   trangThai: number;
 }
 
-
-export interface KhachHangDto{
+export interface KhachHangDto {
   id: number;
   email: string;
   sdt: string;
@@ -72,10 +67,10 @@ export interface KhachHangDto{
   diaChi: string;
   daBanDuocHang: boolean;
   taoLuc: string;
-  trangThai: string;
+  trangThai: number;
 }
 
-export interface NguoiDungDto{
+export interface NguoiDungDto {
   id: number;
   coSo: CoSoDto;
   phanQuyen: string;
@@ -94,31 +89,80 @@ export interface NguoiDungDto{
   trangThai: number;
   khachHangs: KhachHangDto[];
 }
+
 export function convertToFilterRequest(params: any): BaseFilterRequest {
   const filters: FilterCriteria[] = [];
   const sorts: SortCriteria[] = [];
 
-  if (params.ten) {
+  if (params.hoVaTen) {
     filters.push({
-      fieldName: 'ten',
+      fieldName: 'hoVaTen',
       operation: 'ILIKE',
-      value: params.ten,
+      value: params.hoVaTen,
     });
   }
 
-  if(params.sdt) {
+  if (params.email) {
+    filters.push({
+      fieldName: 'email',
+      operation: 'ILIKE',
+      value: params.email,
+    });
+  }
+
+  if (params.sdt) {
     filters.push({
       fieldName: 'sdt',
       operation: 'ILIKE',
-      value: params.ten,
+      value: params.sdt,
     });
   }
+
+  if (params.phanQuyen) {
+    filters.push({
+      fieldName: 'phanQuyen',
+      operation: 'EQUALS',
+      value: params.phanQuyen,
+    });
+  }
+
+  if (params.trangThai !== undefined && params.trangThai !== null && params.trangThai !== '') {
+    filters.push({
+      fieldName: 'trangThai',
+      operation: 'EQUALS',
+      value: params.trangThai,
+    });
+  }
+
+  if (params.sortField) {
+    sorts.push({
+      fieldName: params.sortField,
+      direction: params.sortOrder === 'ascend' ? 'ASC' : 'DESC',
+    });
+  } else {
+    sorts.push({
+      fieldName: 'id',
+      direction: 'DESC',
+    });
+  }
+
   return {
     filters,
     sorts,
     page: params.page ? params.page - 1 : 0,
     size: params.pageSize || 20,
   };
+}
+
+export function getAllNguoiDung() {
+  return realHttp.get<ResponseData<NguoiDungDto[]>>(
+    {
+      url: Api.GetAll,
+    },
+    {
+      isTransformResponse: false,
+    }
+  ).then((res: any) => res as ResponseData<NguoiDungDto[]>);
 }
 
 export function filterNguoiDung(params: any) {
@@ -136,4 +180,17 @@ export function filterNguoiDung(params: any) {
     .then((res: any) => {
       return res as ResponseData<PageResponse<NguoiDungDto>>;
     });
+}
+
+export function getNguoiDungById(id: number) {
+  return realHttp
+    .get<ResponseData<NguoiDungDto>>(
+      {
+        url: `${Api.GetById}${id}`,
+      },
+      {
+        isTransformResponse: false,
+      },
+    )
+    .then((res: any) => res.data as ResponseData<NguoiDungDto>);
 }

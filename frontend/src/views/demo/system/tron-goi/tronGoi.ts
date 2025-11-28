@@ -311,8 +311,8 @@ export function convertToFilterRequest(params: any): BaseFilterRequest {
   return {
     filters,
     sorts,
-    page: params.page - 1 || 0,
-    size: params.size || 20,
+    page: params.page ? params.page - 1 : 0,
+    size: params.pageSize || 20,
   };
 }
 

@@ -144,6 +144,15 @@ const system: AppRouteModule = {
       },
       component: () => import('@/views/demo/system/quang-cao/index.vue'),
     },
+    {
+      path: 'nguoi-dung',
+      name: 'NguoiDungManagement',
+      meta: {
+        title: t('routes.demo.system.nguoiDung'),
+        ignoreKeepAlive: false,
+      },
+      component: () => import('@/views/demo/system/nguoi-dung/index.vue'),
+    }
   ],
 };
 
