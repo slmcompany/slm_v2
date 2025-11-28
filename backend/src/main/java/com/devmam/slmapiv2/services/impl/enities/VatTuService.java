@@ -153,19 +153,18 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         VatTu vatTu = vatTuFinding.get();
         Date now = new Date();
 
+        // Xử lý upload sheet PDF
         if (sheet != null) {
             try {
-                String objectName = minioService.upload(sheet, "vat_tu_sheet" + dto.getTen()+"_"+ now.getTime());
-                TepTin creatingTepTin = tepTinService.create(
-                        TepTin.builder()
-                                .tenTepGoc(objectName)
-                                .tenTaiLen(objectName)
-                                .tenLuuTru(objectName)
-                                .duongDan(minioService.getPublicUrl(objectName))
-                                .loaiTepTin(FileType.PDF.toString())
-                                .trangThai(1)
-                                .build()
-                );
+                String objectName = minioService.upload(sheet, "vat_tu_sheet_" + dto.getTen() + "_" + now.getTime());
+                TepTin creatingTepTin = TepTin.builder()
+                        .tenTepGoc(objectName)
+                        .tenTaiLen(objectName)
+                        .tenLuuTru(objectName)
+                        .duongDan(minioService.getPublicUrl(objectName))
+                        .loaiTepTin(FileType.PDF.toString())
+                        .trangThai(1)
+                        .build();
                 tepTinService.create(creatingTepTin);
                 vatTu.setSheetLink(minioService.getPublicUrl(objectName));
             } catch (Exception e) {
@@ -173,37 +172,54 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
             }
         }
 
-        List<AnhVatTu> dsAnhVatTu = vatTuFinding.get().getAnhVatTus();
+        // Lấy danh sách ảnh hiện tại
+        List<AnhVatTu> dsAnhVatTu = vatTu.getAnhVatTus();
+        int soAnhHienTai = dsAnhVatTu.size();
+        int soAnhMoi = (files != null) ? files.size() : 0;
 
-
-        int i = 0;
-        if (files != null) {
-            for (MultipartFile file : files) {
-                AnhVatTu anhVatTu = null;
-                TepTin tepTin = null;
+        // Bước 1: Xử lý upload và cập nhật ảnh mới
+        if (files != null && !files.isEmpty()) {
+            for (int i = 0; i < files.size(); i++) {
+                MultipartFile file = files.get(i);
                 String objectName = null;
+
                 try {
                     objectName = minioService.upload(file, "vat_tu_anh_" + dto.getTen() + "_" + now.getTime() + "_" + (i + 1));
                 } catch (Exception e) {
                     log.error("Lỗi tạo tệp tin cho vật tư: {}", dto.getTen(), e);
-                    throw new RuntimeException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
+                    throw new CommonException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
                 }
-                if (i <= dsAnhVatTu.size() - 1) {
-                    anhVatTu = dsAnhVatTu.get(i);
-                    tepTin = anhVatTu.getTepTin();
+
+                if (i < soAnhHienTai) {
+                    // Cập nhật ảnh có sẵn
+                    AnhVatTu anhVatTu = dsAnhVatTu.get(i);
+                    TepTin tepTin = anhVatTu.getTepTin();
+
+                    // Xóa file cũ trong MinIO
+                    try {
+                        minioService.delete(tepTin.getTenLuuTru());
+                    } catch (Exception e) {
+                        log.warn("Không thể xóa file cũ: {}", tepTin.getTenLuuTru(), e);
+                    }
+
+                    // Cập nhật thông tin file mới
                     tepTin.setTenLuuTru(objectName);
                     tepTin.setDuongDan(minioService.getPublicUrl(objectName));
                     tepTin.setTenTepGoc(objectName);
                     tepTin.setTenTaiLen(objectName);
                     tepTin.setLoaiTepTin(FileType.IMAGE.toString());
+
                     try {
                         tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        tepTin.setDuoiTep("jpg");
                     }
+
                     tepTinService.update(tepTin.getId(), tepTin);
-                    i++;
+
                 } else {
-                    tepTin = TepTin.builder()
+                    // Tạo ảnh mới
+                    TepTin tepTin = TepTin.builder()
                             .tenTepGoc(objectName)
                             .tenTaiLen(objectName)
                             .tenLuuTru(objectName)
@@ -211,40 +227,53 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                             .loaiTepTin(FileType.IMAGE.toString())
                             .trangThai(1)
                             .build();
+
                     try {
                         tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
                     } catch (Exception e) {
                         tepTin.setDuoiTep("jpg");
                     }
+
                     tepTin = tepTinService.create(tepTin);
+
                     anhVatTuService.create(
                             AnhVatTu.builder()
-                                    .vatTu(vatTuFinding.get())
+                                    .vatTu(vatTu)
                                     .tepTin(tepTin)
                                     .anhChinh(i == 0)
                                     .trangThai(1)
                                     .taoLuc(Instant.now())
                                     .build()
                     );
-                    i++;
                 }
             }
         }
 
-        int j = 0;
-        for (AnhVatTu anhVatTu : dsAnhVatTu) {
-            TepTin tepTin = anhVatTu.getTepTin();
-            minioService.delete(tepTin.getTenLuuTru());
-            if (j > i) {
+        // Bước 2: Xóa các ảnh thừa (nếu số ảnh mới < số ảnh cũ)
+        if (soAnhMoi < soAnhHienTai) {
+            for (int j = soAnhMoi; j < soAnhHienTai; j++) {
+                AnhVatTu anhVatTu = dsAnhVatTu.get(j);
+                TepTin tepTin = anhVatTu.getTepTin();
+
+                // Xóa file trong MinIO
+                try {
+                    minioService.delete(tepTin.getTenLuuTru());
+                } catch (Exception e) {
+                    log.warn("Không thể xóa file: {}", tepTin.getTenLuuTru(), e);
+                }
+
+                // Xóa record trong DB
                 anhVatTuService.delete(anhVatTu.getId());
                 tepTinService.delete(tepTin.getId());
             }
-            j++;
         }
+
+        // Cập nhật thông tin vật tư
         vatTu.setTen(dto.getTen());
         vatTu.setMa(genMaVatTu(dto.getTen()));
         vatTu.setTrangThai(dto.getTrangThai());
 
+        // Lấy lại thông tin mới nhất
         vatTuFinding = getOne(dto.getId());
 
         return ResponseEntity.ok(

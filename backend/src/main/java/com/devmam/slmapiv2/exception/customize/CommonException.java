@@ -16,6 +16,7 @@ public class CommonException extends RuntimeException {
 
     public CommonException(String message, Throwable cause) {
         super(message, cause);
+        this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     public CommonException(String message) {

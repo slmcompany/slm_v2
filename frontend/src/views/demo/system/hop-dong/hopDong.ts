@@ -214,7 +214,7 @@ export function convertToFilterRequest(params: any): BaseFilterRequest {
     filters,
     sorts: [],
     page: params.page - 1 || 0,
-    size: params.size || 10,
+    size: params.size || 20,
   };
 }
 
