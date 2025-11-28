@@ -18,7 +18,7 @@
       }}</pre>
     </div>
 
-    <a-alert
+    <Alert
       v-if="showDebug && !loadError"
       type="info"
       show-icon
@@ -30,25 +30,25 @@
           lastResultsDebug
         }}</pre>
       </template>
-    </a-alert>
+    </Alert>
 
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">
+        <Button type="primary" @click="handleCreate">
           <template #icon>
             <PlusOutlined />
           </template>
           Tạo mới
-        </a-button>
-        <a-button @click="handleRefresh">
+        </Button>
+        <Button @click="handleRefresh">
           <template #icon>
             <ReloadOutlined />
           </template>
           Làm mới
-        </a-button>
-        <a-button style="margin-left: 8px" @click="toggleDebug">
+        </Button>
+        <Button style="margin-left: 8px" @click="toggleDebug">
           {{ showDebug ? 'Hide debug' : 'Show debug' }}
-        </a-button>
+        </Button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -75,36 +75,36 @@
       </template>
       <template #expandedRowRender="{ record }">
         <div class="p-4">
-          <a-descriptions title="Thông tin cơ bản" :column="2" bordered size="small">
-            <a-descriptions-item label="Nhóm trọn gói">
+          <Descriptions title="Thông tin cơ bản" :column="2" bordered size="small">
+            <DescriptionsItem label="Nhóm trọn gói">
               {{ record.nhomTronGoi?.ten || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Cơ sở">
+            </DescriptionsItem>
+            <DescriptionsItem label="Cơ sở">
               {{ record.coSo?.ten || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Loại hệ thống">
+            </DescriptionsItem>
+            <DescriptionsItem label="Loại hệ thống">
               {{ record.loaiHeThong || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Loại pha">
+            </DescriptionsItem>
+            <DescriptionsItem label="Loại pha">
               {{ record.loaiPha || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Sản lượng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Sản lượng">
               {{ record.sanLuongToiThieu || 0 }} - {{ record.sanLuongToiDa || 0 }} kW
-            </a-descriptions-item>
-            <a-descriptions-item label="Tổng giá">
+            </DescriptionsItem>
+            <DescriptionsItem label="Tổng giá">
               {{ formatCurrency(record.tongGia) }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Mô tả" :span="2">
+            </DescriptionsItem>
+            <DescriptionsItem label="Mô tả" :span="2">
               {{ record.moTa || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
-          <a-divider />
+          <Divider />
 
-          <a-descriptions title="Danh sách vật tư" :column="1" bordered size="small">
+          <Descriptions title="Danh sách vật tư" :column="1" bordered size="small">
             <template v-if="record.vatTuTronGois && record.vatTuTronGois.length > 0">
-              <a-descriptions-item label="Vật tư">
-                <a-table
+              <DescriptionsItem label="Vật tư">
+                <Table
                   :columns="vatTuColumns"
                   :data-source="record.vatTuTronGois"
                   :pagination="false"
@@ -134,15 +134,15 @@
                       {{ vatTu.moTa || '-' }}
                     </template>
                   </template>
-                </a-table>
-              </a-descriptions-item>
+                </Table>
+              </DescriptionsItem>
             </template>
             <template v-else>
-              <a-descriptions-item label="Thông tin"> Chưa có vật tư </a-descriptions-item>
+              <DescriptionsItem label="Thông tin"> Chưa có vật tư </DescriptionsItem>
             </template>
-          </a-descriptions>
+          </Descriptions>
 
-          <a-divider v-if="record.tepTin?.url" />
+          <Divider v-if="record.tepTin?.url" />
 
           <div v-if="record.tepTin?.url">
             <strong>Hình ảnh:</strong>
@@ -171,7 +171,7 @@
   import { filterTronGoi, getAllNhomTronGoi, TronGoiDto, deleteTronGoi } from './tronGoi';
   import CreateTronGoiModal from './CreateTronGoiModal.vue';
   import UpdateTronGoiModal from './UpdateTronGoiModal.vue';
-  import { message } from 'ant-design-vue';
+  import { Alert, Button, Descriptions, DescriptionsItem, message, Table } from 'ant-design-vue';
 
   defineOptions({ name: 'TronGoiManagement' });
 
@@ -436,8 +436,4 @@
 </script>
 
 <style lang="less" scoped>
-  :deep(.ant-descriptions-item-label) {
-    background-color: #fafafa;
-    font-weight: 600;
-  }
 </style>

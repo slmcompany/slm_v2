@@ -6,7 +6,7 @@
       <pre style="max-height:200px;margin-top:8px;overflow:auto;white-space:pre-wrap;">{{ lastResultsDebug }}</pre>
     </div>
 
-    <a-alert
+    <Alert
       v-if="showDebug && !loadError"
       type="info"
       show-icon
@@ -16,25 +16,25 @@
       <template #description>
         <pre style="max-height:200px;overflow:auto;white-space:pre-wrap;">{{ lastResultsDebug }}</pre>
       </template>
-    </a-alert>
+    </Alert>
 
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">
+        <Button type="primary" @click="handleCreate">
           <template #icon>
             <PlusOutlined />
           </template>
           Tạo mới
-        </a-button>
-        <a-button @click="handleRefresh">
+        </Button>
+        <Button @click="handleRefresh">
           <template #icon>
             <ReloadOutlined />
           </template>
           Làm mới
-        </a-button>
-        <a-button style="margin-left:8px" @click="toggleDebug">
+        </Button>
+        <Button style="margin-left:8px" @click="toggleDebug">
           {{ showDebug ? 'Hide debug' : 'Show debug' }}
-        </a-button>
+        </Button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -61,62 +61,62 @@
       </template>
       <template #expandedRowRender="{ record }">
         <div class="p-4">
-          <a-descriptions title="Dữ liệu riêng" :column="2" bordered size="small">
+          <Descriptions title="Dữ liệu riêng" :column="2" bordered size="small">
             <template v-if="record.duLieuRieng && Object.keys(record.duLieuRieng).length > 0">
-              <a-descriptions-item
+              <DescriptionsItem
                 v-for="(value, key) in record.duLieuRieng"
                 :key="key"
                 :label="value.ten"
               >
                 {{ value.giaTri }} {{ value.donVi ? `(${value.donVi})` : '' }}
-              </a-descriptions-item>
+              </DescriptionsItem>
             </template>
             <template v-else>
-              <a-descriptions-item label="Thông tin">
+              <DescriptionsItem label="Thông tin">
                 Không có dữ liệu riêng
-              </a-descriptions-item>
+              </DescriptionsItem>
             </template>
-          </a-descriptions>
+          </Descriptions>
 
-          <a-divider />
+          <Divider />
 
-          <a-descriptions title="Thông tin nhóm vật tư" :column="2" bordered size="small">
-            <a-descriptions-item label="Mã nhóm">
+          <Descriptions title="Thông tin nhóm vật tư" :column="2" bordered size="small">
+            <DescriptionsItem label="Mã nhóm">
               {{ record.nhomVatTu?.ma || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Tên nhóm">
+            </DescriptionsItem>
+            <DescriptionsItem label="Tên nhóm">
               {{ record.nhomVatTu?.ten || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
-          <a-divider />
+          <Divider />
 
-          <a-descriptions title="Thương hiệu & Nhà cung cấp" :column="2" bordered size="small">
-            <a-descriptions-item label="Thương hiệu">
+          <Descriptions title="Thương hiệu & Nhà cung cấp" :column="2" bordered size="small">
+            <DescriptionsItem label="Thương hiệu">
               {{ record.thuongHieu?.ten || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
-          <a-divider />
+          <Divider />
 
-          <a-descriptions title="Thông tin giá" :column="1" bordered size="small">
+          <Descriptions title="Thông tin giá" :column="1" bordered size="small">
             <template v-if="record.thongTinGias && record.thongTinGias.length > 0">
-              <a-descriptions-item label="Danh sách giá">
+              <DescriptionsItem label="Danh sách giá">
                 <div v-for="(gia, idx) in record.thongTinGias[0]?.dsGia" :key="idx" style="margin-bottom: 8px">
                   <strong>{{ gia.tenCoSo }}:</strong> 
                   Giá nhập: {{ formatCurrency(gia.giaNhap) }} | 
                   Giá bán: {{ formatCurrency(gia.giaBan) }}
                 </div>
-              </a-descriptions-item>
+              </DescriptionsItem>
             </template>
             <template v-else>
-              <a-descriptions-item label="Thông tin">
+              <DescriptionsItem label="Thông tin">
                 Chưa có thông tin giá
-              </a-descriptions-item>
+              </DescriptionsItem>
             </template>
-          </a-descriptions>
+          </Descriptions>
 
-          <a-divider v-if="record.anhVatTus && record.anhVatTus.length > 0" />
+          <Divider v-if="record.anhVatTus && record.anhVatTus.length > 0" />
 
           <div v-if="record.anhVatTus && record.anhVatTus.length > 0">
             <strong>Hình ảnh:</strong>
@@ -131,7 +131,7 @@
             </div>
           </div>
 
-          <a-divider v-if="record.sheetLink" />
+          <Divider v-if="record.sheetLink" />
 
           <div v-if="record.sheetLink">
             <strong>Sheet Link:</strong>
@@ -167,7 +167,7 @@
   import type { VatTuDto } from './vatTu';
   import VatTuModal from './VatTuModal.vue';
   import UpdateVatTuModal from './UpdateVatTuModal.vue';
-  import { message } from 'ant-design-vue';
+  import { Alert, Button, Descriptions, DescriptionsItem, Divider, message } from 'ant-design-vue';
   import { computed } from 'vue';
 
   defineOptions({ name: 'VatTuManagement' });
@@ -412,8 +412,4 @@
 </script>
 
 <style lang="less" scoped>
-  :deep(.ant-descriptions-item-label) {
-    background-color: #fafafa;
-    font-weight: 600;
-  }
 </style>

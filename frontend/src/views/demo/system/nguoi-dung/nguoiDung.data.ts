@@ -7,13 +7,11 @@ export const columns: BasicColumn[] = [
     title: 'Họ và tên',
     dataIndex: 'hoVaTen',
     width: 150,
-    sorter: true,
   },
   {
     title: 'Email',
     dataIndex: 'email',
     width: 200,
-    sorter: true,
   },
   {
     title: 'Số điện thoại',
@@ -32,18 +30,20 @@ export const columns: BasicColumn[] = [
     title: 'Phân quyền',
     dataIndex: 'phanQuyen',
     width: 120,
-    sorter: true,
     customRender: ({ record }) => {
       const phanQuyen = record.phanQuyen;
       let color = 'blue';
-      let text = 'Người dùng';
+      let text = 'Khách hàng';
       
       if (phanQuyen === 'ADMIN') {
         color = 'red';
         text = 'Quản trị';
-      } else if (phanQuyen === 'MANAGER') {
+      } else if (phanQuyen === 'SALE') {
         color = 'orange';
-        text = 'Quản lý';
+        text = 'Bán hàng';
+      } else if (phanQuyen === 'AGENT') {
+        color = 'green';
+        text = 'Đại lý';
       }
       
       return h(Tag, { color }, () => text);
@@ -71,7 +71,6 @@ export const columns: BasicColumn[] = [
     dataIndex: 'tongHoaHong',
     width: 130,
     align: 'right',
-    sorter: true,
     customRender: ({ record }) => {
       if (!record.tongHoaHong) return '0 đ';
       return new Intl.NumberFormat('vi-VN', {
@@ -84,7 +83,6 @@ export const columns: BasicColumn[] = [
     title: 'Trạng thái',
     dataIndex: 'trangThai',
     width: 100,
-    sorter: true,
     customRender: ({ record }) => {
       const trangThai = record.trangThai;
       let color = 'success';
@@ -102,7 +100,6 @@ export const columns: BasicColumn[] = [
     title: 'Ngày tạo',
     dataIndex: 'taoLuc',
     width: 150,
-    sorter: true,
     customRender: ({ record }) => {
       return record.taoLuc 
         ? new Date(record.taoLuc).toLocaleString('vi-VN')
@@ -151,7 +148,7 @@ export const searchFormSchema: FormSchema[] = [
         { label: 'Quản trị', value: 'ADMIN' },
         { label: 'Người bán hàng', value: 'SALE' },
         { label: 'Đại lý', value: 'AGENT' },
-        { label: 'Người dùng', value: 'USER' },
+        { label: 'Khách hàng', value: 'CUSTOMER' },
       ],
     },
   },

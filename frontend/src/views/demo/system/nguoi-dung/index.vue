@@ -17,18 +17,18 @@
 
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">
+        <Button type="primary" @click="handleCreate">
           <template #icon>
             <PlusOutlined />
           </template>
           Tạo mới
-        </a-button>
-        <a-button @click="handleRefresh">
+        </Button>
+        <Button @click="handleRefresh">
           <template #icon>
             <ReloadOutlined />
           </template>
           Làm mới
-        </a-button>
+        </Button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -51,62 +51,62 @@
       </template>
       <template #expandedRowRender="{ record }">
         <div class="p-4">
-          <a-descriptions title="Thông tin cá nhân" :column="2" bordered size="small">
-            <a-descriptions-item label="Họ và tên">
+          <Descriptions title="Thông tin cá nhân" :column="2" bordered size="small">
+            <DescriptionsItem label="Họ và tên">
               {{ record.hoVaTen || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Email">
+            </DescriptionsItem>
+            <DescriptionsItem label="Email">
               {{ record.email || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Số điện thoại">
+            </DescriptionsItem>
+            <DescriptionsItem label="Số điện thoại">
               {{ record.sdt || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Giới tính">
+            </DescriptionsItem>
+            <DescriptionsItem label="Giới tính">
               {{ record.gioiTinh === true ? 'Nam' : 'Nữ' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Sinh nhật">
+            </DescriptionsItem>
+            <DescriptionsItem label="Sinh nhật">
               {{ record.sinhNhat ? new Date(record.sinhNhat).toLocaleDateString('vi-VN') : '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Địa chỉ">
+            </DescriptionsItem>
+            <DescriptionsItem label="Địa chỉ">
               {{ record.diaChi || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
-          <a-divider />
+          <Divider />
 
-          <a-descriptions title="Thông tin công việc" :column="2" bordered size="small">
-            <a-descriptions-item label="Phân quyền">
-              <a-tag v-if="record.phanQuyen === 'ADMIN'" color="red">Quản trị</a-tag>
-              <a-tag v-else-if="record.phanQuyen === 'MANAGER'" color="orange">Quản lý</a-tag>
-              <a-tag v-else color="blue">Người dùng</a-tag>
-            </a-descriptions-item>
-            <a-descriptions-item label="Cơ sở">
+          <Descriptions title="Thông tin công việc" :column="2" bordered size="small">
+            <DescriptionsItem label="Phân quyền">
+              <Tag v-if="record.phanQuyen === 'ADMIN'" color="red">Quản trị</Tag>
+              <Tag v-else-if="record.phanQuyen === 'MANAGER'" color="orange">Quản lý</Tag>
+              <Tag v-else color="blue">Người dùng</Tag>
+            </DescriptionsItem>
+            <DescriptionsItem label="Cơ sở">
               {{ record.coSo?.ten || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Phần trăm hoa hồng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Phần trăm hoa hồng">
               {{ record.phanTramHoaHong ? `${record.phanTramHoaHong}%` : '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Tổng hoa hồng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Tổng hoa hồng">
               {{ record.tongHoaHong ? formatCurrency(record.tongHoaHong) : '0 đ' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Ngân hàng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Ngân hàng">
               {{ record.nganHang || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Mã ngân hàng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Mã ngân hàng">
               {{ record.maNganHang || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
           <div v-if="record.khachHangs && record.khachHangs.length > 0">
-            <a-divider />
+            <Divider />
             <h4>Danh sách khách hàng ({{ record.khachHangs.length }})</h4>
-            <a-table
+            <Table
               :columns="khachHangColumns"
               :data-source="record.khachHangs"
               :pagination="false"
               size="small"
               :scroll="{ x: 800 }"
-            />
+            ></Table>
           </div>
         </div>
       </template>
@@ -118,10 +118,10 @@
   import { onMounted, onBeforeUnmount, ref, onErrorCaptured } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { PlusOutlined, ReloadOutlined } from '@ant-design/icons-vue';
-  import { columns } from './nguoiDung.data';
+  import { columns, searchFormSchema } from './nguoiDung.data';
   import { filterNguoiDung } from './nguoiDung';
   import type { NguoiDungDto } from './nguoiDung';
-  import { message } from 'ant-design-vue';
+  import { Button, Descriptions, DescriptionsItem, Divider, message, Table, Tag } from 'ant-design-vue';
 
   defineOptions({ name: 'NguoiDungManagement' });
 
@@ -256,8 +256,4 @@
 </script>
 
 <style lang="less" scoped>
-  :deep(.ant-descriptions-item-label) {
-    background-color: #fafafa;
-    font-weight: 600;
-  }
 </style>

@@ -6,7 +6,7 @@
       <pre style="max-height:200px;margin-top:8px;overflow:auto;white-space:pre-wrap;">{{ lastResultsDebug }}</pre>
     </div>
 
-    <a-alert
+    <Alert
       v-if="showDebug && !loadError"
       type="info"
       show-icon
@@ -16,25 +16,25 @@
       <template #description>
         <pre style="max-height:200px;overflow:auto;white-space:pre-wrap;">{{ lastResultsDebug }}</pre>
       </template>
-    </a-alert>
+    </Alert>
 
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">
+        <Button type="primary" @click="handleCreate">
           <template #icon>
             <PlusOutlined />
           </template>
           Tạo mới
-        </a-button>
-        <a-button @click="handleRefresh">
+        </Button>
+        <Button @click="handleRefresh">
           <template #icon>
             <ReloadOutlined />
           </template>
           Làm mới
-        </a-button>
-        <a-button style="margin-left:8px" @click="toggleDebug">
+        </Button>
+        <Button style="margin-left:8px" @click="toggleDebug">
           {{ showDebug ? 'Hide debug' : 'Show debug' }}
-        </a-button>
+        </Button>
       </template>
 
       <template #bodyCell="{ column, record }">
@@ -63,45 +63,45 @@
 
       <template #expandedRowRender="{ record }">
         <div class="p-4">
-          <a-descriptions title="Thông tin ngành hàng" :column="2" bordered size="small">
-            <a-descriptions-item label="Mã ngành hàng">
+          <Descriptions title="Thông tin ngành hàng" :column="2" bordered size="small">
+            <DescriptionsItem label="Mã ngành hàng">
               {{ record.nganhHang?.ma || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Tên ngành hàng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Tên ngành hàng">
               {{ record.nganhHang?.ten || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="SĐT Sale">
+            </DescriptionsItem>
+            <DescriptionsItem label="SĐT Sale">
               {{ record.nganhHang?.sdtSale || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="SĐT Tech">
+            </DescriptionsItem>
+            <DescriptionsItem label="SĐT Tech">
               {{ record.nganhHang?.sdtTech || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
           <a-divider />
 
-          <a-descriptions title="Thông tin thương hiệu" :column="2" bordered size="small">
-            <a-descriptions-item label="Thương hiệu tấm pin">
+          <Descriptions title="Thông tin thương hiệu" :column="2" bordered size="small">
+            <DescriptionsItem label="Thương hiệu tấm pin">
               <a-tag color="blue">{{ record.thuongHieuTamPin?.ten || '-' }}</a-tag>
               <span v-if="record.thuongHieuTamPin?.tenQuocTe" style="margin-left: 8px; color: #999;">
                 ({{ record.thuongHieuTamPin.tenQuocTe }})
               </span>
-            </a-descriptions-item>
-            <a-descriptions-item label="Thương hiệu inverter">
+            </DescriptionsItem>
+            <DescriptionsItem label="Thương hiệu inverter">
               <a-tag color="green">{{ record.thuongHieuInverter?.ten || '-' }}</a-tag>
               <span v-if="record.thuongHieuInverter?.tenQuocTe" style="margin-left: 8px; color: #999;">
                 ({{ record.thuongHieuInverter.tenQuocTe }})
               </span>
-            </a-descriptions-item>
-            <a-descriptions-item label="Thương hiệu pin lưu trữ" :span="2">
+            </DescriptionsItem>
+            <DescriptionsItem label="Thương hiệu pin lưu trữ" :span="2">
               <a-tag color="orange">{{ record.thuongHieuPinLuuTru?.ten || '-' }}</a-tag>
               <span v-if="record.thuongHieuPinLuuTru?.tenQuocTe" style="margin-left: 8px; color: #999;">
                 ({{ record.thuongHieuPinLuuTru.tenQuocTe }})
               </span>
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
-          <a-divider v-if="record.nganhHang?.anhNgang || record.nganhHang?.anhVuong" />
+          <Divider v-if="record.nganhHang?.anhNgang || record.nganhHang?.anhVuong" />
 
           <div v-if="record.nganhHang?.anhNgang || record.nganhHang?.anhVuong">
             <strong>Hình ảnh ngành hàng:</strong>
@@ -147,7 +147,7 @@ import {
 } from './nhomTronGoi';
 import type { NganhHangDto, NhomTronGoiDto } from './nhomTronGoi';
 import NhomTronGoiModal from './NhomTronGoiModal.vue';
-import { message } from 'ant-design-vue';
+import { Button, Descriptions, DescriptionsItem, Divider, message } from 'ant-design-vue';
 import { defHttp, realHttp } from '@/utils/http/axios';
 
 defineOptions({ name: 'NhomTronGoiManagement' });
@@ -378,8 +378,4 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="less" scoped>
-:deep(.ant-descriptions-item-label) {
-  background-color: #fafafa;
-  font-weight: 600;
-}
 </style>

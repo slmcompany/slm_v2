@@ -719,13 +719,13 @@
   function calculateHeKhungNhomQuantity(ma: string, tamPinQty: number): number {
     if (ma.includes('kep_bien')) return ceil(tamPinQty / 5) * 4 + 4;
     if (ma.includes('kep_giua')) return ceil(tamPinQty / 5) * 8 + 4;
-    if (ma.includes('full_rail')) return ceil((tamPinQty * 1.2 * 2) / 4);
+    if (ma.includes('full') && ma.includes('rail')) return ceil((tamPinQty * 1.2 * 2) / 4);
     if (ma.includes('thanh_noi')) return ceil((tamPinQty * 1.2 * 2) / 4) * 2 + 4;
     if (ma.includes('chan_l')) return ceil((tamPinQty * 1.2 * 2) / 4) * 6;
     if (ma.includes('kep_tiep_dia')) return ceil(tamPinQty / 5) + 1;
     if (ma.includes('la_tiep_dia')) return (ceil(tamPinQty / 5) * 8 + 4) / 2;
     if (ma.includes('kep_day_dien')) return tamPinQty * 4;
-    if (ma.includes('mini_rail')) return ceil(tamPinQty / 5) * 12 + 8;
+    if (ma.includes('mini') && ma.includes('rail')) return ceil(tamPinQty / 5) * 12 + 8;
     return 1;
   }
 

@@ -55,33 +55,33 @@
       </template>
       <template #expandedRowRender="{ record }">
         <div class="p-4">
-          <a-descriptions title="Thông tin chi tiết" :column="2" bordered size="small">
-            <a-descriptions-item label="Tiêu đề">
+          <Descriptions title="Thông tin chi tiết" :column="2" bordered size="small">
+            <DescriptionsItem label="Tiêu đề">
               {{ record.tieuDe || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Vị trí">
+            </DescriptionsItem>
+            <DescriptionsItem label="Vị trí">
               {{ record.viTri || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Ngành hàng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Ngành hàng">
               {{ record.nganhHang?.ten || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Mã ngành hàng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Mã ngành hàng">
               {{ record.nganhHang?.ma || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="SĐT Sale">
+            </DescriptionsItem>
+            <DescriptionsItem label="SĐT Sale">
               {{ record.nganhHang?.sdtSale || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="SĐT Tech">
+            </DescriptionsItem>
+            <DescriptionsItem label="SĐT Tech">
               {{ record.nganhHang?.sdtTech || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
-          <a-divider />
+          <Divider />
 
           <div v-if="record.tepTin?.duongDan">
             <strong>Ảnh quảng cáo:</strong>
             <div style="margin-top: 8px">
-              <a-image
+              <Image
                 :width="200"
                 :src="record.tepTin.duongDan"
                 :preview="true"
@@ -108,7 +108,7 @@
   import { filterQuangCao, getAllNganhHang, deleteQuangCao } from './quangCao';
   import type { QuangCaoDto } from './quangCao';
   import QuangCaoModal from './QuangCaoModal.vue';
-  import { message } from 'ant-design-vue';
+  import { Descriptions, DescriptionsItem, Divider, Image, message } from 'ant-design-vue';
 
   defineOptions({ name: 'QuangCaoManagement' });
 
@@ -287,8 +287,4 @@
 </script>
 
 <style lang="less" scoped>
-  :deep(.ant-descriptions-item-label) {
-    background-color: #fafafa;
-    font-weight: 600;
-  }
 </style>

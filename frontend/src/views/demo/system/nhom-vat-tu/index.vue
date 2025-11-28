@@ -2,18 +2,18 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">
+        <Button type="primary" @click="handleCreate">
           <template #icon>
             <PlusOutlined />
           </template>
           Tạo mới
-        </a-button>
-        <a-button @click="handleRefresh">
+        </Button>
+        <Button @click="handleRefresh">
           <template #icon>
             <ReloadOutlined />
           </template>
           Làm mới
-        </a-button>
+        </Button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -40,39 +40,39 @@
       </template>
       <template #expandedRowRender="{ record }">
         <div class="p-4">
-          <a-descriptions title="Thuộc tính riêng" :column="2" bordered size="small">
+          <Descriptions title="Thuộc tính riêng" :column="2" bordered size="small">
             <template v-if="record.thuocTinhRieng && Object.keys(record.thuocTinhRieng).length > 0">
-              <a-descriptions-item
+              <DescriptionsItem
                 v-for="(value, key) in record.thuocTinhRieng"
                 :key="key"
                 :label="value.ten"
               >
                 {{ value.giaTri }} {{ value.donVi ? `(${value.donVi})` : '' }}
-              </a-descriptions-item>
+              </DescriptionsItem>
             </template>
             <template v-else>
-              <a-descriptions-item label="Thông tin">
+              <DescriptionsItem label="Thông tin">
                 Không có thuộc tính riêng
-              </a-descriptions-item>
+              </DescriptionsItem>
             </template>
-          </a-descriptions>
+          </Descriptions>
 
-          <a-divider />
+          <Divider />
 
-          <a-descriptions title="Thông tin ngành hàng" :column="2" bordered size="small">
-            <a-descriptions-item label="Mã ngành hàng">
+          <Descriptions title="Thông tin ngành hàng" :column="2" bordered size="small">
+            <DescriptionsItem label="Mã ngành hàng">
               {{ record.nghanhHang?.ma || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Tên ngành hàng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Tên ngành hàng">
               {{ record.nghanhHang?.ten || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="SĐT Sale">
+            </DescriptionsItem>
+            <DescriptionsItem label="SĐT Sale">
               {{ record.nghanhHang?.sdtSale || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="SĐT Tech">
+            </DescriptionsItem>
+            <DescriptionsItem label="SĐT Tech">
               {{ record.nghanhHang?.sdtTech || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
         </div>
       </template>
     </BasicTable>
@@ -93,7 +93,7 @@
   import { filterNhomVatTu, deleteNhomVatTu, getAllNganhHang } from './nhomVatTu';
   import type { ResponseData, PageResponse, NhomVatTuDto } from './nhomVatTu';
   import NhomVatTuModal from './NhomVatTuModal.vue';
-  import { message } from 'ant-design-vue';
+  import { Button, Descriptions, DescriptionsItem, Divider, message } from 'ant-design-vue';
 
   defineOptions({ name: 'NhomVatTuManagement' });
 
@@ -225,8 +225,4 @@
 </script>
 
 <style lang="less" scoped>
-  :deep(.ant-descriptions-item-label) {
-    background-color: #fafafa;
-    font-weight: 600;
-  }
 </style>

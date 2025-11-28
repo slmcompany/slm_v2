@@ -2,14 +2,14 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate">
+        <Button type="primary" @click="handleCreate">
           <template #icon><PlusOutlined /></template>
           Tạo mới
-        </a-button>
-        <a-button @click="handleRefresh">
+        </Button>
+        <Button @click="handleRefresh">
           <template #icon><ReloadOutlined /></template>
           Làm mới
-        </a-button>
+        </Button>
       </template>
 
       <template #bodyCell="{ column, record }">
@@ -33,62 +33,62 @@
 
       <template #expandedRowRender="{ record }">
         <div class="p-4">
-          <a-descriptions title="Thông tin cơ bản" :column="2" bordered size="small">
-            <a-descriptions-item label="Tên hợp đồng">
+          <Descriptions title="Thông tin cơ bản" :column="2" bordered size="small">
+            <DescriptionsItem label="Tên hợp đồng">
               {{ record.ten || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Cơ sở">
+            </DescriptionsItem>
+            <DescriptionsItem label="Cơ sở">
               {{ record.coSo?.ten || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Ngành hàng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Ngành hàng">
               {{ record.nghanhHang?.ten || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Loại hệ thống">
+            </DescriptionsItem>
+            <DescriptionsItem label="Loại hệ thống">
               {{ record.loaiHeThong || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Loại pha">
+            </DescriptionsItem>
+            <DescriptionsItem label="Loại pha">
               {{ record.loaiPha || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Sản lượng">
+            </DescriptionsItem>
+            <DescriptionsItem label="Sản lượng">
               {{ record.sanLuongToiThieu || 0 }} - {{ record.sanLuongToiDa || 0 }} kW
-            </a-descriptions-item>
-            <a-descriptions-item label="Giá khung sắt">
+            </DescriptionsItem>
+            <DescriptionsItem label="Giá khung sắt">
               {{ formatCurrency(record.giaKhungSat) }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Tổng giá">
+            </DescriptionsItem>
+            <DescriptionsItem label="Tổng giá">
               {{ formatCurrency(record.tongGia) }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Mô tả" :span="2">
+            </DescriptionsItem>
+            <DescriptionsItem label="Mô tả" :span="2">
               {{ record.moTa || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
-          <a-divider />
+          <Divider />
 
-          <a-descriptions title="Thông tin khách hàng" :column="2" bordered size="small">
-            <a-descriptions-item label="Họ và tên">
+          <Descriptions title="Thông tin khách hàng" :column="2" bordered size="small">
+            <DescriptionsItem label="Họ và tên">
               {{ record.khachHang?.hoVaTen || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Số điện thoại">
+            </DescriptionsItem>
+            <DescriptionsItem label="Số điện thoại">
               {{ record.khachHang?.sdt || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Email">
+            </DescriptionsItem>
+            <DescriptionsItem label="Email">
               {{ record.khachHang?.email || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Địa chỉ">
+            </DescriptionsItem>
+            <DescriptionsItem label="Địa chỉ">
               {{ record.khachHang?.diaChi || '-' }}
-            </a-descriptions-item>
-            <a-descriptions-item label="Người giới thiệu" :span="2">
+            </DescriptionsItem>
+            <DescriptionsItem label="Người giới thiệu" :span="2">
               {{ record.nguoiGioiThieu?.hoVaTen || '-' }}
-            </a-descriptions-item>
-          </a-descriptions>
+            </DescriptionsItem>
+          </Descriptions>
 
-          <a-divider />
+          <Divider />
 
-          <a-descriptions title="Danh sách vật tư" :column="1" bordered size="small">
+          <Descriptions title="Danh sách vật tư" :column="1" bordered size="small">
             <template v-if="record.vatTuHopDongs && record.vatTuHopDongs.length > 0">
-              <a-descriptions-item label="Vật tư">
-                <a-table
+              <DescriptionsItem label="Vật tư">
+                <Table
                   :columns="vatTuColumns"
                   :data-source="record.vatTuHopDongs"
                   :pagination="false"
@@ -120,15 +120,15 @@
                       {{ vatTu.moTa || '-' }}
                     </template>
                   </template>
-                </a-table>
-              </a-descriptions-item>
+                </Table>
+              </DescriptionsItem>
             </template>
             <template v-else>
-              <a-descriptions-item label="Thông tin">
+              <DescriptionsItem label="Thông tin">
                 Chưa có vật tư
-              </a-descriptions-item>
+              </DescriptionsItem>
             </template>
-          </a-descriptions>
+          </Descriptions>
         </div>
       </template>
     </BasicTable>
@@ -145,7 +145,7 @@
   import { columns, searchFormSchema, vatTuColumns } from './hopDong.data.ts';
   import { filterHopDong, getAllCoSo, getAllNganhHang, deleteHopDong, type HopDongDto } from './hopDong.ts';
   import CreateHopDongModal from './CreateHopDongModal.vue';
-  import { message } from 'ant-design-vue';
+  import { Button, Descriptions, DescriptionsItem, Divider, message, Table } from 'ant-design-vue';
 
   defineOptions({ name: 'HopDongManagement' });
 
@@ -284,8 +284,4 @@
 </script>
 
 <style lang="less" scoped>
-  :deep(.ant-descriptions-item-label) {
-    background-color: #fafafa;
-    font-weight: 600;
-  }
 </style>
