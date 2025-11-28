@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-29T01:11:39+0700",
+    date = "2025-11-29T01:38:32+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -62,6 +62,7 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         tronGoiDto.congSuatHeThong( tronGoi.getCongSuatHeThong() );
         tronGoiDto.sanLuongToiThieu( tronGoi.getSanLuongToiThieu() );
         tronGoiDto.sanLuongToiDa( tronGoi.getSanLuongToiDa() );
+        tronGoiDto.giaKhungSat( tronGoi.getGiaKhungSat() );
         tronGoiDto.moTa( tronGoi.getMoTa() );
         tronGoiDto.taoLuc( tronGoi.getTaoLuc() );
         tronGoiDto.tongGia( tronGoi.getTongGia() );
@@ -91,6 +92,7 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         tronGoi.congSuatHeThong( tronGoiDto.getCongSuatHeThong() );
         tronGoi.sanLuongToiThieu( tronGoiDto.getSanLuongToiThieu() );
         tronGoi.sanLuongToiDa( tronGoiDto.getSanLuongToiDa() );
+        tronGoi.giaKhungSat( tronGoiDto.getGiaKhungSat() );
         tronGoi.moTa( tronGoiDto.getMoTa() );
         tronGoi.tongGia( tronGoiDto.getTongGia() );
         tronGoi.gmTong( tronGoiDto.getGmTong() );

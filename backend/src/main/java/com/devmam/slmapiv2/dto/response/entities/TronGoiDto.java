@@ -32,6 +32,7 @@ public class TronGoiDto implements Serializable {
     Double congSuatHeThong;
     Double sanLuongToiThieu;
     Double sanLuongToiDa;
+    Double giaKhungSat;
     String moTa;
     Instant taoLuc;
     Double tongGia;
