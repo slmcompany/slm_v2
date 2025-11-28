@@ -40,6 +40,6 @@ public class HopDongController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseData<HopDongDto>> delete(@PathVariable Integer id){
-        return null;
+        return hopDongService.deleteHopDong(id);
     }
 }
