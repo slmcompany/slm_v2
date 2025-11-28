@@ -83,6 +83,7 @@ export const columns: BasicColumn[] = [
     },
   },
   {
+    title: 'Sheet Link',
     dataIndex: 'sheetLink',
     width: 100,
     customRender: ({ record }) => {
@@ -96,7 +97,7 @@ export const columns: BasicColumn[] = [
           target: '_blank',
           style: { color: '#1890ff' },
         },
-        'Link',
+        'Xem sheet',
       );
     },
   },
