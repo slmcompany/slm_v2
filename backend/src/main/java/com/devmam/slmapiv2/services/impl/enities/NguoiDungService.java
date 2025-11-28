@@ -94,4 +94,9 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
                         .build()
         );
     }
+
+    public Optional<NguoiDung> findBySdt(String sdt) {
+        NguoiDungRepository repo = (NguoiDungRepository) super.getRepository();
+        return repo.findBySdt(sdt);
+    }
 }

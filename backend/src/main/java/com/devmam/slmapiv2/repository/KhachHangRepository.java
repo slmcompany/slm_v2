@@ -7,10 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface KhachHangRepository extends JpaRepository<KhachHang, Integer>, JpaSpecificationExecutor<KhachHang> {
 
 
     List<KhachHang> findByDaBanDuocHangAndTaoLucIsBefore(Boolean daBanDuocHang, Instant taoLucBefore);
+
+    Optional<KhachHang> findBySdt(String sdt);
 }

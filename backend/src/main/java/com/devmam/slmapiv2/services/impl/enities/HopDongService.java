@@ -64,6 +64,7 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
         if (coSoFinding.isEmpty()) {
             throw new CommonException("Không tìm thấy cơ sở id: " + dto.getCoSoId());
         }
+        System.out.println(dto.getNghanhHangId());
 
         Optional<NganhHang> nganhHangFinding = nganhHangService.getOne(dto.getNghanhHangId());
 
@@ -197,6 +198,40 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
                         .error(null)
                         .message("Success")
                         .data(hopDongMapper.toDto(hopDongFinding.get()))
+                        .build()
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<HopDongDto>> deleteHopDong(Integer id){
+        Optional<HopDong> hopDongFinding = getOne(id);
+
+        if(hopDongFinding.isEmpty()){
+            throw new CommonException("Không tìm thấy hợp đồng id: " + id);
+        }
+        Optional<HoaHong> hoaHongFinding = hoaHongService.getOne(hopDongFinding.get().getId());
+        hoaHongFinding.ifPresent(hoaHong -> {
+            NguoiDung nguoiGioiThieu = hopDongFinding.get().getNguoiGioiThieu();
+            nguoiGioiThieu.setTongHoaHong(nguoiGioiThieu.getTongHoaHong() - hoaHong.getThanhTien());
+            nguoiDungService.update(nguoiGioiThieu.getId(), nguoiGioiThieu);
+            hoaHongService.delete(hoaHong.getId());
+        });
+
+        KhachHang khachHang = hopDongFinding.get().getKhachHang();
+
+        khachHangService.delete(khachHang.getId());
+
+        HopDongDto hopDongDto = HopDongDto.builder()
+                .id(hopDongFinding.get().getId())
+                .ten(hopDongFinding.get().getTen())
+                .build();
+        delete(hopDongFinding.get().getId());
+        return ResponseEntity.ok(
+                ResponseData.<HopDongDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(hopDongDto)
                         .build()
         );
     }

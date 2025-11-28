@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class KhachHangService extends BaseServiceImpl<KhachHang,Integer> {
@@ -29,5 +30,11 @@ public class KhachHangService extends BaseServiceImpl<KhachHang,Integer> {
     public List<KhachHang> findByDaBanDuocHangAndTaoLucIsBefore(Boolean daBanDuocHang, Instant taoLucBefore){
         KhachHangRepository khachHangRepository = (KhachHangRepository) repository;
         return (khachHangRepository.findByDaBanDuocHangAndTaoLucIsBefore(daBanDuocHang,taoLucBefore));
+    }
+
+    public Optional<KhachHang> findBySdt(String sdt){
+        KhachHangRepository repo = (KhachHangRepository) super.getRepository();
+
+        return repo.findBySdt(sdt);
     }
 }
