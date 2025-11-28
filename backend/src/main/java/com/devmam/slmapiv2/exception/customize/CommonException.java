@@ -20,5 +20,6 @@ public class CommonException extends RuntimeException {
 
     public CommonException(String message) {
         super(message);
+        this.httpStatus = HttpStatus.BAD_REQUEST;
     }
 }
