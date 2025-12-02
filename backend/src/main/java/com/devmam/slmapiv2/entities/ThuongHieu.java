@@ -42,6 +42,10 @@ public class ThuongHieu implements Serializable {
     @Column(name = "email", length = 100)
     private String email;
 
+    @Size(max = 1000)
+    @Column(name = "mo_ta", length = 1000)
+    private String moTa;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "tao_luc")
     private Instant taoLuc;

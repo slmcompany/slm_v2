@@ -209,6 +209,7 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
         if(hopDongFinding.isEmpty()){
             throw new CommonException("Không tìm thấy hợp đồng id: " + id);
         }
+
         Optional<HoaHong> hoaHongFinding = hoaHongService.getOne(hopDongFinding.get().getId());
         hoaHongFinding.ifPresent(hoaHong -> {
             NguoiDung nguoiGioiThieu = hopDongFinding.get().getNguoiGioiThieu();
@@ -217,14 +218,16 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
             hoaHongService.delete(hoaHong.getId());
         });
 
-        KhachHang khachHang = hopDongFinding.get().getKhachHang();
-
-        khachHangService.delete(khachHang.getId());
-
         HopDongDto hopDongDto = HopDongDto.builder()
                 .id(hopDongFinding.get().getId())
                 .ten(hopDongFinding.get().getTen())
                 .build();
+
+        KhachHang khachHang = hopDongFinding.get().getKhachHang();
+
+        khachHangService.delete(khachHang.getId());
+
+
         delete(hopDongFinding.get().getId());
         return ResponseEntity.ok(
                 ResponseData.<HopDongDto>builder()

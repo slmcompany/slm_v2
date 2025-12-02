@@ -28,5 +28,6 @@ public class ThuongHieuDto implements Serializable {
     String sdt;
     @Size(max = 100)
     String email;
+    String moTa;
     Integer trangThai;
 }
