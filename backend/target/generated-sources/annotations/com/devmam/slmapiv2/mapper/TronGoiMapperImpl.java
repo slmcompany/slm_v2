@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-03T18:31:44+0700",
+    date = "2025-12-03T19:13:21+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -137,6 +137,7 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         thuongHieuDto.sdt( thuongHieu.getSdt() );
         thuongHieuDto.email( thuongHieu.getEmail() );
         thuongHieuDto.moTa( thuongHieu.getMoTa() );
+        thuongHieuDto.tepTin( tepTinMapper.toDto( thuongHieu.getTepTin() ) );
         thuongHieuDto.trangThai( thuongHieu.getTrangThai() );
 
         return thuongHieuDto.build();
@@ -363,6 +364,29 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         return nganhHang.build();
     }
 
+    protected TepTin tepTinDtoToTepTin(TepTinDto tepTinDto) {
+        if ( tepTinDto == null ) {
+            return null;
+        }
+
+        TepTin.TepTinBuilder tepTin = TepTin.builder();
+
+        tepTin.id( tepTinDto.getId() );
+        tepTin.tenTepGoc( tepTinDto.getTenTepGoc() );
+        tepTin.tenTaiLen( tepTinDto.getTenTaiLen() );
+        tepTin.tenLuuTru( tepTinDto.getTenLuuTru() );
+        tepTin.duongDan( tepTinDto.getDuongDan() );
+        tepTin.loaiTepTin( tepTinDto.getLoaiTepTin() );
+        tepTin.duoiTep( tepTinDto.getDuoiTep() );
+        tepTin.kichCo( tepTinDto.getKichCo() );
+        tepTin.moTa( tepTinDto.getMoTa() );
+        tepTin.taoLuc( tepTinDto.getTaoLuc() );
+        tepTin.suaLuc( tepTinDto.getSuaLuc() );
+        tepTin.trangThai( tepTinDto.getTrangThai() );
+
+        return tepTin.build();
+    }
+
     protected ThuongHieu thuongHieuDtoToThuongHieu(ThuongHieuDto thuongHieuDto) {
         if ( thuongHieuDto == null ) {
             return null;
@@ -377,6 +401,7 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         thuongHieu.sdt( thuongHieuDto.getSdt() );
         thuongHieu.email( thuongHieuDto.getEmail() );
         thuongHieu.moTa( thuongHieuDto.getMoTa() );
+        thuongHieu.tepTin( tepTinDtoToTepTin( thuongHieuDto.getTepTin() ) );
         thuongHieu.trangThai( thuongHieuDto.getTrangThai() );
 
         return thuongHieu.build();
@@ -399,29 +424,6 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         nhomTronGoi.trangThai( nhomTronGoiDto.getTrangThai() );
 
         return nhomTronGoi.build();
-    }
-
-    protected TepTin tepTinDtoToTepTin(TepTinDto tepTinDto) {
-        if ( tepTinDto == null ) {
-            return null;
-        }
-
-        TepTin.TepTinBuilder tepTin = TepTin.builder();
-
-        tepTin.id( tepTinDto.getId() );
-        tepTin.tenTepGoc( tepTinDto.getTenTepGoc() );
-        tepTin.tenTaiLen( tepTinDto.getTenTaiLen() );
-        tepTin.tenLuuTru( tepTinDto.getTenLuuTru() );
-        tepTin.duongDan( tepTinDto.getDuongDan() );
-        tepTin.loaiTepTin( tepTinDto.getLoaiTepTin() );
-        tepTin.duoiTep( tepTinDto.getDuoiTep() );
-        tepTin.kichCo( tepTinDto.getKichCo() );
-        tepTin.moTa( tepTinDto.getMoTa() );
-        tepTin.taoLuc( tepTinDto.getTaoLuc() );
-        tepTin.suaLuc( tepTinDto.getSuaLuc() );
-        tepTin.trangThai( tepTinDto.getTrangThai() );
-
-        return tepTin.build();
     }
 
     protected NhomVatTu nhomVatTuDtoToNhomVatTu(NhomVatTuDto nhomVatTuDto) {

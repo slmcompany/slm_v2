@@ -46,6 +46,10 @@ public class ThuongHieu implements Serializable {
     @Column(name = "mo_ta", length = 1000)
     private String moTa;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tep_tin_id")
+    private TepTin tepTin;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "tao_luc")
     private Instant taoLuc;
