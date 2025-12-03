@@ -41,7 +41,7 @@ public class QuangCaoController {
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<ResponseData<Page<QuangCaoDto>>> filter(BaseFilterRequest filter){
+    public ResponseEntity<ResponseData<Page<QuangCaoDto>>> filter(@RequestBody BaseFilterRequest filter){
         return ResponseEntity.ok(
                 ResponseData.<Page<QuangCaoDto>>builder()
                         .status(200)

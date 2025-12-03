@@ -240,6 +240,7 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
     protected Specification<T> createSpecification(List<FilterCriteria> filters) {
         return (root, query, criteriaBuilder) -> {
             if (filters == null || filters.isEmpty()) {
+                System.out.println("❌ Filters is null or empty");
                 return criteriaBuilder.conjunction();
             }
 
@@ -250,6 +251,7 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
                 FilterCriteria filter = filters.get(i);
 
                 if (filter.getFieldName() == null || filter.getOperation() == null) {
+                    System.out.println("⚠️ Skipped - fieldName or operation is null");
                     continue;
                 }
 
@@ -269,6 +271,9 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
                     }
                 }
             }
+
+            System.out.println("AND predicates: " + andPredicates.size());
+            System.out.println("OR predicates: " + orPredicates.size());
 
             // Kết hợp tất cả predicates
             Predicate finalPredicate = null;
