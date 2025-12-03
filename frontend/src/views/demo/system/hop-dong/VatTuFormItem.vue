@@ -119,7 +119,7 @@
 
   const props = withDefaults(defineProps<Props>(), {
     showDelete: true,
-    region: 'Miền Bắc',
+    region: 'Hà Nội',
     coSoMa: 'HN',
   });
 

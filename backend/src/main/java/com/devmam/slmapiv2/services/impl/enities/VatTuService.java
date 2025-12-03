@@ -181,7 +181,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         if (files != null && !files.isEmpty()) {
             for (int i = 0; i < files.size(); i++) {
                 MultipartFile file = files.get(i);
-                String objectName = null;
+                String objectName;
 
                 try {
                     objectName = minioService.upload(file, "vat_tu_anh_" + dto.getTen() + "_" + now.getTime() + "_" + (i + 1));
@@ -272,6 +272,8 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         vatTu.setTen(dto.getTen());
         vatTu.setMa(genMaVatTu(dto.getTen()));
         vatTu.setTrangThai(dto.getTrangThai());
+        vatTu.setThoiGianBaoHanh(dto.getThoiGianBaoHanh());
+        vatTu.setGm(dto.getGm());
 
         // Lấy lại thông tin mới nhất
         vatTuFinding = getOne(dto.getId());

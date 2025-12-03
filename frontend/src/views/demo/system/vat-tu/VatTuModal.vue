@@ -9,7 +9,7 @@
     <BasicForm @register="registerForm">
       <template #duLieuRieng="{ model }">
         <div class="du-lieu-rieng-container">
-          <a-alert
+          <Alert
             v-if="duLieuRiengList.length === 0"
             message="Vui lòng chọn nhóm vật tư để hiển thị các thuộc tính riêng"
             type="info"
@@ -18,34 +18,34 @@
           />
 
           <div v-for="(item, index) in duLieuRiengList" :key="index" class="du-lieu-rieng-item">
-            <a-card size="small" :title="item.ten">
-              <a-row :gutter="16">
-                <a-col :span="12">
-                  <a-form-item label="Đơn vị" v-if="item.donVi">
-                    <a-input :value="item.donVi" disabled />
-                  </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                  <a-form-item label="Giá trị" :required="false">
-                    <a-input v-model:value="item.giaTri" placeholder="Nhập giá trị" />
-                  </a-form-item>
-                </a-col>
-              </a-row>
-            </a-card>
+            <Card size="small" :title="item.ten">
+              <Row :gutter="16">
+                <Col :span="12">
+                  <FormItem label="Đơn vị" v-if="item.donVi">
+                    <Input :value="item.donVi" disabled />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Giá trị" :required="false">
+                    <Input v-model:value="item.giaTri" placeholder="Nhập giá trị" />
+                  </FormItem>
+                </Col>
+              </Row>
+            </Card>
           </div>
         </div>
       </template>
 
       <template #dsGia="{ model, field }">
         <div class="ds-gia-container" v-if="field === 'dsGia'">
-          <a-button type="dashed" block @click="handleAddGia" style="margin-bottom: 16px">
+          <Button type="dashed" block @click="handleAddGia" style="margin-bottom: 16px">
             <template #icon>
               <PlusOutlined />
             </template>
             Thêm thông tin giá
-          </a-button>
+          </Button>
 
-          <a-empty
+          <Empty
             v-if="dsGiaList.length === 0"
             description="Chưa có thông tin giá"
             :image-style="{ height: '60px' }"
@@ -61,18 +61,18 @@
               "
             >
               <span style="font-size: 14px; font-weight: 500">Thông tin giá {{ index + 1 }}</span>
-              <a-button type="primary" danger size="small" @click="handleRemoveGia(index)">
+              <Button type="primary" danger size="small" @click="handleRemoveGia(index)">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
                 Xóa
-              </a-button>
+              </Button>
             </div>
 
-            <a-card size="small" :bordered="true">
-              <a-row :gutter="16">
-                <a-col :span="8">
-                  <a-form-item label="Mã cơ sở" :required="true">
+            <Card size="small" :bordered="true">
+              <Row :gutter="16">
+                <Col :span="8">
+                  <FormItem label="Mã cơ sở" :required="true">
                     <Select
                       :value="item.maCoSo"
                       @change="
@@ -87,15 +87,15 @@
                       <SelectOption value="HN">HN - Hà Nội</SelectOption>
                       <SelectOption value="HCM">HCM - Hồ Chí Minh</SelectOption>
                     </Select>
-                  </a-form-item>
-                </a-col>
-                <a-col :span="8">
-                  <a-form-item label="Tên cơ sở">
-                    <a-input v-model:value="item.tenCoSo" placeholder="Tên cơ sở" disabled />
-                  </a-form-item>
-                </a-col>
-                <a-col :span="8">
-                  <a-form-item label="Giá nhập" :required="true">
+                  </FormItem>
+                </Col>
+                <Col :span="8">
+                  <FormItem label="Tên cơ sở">
+                    <Input v-model:value="item.tenCoSo" placeholder="Tên cơ sở" disabled />
+                  </FormItem>
+                </Col>
+                <Col :span="8">
+                  <FormItem label="Giá nhập" :required="true">
                     <InputNumber
                       v-model:value="item.giaNhap"
                       placeholder="Nhập giá nhập"
@@ -104,10 +104,10 @@
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
                       style="width: 100%"
                     />
-                  </a-form-item>
-                </a-col>
-                <a-col :span="8">
-                  <a-form-item label="Giá bán" :required="true">
+                  </FormItem>
+                </Col>
+                <Col :span="8">
+                  <FormItem label="Giá bán" :required="true">
                     <InputNumber
                       v-model:value="item.giaBan"
                       placeholder="Nhập giá bán"
@@ -116,10 +116,10 @@
                       :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
                       style="width: 100%"
                     />
-                  </a-form-item>
-                </a-col>
-              </a-row>
-            </a-card>
+                  </FormItem>
+                </Col>
+              </Row>
+            </Card>
           </div>
         </div>
       </template>
@@ -147,7 +147,7 @@
             </div>
           </Upload>
 
-          <input
+          <Input
             ref="nativeFileInput"
             type="file"
             style="display: none"
@@ -165,7 +165,7 @@
 
 <script lang="ts" setup>
   import { ref, watch } from 'vue';
-  import { Upload, InputNumber, Empty, Select, SelectOption } from 'ant-design-vue';
+  import { Upload, InputNumber, Empty, Select, SelectOption, Alert, Card, Row, Col, Input, Button, FormItem } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form';
   import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue';
@@ -467,6 +467,8 @@
         moTaBaoGia: values.moTaBaoGia || undefined,
         moTaHopDong: values.moTaHopDong || undefined,
         duLieuRieng: duLieuRiengMap,
+        thoiGianBaoHanh: values.thoiGianBaoHanh,
+        gm: values.gm,
         trangThai: values.trangThai,
         dsGia: dsGiaPayload,
       };

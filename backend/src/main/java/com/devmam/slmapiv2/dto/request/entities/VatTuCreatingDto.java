@@ -32,6 +32,8 @@ public class VatTuCreatingDto {
     String moTaBaoGia;
     String moTaHopDong;
     Map<String, ThuocTinh> duLieuRieng;
+    Integer thoiGianBaoHanh;
+    Double gm;
     Integer trangThai;
 
     List<GiaInfo> dsGia;
@@ -48,6 +50,8 @@ public class VatTuCreatingDto {
                 .moTaBaoGia(dto.getMoTaBaoGia())
                 .moTaHopDong(dto.getMoTaHopDong())
                 .duLieuRieng(thuocTinhRiengObj)
+                .thoiGianBaoHanh(dto.getThoiGianBaoHanh())
+                .gm(dto.getGm())
                 .taoLuc(Instant.now())
                 .trangThai(dto.getTrangThai())
                 .build();

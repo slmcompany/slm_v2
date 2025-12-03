@@ -102,6 +102,16 @@ export const columns: BasicColumn[] = [
     },
   },
   {
+    title: 'Bảo hành(tháng)',
+    dataIndex: 'thoiGianBaoHanh',
+    width: 120,
+  },
+  {
+    title: 'GM(%)',
+    dataIndex: 'gm',
+    width: 100,
+  },
+  {
     title: 'Trạng thái',
     dataIndex: 'trangThai',
     width: 120,
@@ -222,6 +232,30 @@ export const formSchema: FormSchema[] = [
     componentProps: {
       placeholder: 'VD: cái, kg, m2',
       maxlength: 20,
+    },
+  },
+  {
+    field: 'thoiGianBaoHanh',
+    label: 'Bảo hành (tháng)',
+    component: 'InputNumber',
+    defaultValue: 0,
+    componentProps: {
+      placeholder: 'Nhập thời gian bảo hành',
+      max: 360,
+      min: 0,
+      step: 1,
+    },
+  },
+  {
+    field: 'gm',
+    label: 'GM (%)',
+    component: 'InputNumber',
+    defaultValue: 0,
+    componentProps: {
+      placeholder: 'Nhập thời gian bảo hành',
+      max: 100,
+      min: 0,
+      step: 0.01,
     },
   },
   {

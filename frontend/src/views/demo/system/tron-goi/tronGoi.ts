@@ -120,6 +120,8 @@ export interface VatTuDto {
   moTaBaoGia: string;
   moTaHopDong: string;
   duLieuRieng: Record<string, ThuocTinh>;
+  thoiGianBaoHanh: number;
+  gm: number;
   taoLuc: string;
   trangThai: number;
   anhVatTus: AnhVatTuDto[];

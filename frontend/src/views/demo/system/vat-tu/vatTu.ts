@@ -118,6 +118,8 @@ export interface VatTuDto {
   moTaBaoGia: string;
   moTaHopDong: string;
   duLieuRieng: Record<string, ThuocTinh>;
+  thoiGianBaoHanh: number;
+  gm: number;
   taoLuc: string;
   trangThai: number;
   anhVatTus: AnhVatTuDto[];
@@ -133,6 +135,8 @@ export interface VatTuCreateDto {
   moTaBaoGia?: string;
   moTaHopDong?: string;
   duLieuRieng?: Record<string, ThuocTinh>;
+  thoiGianBaoHanh: number;
+  gm: number;
   trangThai: number;
   dsGia?: GiaCreatingDto[];
 }
@@ -140,6 +144,8 @@ export interface VatTuCreateDto {
 export interface VatTuUpdateDto {
   id: number;
   ten: string;
+  thoiGianBaoHanh: number;
+  gm: number;
   trangThai: number;
 }
 

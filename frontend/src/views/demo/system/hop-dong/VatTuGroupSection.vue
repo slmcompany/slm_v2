@@ -1,7 +1,7 @@
 <template>
   <div class="vat-tu-group">
     <Divider orientation="left" style="margin: 16px 0">{{ title }}</Divider>
-    
+
     <Button
       v-if="showAddButton"
       type="dashed"
@@ -19,9 +19,9 @@
         :model-value="item"
         :options="options"
         :vat-tu-data="vatTuData"
-        :show-delete="showAddButton"
         :co-so-ma="coSoMa"
-        @update:model-value="$emit('update', index, $event)"
+        :region="region"
+        @update:model-value="(value) => $emit('update', index, value)"
         @remove="$emit('remove', index)"
       />
     </div>
@@ -39,13 +39,15 @@
     items: VatTuHopDongCreatingDto[];
     options: Array<{ label: string; value: number }>;
     vatTuData: VatTuDto[];
-    showAddButton?: boolean;
     coSoMa?: string;
+    region?: string; // Thêm prop này
+    showAddButton?: boolean;
   }
 
-  withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Props>(), {
+    coSoMa: 'HN',
+    region: 'Miền Bắc', // Default value
     showAddButton: true,
-    coSoMa: 'HN'
   });
 
   defineEmits<{

@@ -126,9 +126,9 @@
                       {{ vatTu.thoiGianBaoHanh || 0 }} tháng
                     </template>
                     <template v-else-if="column.key === 'duocBaoHanh'">
-                      <a-tag :color="vatTu.duocBaoHanh ? 'success' : 'default'">
+                      <Tag :color="vatTu.duocBaoHanh ? 'success' : 'default'">
                         {{ vatTu.duocBaoHanh ? 'Có' : 'Không' }}
-                      </a-tag>
+                      </Tag>
                     </template>
                     <template v-else-if="column.key === 'moTa'">
                       {{ vatTu.moTa || '-' }}
@@ -171,7 +171,7 @@
   import { filterTronGoi, getAllNhomTronGoi, TronGoiDto, deleteTronGoi } from './tronGoi';
   import CreateTronGoiModal from './CreateTronGoiModal.vue';
   import UpdateTronGoiModal from './UpdateTronGoiModal.vue';
-  import { Alert, Button, Descriptions, DescriptionsItem, Divider, Image, message, Table } from 'ant-design-vue';
+  import { Alert, Button, Descriptions, DescriptionsItem, Divider, Image, message, Table, Tag } from 'ant-design-vue';
 
   defineOptions({ name: 'TronGoiManagement' });
 

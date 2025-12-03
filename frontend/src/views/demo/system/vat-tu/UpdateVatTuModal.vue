@@ -54,10 +54,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onUnmounted  } from 'vue';
+  import { ref, onUnmounted } from 'vue';
   import { Upload } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
-  import { BasicForm, useForm } from '@/components/Form';
+  import { BasicForm, useForm , FormSchema} from '@/components/Form';
   import { PlusOutlined, UploadOutlined } from '@ant-design/icons-vue';
   import { updateVatTu } from './vatTu';
   import { message } from 'ant-design-vue';
@@ -74,7 +74,7 @@
   const antUpload = ref<any>(null);
   const blobUrls = ref<string[]>([]);
 
-  const updateFormSchema = [
+  const updateFormSchema: FormSchema[] = [
     {
       field: 'ten',
       label: 'Tên vật tư',
@@ -83,6 +83,30 @@
       componentProps: {
         placeholder: 'Nhập tên vật tư',
         maxlength: 400,
+      },
+    },
+    {
+      field: 'thoiGianBaoHanh',
+      label: 'Bảo hành (tháng)',
+      component: 'InputNumber',
+      required: true,
+      componentProps: {
+        placeholder: 'Nhập thời gian bảo hành',
+        max: 360,
+        min: 0,
+        step: 1,
+      },
+    },
+    {
+      field: 'gm',
+      label: 'GM (%)',
+      component: 'InputNumber',
+      required: true,
+      componentProps: {
+        placeholder: 'Nhập GM',
+        max: 100,
+        min: 0,
+        step: 0.01,
       },
     },
     {
@@ -186,6 +210,8 @@
       // Set giá trị form
       setFieldsValue({
         ten: data.record.ten,
+        thoiGianBaoHanh: data.record.thoiGianBaoHanh,
+        gm: data.record.gm,
         trangThai: data.record.trangThai,
       });
     }
@@ -282,26 +308,26 @@
   }
 
   function handleRemoveFile(file: any) {
-  try {
-    fileList.value = fileList.value.filter(
-      (f: any) => !(f.uid === file.uid || f.name === file.name),
-    );
-    
-    // Revoke blob URL
-    const thumbUrl = file.thumbUrl;
-    if (thumbUrl && thumbUrl.startsWith && thumbUrl.startsWith('blob:')) {
-      try {
-        URL.revokeObjectURL(thumbUrl);
-        // Xóa khỏi danh sách blob URLs
-        blobUrls.value = blobUrls.value.filter(url => url !== thumbUrl);
-      } catch (e) {
-        console.error('Error revoking blob URL:', e);
+    try {
+      fileList.value = fileList.value.filter(
+        (f: any) => !(f.uid === file.uid || f.name === file.name),
+      );
+
+      // Revoke blob URL
+      const thumbUrl = file.thumbUrl;
+      if (thumbUrl && thumbUrl.startsWith && thumbUrl.startsWith('blob:')) {
+        try {
+          URL.revokeObjectURL(thumbUrl);
+          // Xóa khỏi danh sách blob URLs
+          blobUrls.value = blobUrls.value.filter((url) => url !== thumbUrl);
+        } catch (e) {
+          console.error('Error revoking blob URL:', e);
+        }
       }
+    } catch (err) {
+      console.error('handleRemoveFile error', err);
     }
-  } catch (err) {
-    console.error('handleRemoveFile error', err);
   }
-}
 
   async function handleSubmit() {
     try {
@@ -311,6 +337,8 @@
       const updateData = {
         id: recordId.value!,
         ten: values.ten,
+        thoiGianBaoHanh: values.thoiGianBaoHanh,
+        gm: values.gm,
         trangThai: values.trangThai,
       };
 
@@ -324,7 +352,7 @@
 
       if (result.status === 200 || result.status === 201) {
         // Revoke tất cả blob URLs
-        blobUrls.value.forEach(url => {
+        blobUrls.value.forEach((url) => {
           try {
             URL.revokeObjectURL(url);
           } catch (e) {
@@ -332,7 +360,7 @@
           }
         });
         blobUrls.value = [];
-        
+
         message.success('Cập nhật thành công');
         closeModal();
         emit('success');
@@ -347,16 +375,16 @@
     }
   }
   onUnmounted(() => {
-  // Cleanup tất cả blob URLs khi component unmount
-  blobUrls.value.forEach(url => {
-    try {
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      console.error('Error revoking blob URL on unmount:', e);
-    }
+    // Cleanup tất cả blob URLs khi component unmount
+    blobUrls.value.forEach((url) => {
+      try {
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        console.error('Error revoking blob URL on unmount:', e);
+      }
+    });
+    blobUrls.value = [];
   });
-  blobUrls.value = [];
-});
 </script>
 
 <style lang="less" scoped>

@@ -559,7 +559,6 @@
             <Checkbox value="mái tôn">mái tôn</Checkbox>
             <Checkbox value="mái ngói">mái ngói</Checkbox>
             <Checkbox value="khung sắt">khung sắt</Checkbox>
-            <Checkbox value="mái bằng">mái bằng</Checkbox>
           </CheckboxGroup>
 
           <Button
@@ -1692,6 +1691,7 @@
             let giaBanMienBac = dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HN')?.giaBan || 0;
             let giaBanMienNam =
               dsGiaVatTu.find((gia: GiaInfo) => gia.maCoSo === 'HCM')?.giaBan || 0;
+            let gm = firstVatTu.gm;
             group.listRef.value = [
               {
                 vatTuId: firstVatTu.id,
@@ -1701,7 +1701,7 @@
                 giaNhapMienNam: giaNhapMienNam,
                 giaBanMienBac: giaBanMienBac,
                 giaBanMienNam: giaBanMienNam,
-                gm: firstVatTu.nhomVatTu.gm,
+                gm: gm,
                 thoiGianBaoHanh: 0,
                 duocBaoHanh: true,
                 duocXem: true,
@@ -1847,8 +1847,8 @@
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
-      gm: firstVatTu.nhomVatTu.gm,
-      thoiGianBaoHanh: 0,
+      gm: firstVatTu.gm || 0,
+      thoiGianBaoHanh: firstVatTu.thoiGianBaoHanh || 0,
       duocBaoHanh: true,
       duocXem: true,
       trangThai: 1,
@@ -1875,8 +1875,8 @@
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
-      gm: firstVatTu.nhomVatTu.gm,
-      thoiGianBaoHanh: 0,
+      gm: firstVatTu.gm || 0,
+      thoiGianBaoHanh: firstVatTu.thoiGianBaoHanh || 0,
       duocBaoHanh: true,
       duocXem: true,
       trangThai: 1,
@@ -1937,8 +1937,8 @@
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
-      gm: firstHeKhungNhom.nhomVatTu.gm,
-      thoiGianBaoHanh: 0,
+      gm: firstHeKhungNhom.gm || 0,
+      thoiGianBaoHanh: firstHeKhungNhom.thoiGianBaoHanh || 0,
       duocBaoHanh: true,
       duocXem: true,
       trangThai: 1,
@@ -1965,8 +1965,8 @@
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
-      gm: firstHeDayDien.nhomVatTu.gm,
-      thoiGianBaoHanh: 0,
+      gm: firstHeDayDien.gm || 0,
+      thoiGianBaoHanh: firstHeDayDien.thoiGianBaoHanh || 0,
       duocBaoHanh: true,
       duocXem: true,
       trangThai: 1,
@@ -1998,8 +1998,8 @@
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
-      gm: firstTuDien.nhomVatTu.gm,
-      thoiGianBaoHanh: 0,
+      gm: firstTuDien.gm || 0,
+      thoiGianBaoHanh: firstTuDien.thoiGianBaoHanh || 0,
       duocBaoHanh: true,
       duocXem: true,
       trangThai: 1,
@@ -2026,8 +2026,8 @@
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
-      gm: firstHeTiepDia.nhomVatTu.gm,
-      thoiGianBaoHanh: 0,
+      gm: firstHeTiepDia.gm || 0,
+      thoiGianBaoHanh: firstHeTiepDia.thoiGianBaoHanh || 0,
       duocBaoHanh: true,
       duocXem: true,
       trangThai: 1,
@@ -2055,8 +2055,8 @@
       giaNhapMienNam: giaNhapMienNam,
       giaBanMienBac: giaBanMienBac,
       giaBanMienNam: giaBanMienNam,
-      gm: firstVatTu.nhomVatTu.gm,
-      thoiGianBaoHanh: 0,
+      gm: firstVatTu.gm || 0,
+      thoiGianBaoHanh: firstVatTu.thoiGianBaoHanh || 0,
       duocBaoHanh: false,
       duocXem: true,
       trangThai: 1,
@@ -2080,7 +2080,8 @@
         tamPinList.value[index].giaNhapMienNam = giaNhapMienNam;
         tamPinList.value[index].giaBanMienBac = giaBanMienBac;
         tamPinList.value[index].giaBanMienNam = giaBanMienNam;
-        tamPinList.value[index].gm = vatTu.nhomVatTu.gm;
+        tamPinList.value[index].thoiGianBaoHanh = vatTu.thoiGianBaoHanh || 0;
+        tamPinList.value[index].gm = vatTu.gm || 0;
         formState.congSuatHeThong =
           vatTu.duLieuRieng.cong_suat.giaTri * tamPinList.value[index].soLuong;
         break;
@@ -2169,7 +2170,8 @@
         bienTanList.value[index].giaNhapMienNam = giaNhapMienNam;
         bienTanList.value[index].giaBanMienBac = giaBanMienBac;
         bienTanList.value[index].giaBanMienNam = giaBanMienNam;
-        bienTanList.value[index].gm = vatTu.nhomVatTu.gm;
+        bienTanList.value[index].thoiGianBaoHanh = vatTu.thoiGianBaoHanh || 0;
+        bienTanList.value[index].gm = vatTu.gm || 0;
         break;
       }
     }
@@ -2188,7 +2190,8 @@
         pinLuuTruList.value[index].giaNhapMienNam = giaNhapMienNam;
         pinLuuTruList.value[index].giaBanMienBac = giaBanMienBac;
         pinLuuTruList.value[index].giaBanMienNam = giaBanMienNam;
-        pinLuuTruList.value[index].gm = vatTu.nhomVatTu.gm;
+        pinLuuTruList.value[index].thoiGianBaoHanh = vatTu.thoiGianBaoHanh || 0;
+        pinLuuTruList.value[index].gm = vatTu.gm || 0;
         break;
       }
     }
@@ -2236,7 +2239,8 @@
         heKhungNhomList.value[index].giaNhapMienNam = giaNhapMienNam;
         heKhungNhomList.value[index].giaBanMienBac = giaBanMienBac;
         heKhungNhomList.value[index].giaBanMienNam = giaBanMienNam;
-        heKhungNhomList.value[index].gm = vatTu.nhomVatTu.gm;
+        heKhungNhomList.value[index].thoiGianBaoHanh = vatTu.thoiGianBaoHanh || 0;
+        heKhungNhomList.value[index].gm = vatTu.gm || 0;
         heKhungNhomList.value[index].soLuong = soLuongCal;
         break;
       }
@@ -2255,7 +2259,8 @@
         heDayDienList.value[index].giaNhapMienNam = giaNhapMienNam;
         heDayDienList.value[index].giaBanMienBac = giaBanMienBac;
         heDayDienList.value[index].giaBanMienNam = giaBanMienNam;
-        heDayDienList.value[index].gm = vatTu.nhomVatTu.gm;
+        heDayDienList.value[index].thoiGianBaoHanh = vatTu.thoiGianBaoHanh || 0;
+        heDayDienList.value[index].gm = vatTu.gm || 0;
         break;
       }
     }
@@ -2276,7 +2281,8 @@
         tuDienList.value[index].giaNhapMienNam = giaNhapMienNam;
         tuDienList.value[index].giaBanMienBac = giaBanMienBac;
         tuDienList.value[index].giaBanMienNam = giaBanMienNam;
-        tuDienList.value[index].gm = vatTu.nhomVatTu.gm;
+        tuDienList.value[index].thoiGianBaoHanh = vatTu.thoiGianBaoHanh || 0;
+        tuDienList.value[index].gm = vatTu.gm || 0;
         break;
       }
     }
@@ -2294,7 +2300,8 @@
         heTiepDiaList.value[index].giaNhapMienNam = giaNhapMienNam;
         heTiepDiaList.value[index].giaBanMienBac = giaBanMienBac;
         heTiepDiaList.value[index].giaBanMienNam = giaBanMienNam;
-        heTiepDiaList.value[index].gm = vatTu.nhomVatTu.gm;
+        heTiepDiaList.value[index].thoiGianBaoHanh = vatTu.thoiGianBaoHanh || 0;
+        heTiepDiaList.value[index].gm = vatTu.gm || 0;
         break;
       }
     }
@@ -2312,7 +2319,8 @@
         tronGoiLapDatList.value[index].giaNhapMienNam = giaNhapMienNam;
         tronGoiLapDatList.value[index].giaBanMienBac = giaBanMienBac;
         tronGoiLapDatList.value[index].giaBanMienNam = giaBanMienNam;
-        tronGoiLapDatList.value[index].gm = vatTu.nhomVatTu.gm;
+        tronGoiLapDatList.value[index].thoiGianBaoHanh = vatTu.thoiGianBaoHanh || 0;
+        tronGoiLapDatList.value[index].gm = vatTu.gm || 0;  
         break;
       }
     }

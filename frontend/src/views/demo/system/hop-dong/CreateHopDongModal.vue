@@ -218,6 +218,7 @@
         :options="group.options"
         :vat-tu-data="group.data"
         :co-so-ma="selectedCoSoMa"
+        :region="selectedCoSoTen"
         :show-add-button="group.allowMultiple"
         @add="handleAddVatTu(group.code)"
         @remove="(index) => handleRemoveVatTu(group.code, index)"
@@ -359,6 +360,11 @@
   const selectedCoSoMa = computed(() => {
     const coSo = coSoOptions.value.find((c) => c.value === formState.coSoId);
     return coSo?.ma || 'HN';
+  });
+
+  const selectedCoSoTen = computed(() => {
+    const coSo = coSoOptions.value.find((c) => c.value === formState.coSoId);
+    return coSo?.label || 'Miền Bắc';
   });
 
   const vatTuGroups = computed(() => [

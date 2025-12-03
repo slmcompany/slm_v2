@@ -33,6 +33,8 @@ public class VatTuDto implements Serializable {
     String moTaBaoGia;
     String moTaHopDong;
     Map<String, Object> duLieuRieng;
+    Integer thoiGianBaoHanh;
+    Double gm;
     Instant taoLuc;
     Integer trangThai;
     List<AnhVatTuDto> anhVatTus;

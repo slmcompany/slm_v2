@@ -59,6 +59,14 @@ public class VatTu implements Serializable {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> duLieuRieng;
 
+    @ColumnDefault("0")
+    @Column(name = "thoi_gian_bao_hanh")
+    private Integer thoiGianBaoHanh;
+
+    @ColumnDefault("0")
+    @Column(name = "gm")
+    private Double gm;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "tao_luc")
     private Instant taoLuc;
