@@ -67,6 +67,10 @@ public class VatTu implements Serializable {
     @Column(name = "gm")
     private Double gm;
 
+    @ColumnDefault("true")
+    @Column(name = "vat_tu_chinh")
+    private Boolean vatTuChinh;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "tao_luc")
     private Instant taoLuc;

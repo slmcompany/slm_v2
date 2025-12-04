@@ -35,6 +35,7 @@ public class VatTuDto implements Serializable {
     Map<String, Object> duLieuRieng;
     Integer thoiGianBaoHanh;
     Double gm;
+    Boolean vatTuChinh;
     Instant taoLuc;
     Integer trangThai;
     List<AnhVatTuDto> anhVatTus;
