@@ -10,8 +10,6 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {TepTinMapper.class})
 public interface VatTuMapper {
 
-//    VatTuMapper INSTANCE = Mappers.getMapper(VatTuMapper.class);
-
     VatTuDto toDto(VatTu vatTu);
 
     List<VatTuDto> toDtoList(List<VatTu> vatTuList);

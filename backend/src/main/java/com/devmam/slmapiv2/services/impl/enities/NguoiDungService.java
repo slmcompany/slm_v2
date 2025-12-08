@@ -69,12 +69,15 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         if (coSoFinding.isEmpty()) {
             throw new CommonException("Không tim thaấy cơ sở ma: HN");
         }
+        String sdt = registerRequest.getSdt();
+        // bỏ dấu chấm dấu cách
+        sdt = sdt.replaceAll(" ", "");
         NguoiDung nguoiDungCreating = NguoiDung.builder()
                 .coSo(coSoFinding.get())
                 .taoLuc(Instant.now())
                 .phanQuyen(RoleType.CUSTOMER.name())
                 .email(registerRequest.getSdt())
-                .sdt(registerRequest.getSdt())
+                .sdt(sdt)
                 .matKhau(registerRequest.getMatKhau())
                 .hoVaTen(registerRequest.getHoVaTen())
                 .phanTramHoaHong(0.0)
