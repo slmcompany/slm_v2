@@ -1,22 +1,25 @@
 package com.devmam.slmapiv2.controller;
 
-import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
-import com.devmam.slmapiv2.dto.request.LoginRequest;
-import com.devmam.slmapiv2.dto.request.RegisterRequest;
-import com.devmam.slmapiv2.dto.request.entities.NguoiDungUpdatingDto;
+import com.devmam.slmapiv2.dto.request.*;
+import com.devmam.slmapiv2.dto.request.entities.NguoiDungClientUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.NguoiDungDto;
 import com.devmam.slmapiv2.entities.NguoiDung;
 import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.NguoiDungMapper;
 import com.devmam.slmapiv2.services.impl.enities.NguoiDungService;
+import com.devmam.slmapiv2.workers.CheckingAndCleanupJob;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/basic-api/nguoi-dung")
@@ -26,6 +29,9 @@ public class NguoiDungController {
 
     @Autowired
     private NguoiDungMapper nguoiDungMapper;
+
+    @Autowired
+    private CheckingAndCleanupJob checkingAndCleanupJob;
 
 
     @GetMapping("/all")
@@ -65,26 +71,60 @@ public class NguoiDungController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseData<NguoiDungDto>> update(@RequestBody NguoiDungUpdatingDto dto) {
-        return null;
+    public ResponseEntity<ResponseData<NguoiDungDto>> update(@Valid @RequestBody NguoiDungClientUpdatingDto dto) {
+        return nguoiDungService.updateNguoiDung(dto);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseData<NguoiDungDto>> softDelete(@PathVariable Integer id){
+    public ResponseEntity<ResponseData<NguoiDungDto>> softScheduleDelete(@PathVariable Integer id) {
         Optional<NguoiDung> findingNguoiDung = nguoiDungService.getOne(id);
-        if(findingNguoiDung.isEmpty()){
+        if (findingNguoiDung.isEmpty()) {
             throw new CommonException("Không tìm thấy người dùng id: " + id);
         }
 
-        NguoiDung nguoiDung = nguoiDungService.changeStatus(id, 0);
+        NguoiDungDeletingQ nguoiDungDeletingQ = NguoiDungDeletingQ.builder()
+                .id(findingNguoiDung.get().getId())
+                .thoiGianXoa(Instant.now().plus(Duration.ofDays(3)))
+                .build();
+
+        checkingAndCleanupJob.addDeletingNguoiDung(nguoiDungDeletingQ);
 
         return ResponseEntity.ok(
                 ResponseData.<NguoiDungDto>builder()
                         .status(200)
                         .error(null)
                         .message("Success")
-                        .data(nguoiDungMapper.toDto(nguoiDung))
+                        .data(nguoiDungMapper.toDto(findingNguoiDung.get()))
                         .build()
         );
+    }
+
+
+    @DeleteMapping("/roll-back-delete/{id}")
+    public ResponseEntity<ResponseData<NguoiDungDto>> rollBackDelete(@PathVariable Integer id) {
+
+        Optional<NguoiDung> findingNguoiDung = nguoiDungService.getOne(id);
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Không tìm thấy người dùng id: " + id);
+        }
+        if(findingNguoiDung.get().getTrangThai() == 0) {
+            throw new CommonException("Người dùng đã bị xoá");
+        }
+
+        Set<NguoiDungDeletingQ> deletingNguoiDungs = checkingAndCleanupJob.getDeletingNguoiDungs();
+        deletingNguoiDungs.removeIf(n -> n.getId().equals(id));
+        return ResponseEntity.ok(
+                ResponseData.<NguoiDungDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(nguoiDungMapper.toDto(findingNguoiDung.get()))
+                        .build()
+        );
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<ResponseData<NguoiDungDto>> changePassword(@Valid @RequestBody ChangePasswordRequest changePassReq) {
+        return nguoiDungService.changePassword(changePassReq);
     }
 }

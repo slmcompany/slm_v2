@@ -1,8 +1,10 @@
 package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.RoleType;
+import com.devmam.slmapiv2.dto.request.ChangePasswordRequest;
 import com.devmam.slmapiv2.dto.request.LoginRequest;
 import com.devmam.slmapiv2.dto.request.RegisterRequest;
+import com.devmam.slmapiv2.dto.request.entities.NguoiDungClientUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.NguoiDungDto;
 import com.devmam.slmapiv2.entities.CoSo;
@@ -11,10 +13,12 @@ import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.NguoiDungMapper;
 import com.devmam.slmapiv2.repository.NguoiDungRepository;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
+import com.devmam.slmapiv2.workers.CheckingAndCleanupJob;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -70,8 +74,11 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
             throw new CommonException("Không tim thaấy cơ sở ma: HN");
         }
         String sdt = registerRequest.getSdt();
-        // bỏ dấu chấm dấu cách
-        sdt = sdt.replaceAll(" ", "");
+        sdt = sdt.replaceAll("[^0-9]", "");
+        Optional<NguoiDung> findingNguoiDungBySdt = findBySdt(sdt);
+        if (findingNguoiDungBySdt.isPresent()) {
+            throw new CommonException("Số điện thoại đã tồn tại: " + sdt);
+        }
         NguoiDung nguoiDungCreating = NguoiDung.builder()
                 .coSo(coSoFinding.get())
                 .taoLuc(Instant.now())
@@ -94,6 +101,70 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
                         .error(null)
                         .message("Success")
                         .data(nguoiDungMapper.toDto(nguoiDungCreating))
+                        .build()
+        );
+    }
+
+
+    @Transactional
+    public ResponseEntity<ResponseData<NguoiDungDto>> updateNguoiDung(NguoiDungClientUpdatingDto dto) {
+        Optional<NguoiDung> findingNguoiDung = getOne(dto.getId());
+
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Không tìm thấy người dùng id: " + dto.getId());
+        }
+
+        Optional<NguoiDung> findingNguoiDungBySdt = findBySdt(dto.getSdt());
+
+        if (findingNguoiDungBySdt.isPresent() && !findingNguoiDungBySdt.get().getId().equals(dto.getId())) {
+            throw new CommonException("Số điện thoại đã có người sử dụng");
+        }
+
+        NguoiDung nguoiDung = findingNguoiDung.get();
+
+
+        if (dto.getEmail() == null || dto.getEmail().isEmpty()) {
+            dto.setEmail(dto.getSdt());
+        } else {
+            dto.setEmail(dto.getEmail().trim().toLowerCase());
+        }
+        nguoiDung.setSdt(dto.getSdt());
+        nguoiDung.setHoVaTen(dto.getHoVaTen());
+        nguoiDung.setSinhNhat(dto.getSinhNhat());
+        nguoiDung.setDiaChi(dto.getDiaChi());
+
+        nguoiDung = update(dto.getId(), nguoiDung);
+
+        return ResponseEntity.ok(
+                ResponseData.<NguoiDungDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(nguoiDungMapper.toDto(nguoiDung))
+                        .build()
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<NguoiDungDto>> changePassword(ChangePasswordRequest changePassReq) {
+        Optional<NguoiDung> findingNguoiDung = getOne(changePassReq.getId());
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Không tìm thấy người dùng id: " + changePassReq.getId());
+        }
+        NguoiDung nguoiDung = findingNguoiDung.get();
+        if (!nguoiDung.getMatKhau().equals(changePassReq.getMatKhauCu())) {
+            throw new CommonException("Mật khẩu cũ không chính xác");
+        }
+        nguoiDung.setMatKhau(changePassReq.getMatKhauMoi());
+        nguoiDung = update(changePassReq.getId(), nguoiDung);
+        NguoiDungDto dto = nguoiDungMapper.toDto(nguoiDung);
+        dto.setMatKhau("");
+        return ResponseEntity.ok(
+                ResponseData.<NguoiDungDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(dto)
                         .build()
         );
     }

@@ -59,6 +59,10 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
     @Transactional
     public ResponseEntity<ResponseData<HopDongDto>> create(HopDongUndefineKhachHangCreatingDto dto) {
 
+        String sdt = dto.getSdtKhachHang();
+        sdt = sdt.replaceAll("[^0-9]", "");
+        dto.setSdtKhachHang(sdt);
+
         Optional<CoSo> coSoFinding = coSoService.getOne(dto.getCoSoId());
 
         if (coSoFinding.isEmpty()) {

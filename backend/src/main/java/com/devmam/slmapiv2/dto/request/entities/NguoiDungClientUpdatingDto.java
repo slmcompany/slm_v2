@@ -10,17 +10,15 @@ import java.time.Instant;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class NguoiDungUpdatingDto {
-    String phanQuyen;
+public class NguoiDungClientUpdatingDto {
+
+    @NonNull
+    Integer id;
     String email;
+    @NonNull
     String sdt;
-    String matKhau;
+    @NonNull
     String hoVaTen;
-    Boolean gioiTinh;
     Instant sinhNhat;
-    Double phanTramHoaHong;
     String diaChi;
-    String nganHang;
-    String maNganHang;
-    Integer trangThai;
 }

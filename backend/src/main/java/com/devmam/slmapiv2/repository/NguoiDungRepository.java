@@ -12,6 +12,5 @@ import java.util.Optional;
 @Repository
 public interface NguoiDungRepository extends JpaRepository<NguoiDung, Integer>, JpaSpecificationExecutor<NguoiDung> {
 
-    @Query("select n from NguoiDung n where REPLACE(n.sdt, ' ', '') = REPLACE(:sdt, ' ', '')")
-    Optional<NguoiDung> findBySdt(@Param("sdt") String sdt);
+    Optional<NguoiDung> findBySdt(String sdt);
 }
