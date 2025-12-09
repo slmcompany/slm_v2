@@ -6,6 +6,8 @@ import com.devmam.slmapiv2.dto.request.RegisterRequest;
 import com.devmam.slmapiv2.dto.request.entities.NguoiDungUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.NguoiDungDto;
+import com.devmam.slmapiv2.entities.NguoiDung;
+import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.NguoiDungMapper;
 import com.devmam.slmapiv2.services.impl.enities.NguoiDungService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/basic-api/nguoi-dung")
@@ -64,5 +67,24 @@ public class NguoiDungController {
     @PutMapping("/update")
     public ResponseEntity<ResponseData<NguoiDungDto>> update(@RequestBody NguoiDungUpdatingDto dto) {
         return null;
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseData<NguoiDungDto>> softDelete(@PathVariable Integer id){
+        Optional<NguoiDung> findingNguoiDung = nguoiDungService.getOne(id);
+        if(findingNguoiDung.isEmpty()){
+            throw new CommonException("Không tìm thấy người dùng id: " + id);
+        }
+
+        NguoiDung nguoiDung = nguoiDungService.changeStatus(id, 0);
+
+        return ResponseEntity.ok(
+                ResponseData.<NguoiDungDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(nguoiDungMapper.toDto(nguoiDung))
+                        .build()
+        );
     }
 }
