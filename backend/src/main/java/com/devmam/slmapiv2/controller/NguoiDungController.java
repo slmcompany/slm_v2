@@ -58,6 +58,23 @@ public class NguoiDungController {
         );
     }
 
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<ResponseData<NguoiDungDto>> getById(@PathVariable Integer id) {
+        Optional<NguoiDung> findingNguoiDung = nguoiDungService.getOne(id);
+
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Không tìm thấy người dùng id: " + id);
+        }
+        return ResponseEntity.ok(
+                ResponseData.<NguoiDungDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(nguoiDungMapper.toDto(findingNguoiDung.get()))
+                        .build()
+        );
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<ResponseData<NguoiDungDto>> login(@RequestBody LoginRequest loginRequest) {
