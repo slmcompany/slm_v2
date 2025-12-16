@@ -18,7 +18,6 @@ import com.devmam.slmapiv2.services.EmailService;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,7 +99,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         Map<String, Object> params = new HashMap<>();
         params.put("userName", registerRequest.getHoVaTen() != null ? registerRequest.getHoVaTen() : registerRequest.getEmail());
         params.put("activationCode", otp);
-        params.put("expirationTime", "5 phút");
+        params.put("expiryTime", "5 phút");
 
         emailService.sendHtmlEmailFromTemplate(registerRequest.getEmail(), "Mã kích hoạt tài khoản SLM", "activation.html", params);
 
@@ -204,22 +203,22 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
     @Transactional
     public ResponseEntity<ResponseData<String>> activate(ActivateRequest activateRequest) {
         Optional<NguoiDung> findingNguoiDung = findBySdtOrEmail(activateRequest.getEmail(), activateRequest.getEmail());
-        if(findingNguoiDung.isEmpty()) {
-            throw new CommonException("Không tìm thấy người dùng email: "+activateRequest.getEmail());
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Không tìm thấy người dùng email: " + activateRequest.getEmail());
         }
 
-        if(findingNguoiDung.get().getTrangThai() == 1) {
+        if (findingNguoiDung.get().getTrangThai() == 1) {
             throw new CommonException("Tài khoản đã được kích hoạt vui lòng không sử dụng lại otp");
         }
 
-        if(!findingNguoiDung.get().getOtp().equals(activateRequest.getOtp())) {
+        if (!findingNguoiDung.get().getOtp().equals(activateRequest.getOtp())) {
             throw new CommonException("Mã kích hoạt sai hoặc hết hạn");
         }
 
         NguoiDung nguoiDung = findingNguoiDung.get();
         Instant now = Instant.now();
 
-        if(nguoiDung.getOtpGuiLuc().plusSeconds(300l).isBefore(now)) {
+        if (nguoiDung.getOtpGuiLuc().plusSeconds(300l).isBefore(now)) {
             throw new CommonException("Mã kích hoạt sai hoặc hết hạn");
         }
 
@@ -228,12 +227,12 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         update(nguoiDung.getId(), nguoiDung);
 
         return ResponseEntity.ok(
-          ResponseData.<String>builder()
-                  .status(200)
-                  .error(null)
-                  .data("Kích hoạt tài khoản thành công")
-                  .message("Kích hoạt tài khoản thành công")
-                  .build()
+                ResponseData.<String>builder()
+                        .status(200)
+                        .error(null)
+                        .data("Kích hoạt tài khoản thành công")
+                        .message("Kích hoạt tài khoản thành công")
+                        .build()
         );
     }
 }
