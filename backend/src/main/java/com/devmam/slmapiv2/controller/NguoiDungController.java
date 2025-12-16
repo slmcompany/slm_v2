@@ -15,8 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -86,6 +84,11 @@ public class NguoiDungController {
         return nguoiDungService.register(registerRequest);
     }
 
+    @PostMapping("/activate")
+    public ResponseEntity<ResponseData<String>> activate(@RequestBody ActivateRequest activateRequest) {
+        return nguoiDungService.activate(activateRequest);
+    }
+
 
     @PutMapping("/update")
     public ResponseEntity<ResponseData<NguoiDungDto>> update(@Valid @RequestBody NguoiDungClientUpdatingDto dto) {
@@ -99,12 +102,15 @@ public class NguoiDungController {
             throw new CommonException("Không tìm thấy người dùng id: " + id);
         }
 
-        NguoiDungDeletingQ nguoiDungDeletingQ = NguoiDungDeletingQ.builder()
-                .id(findingNguoiDung.get().getId())
-                .thoiGianXoa(Instant.now().plus(Duration.ofDays(3)))
-                .build();
+//        NguoiDungDeletingQ nguoiDungDeletingQ = NguoiDungDeletingQ.builder()
+//                .id(findingNguoiDung.get().getId())
+//                .thoiGianXoa(Instant.now().plus(Duration.ofDays(3)))
+//                .build();
+//
+//        checkingAndCleanupJob.addDeletingNguoiDung(nguoiDungDeletingQ);
 
-        checkingAndCleanupJob.addDeletingNguoiDung(nguoiDungDeletingQ);
+        findingNguoiDung.get().setTrangThai(0);
+        nguoiDungService.update(id, findingNguoiDung.get());
 
         return ResponseEntity.ok(
                 ResponseData.<NguoiDungDto>builder()
@@ -124,7 +130,7 @@ public class NguoiDungController {
         if (findingNguoiDung.isEmpty()) {
             throw new CommonException("Không tìm thấy người dùng id: " + id);
         }
-        if(findingNguoiDung.get().getTrangThai() == 0) {
+        if (findingNguoiDung.get().getTrangThai() == 0) {
             throw new CommonException("Người dùng đã bị xoá");
         }
 

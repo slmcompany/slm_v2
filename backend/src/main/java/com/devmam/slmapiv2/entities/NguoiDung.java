@@ -80,6 +80,14 @@ public class NguoiDung implements Serializable {
     @Column(name = "ma_ngan_hang", length = 50)
     private String maNganHang;
 
+    @Size(max = 6)
+    @Column(name = "otp", length = 6)
+    private String otp;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "otp_gui_luc")
+    private Instant otpGuiLuc;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "tao_luc")
     private Instant taoLuc;

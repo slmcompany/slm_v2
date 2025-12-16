@@ -1,6 +1,7 @@
 package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.RoleType;
+import com.devmam.slmapiv2.dto.request.ActivateRequest;
 import com.devmam.slmapiv2.dto.request.ChangePasswordRequest;
 import com.devmam.slmapiv2.dto.request.LoginRequest;
 import com.devmam.slmapiv2.dto.request.RegisterRequest;
@@ -12,15 +13,19 @@ import com.devmam.slmapiv2.entities.NguoiDung;
 import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.NguoiDungMapper;
 import com.devmam.slmapiv2.repository.NguoiDungRepository;
+import com.devmam.slmapiv2.services.CalcService;
+import com.devmam.slmapiv2.services.EmailService;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
-import com.devmam.slmapiv2.workers.CheckingAndCleanupJob;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -35,6 +40,11 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
     @Autowired
     private NguoiDungMapper nguoiDungMapper;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private CalcService calcService;
 
     public NguoiDungService(NguoiDungRepository repository) {
         super(repository);
@@ -48,8 +58,8 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
     public ResponseEntity<ResponseData<NguoiDungDto>> login(LoginRequest loginRequest) {
         NguoiDungRepository repo = (NguoiDungRepository) super.getRepository();
 
-        Optional<NguoiDung> findingNguoiDung = repo.findBySdt(loginRequest.getSdt());
-        if (findingNguoiDung.isPresent() && findingNguoiDung.get().getMatKhau().equals(loginRequest.getMatKhau())) {
+        Optional<NguoiDung> findingNguoiDung = repo.findBySdtOrEmail(loginRequest.getSdt(), loginRequest.getSdt());
+        if (findingNguoiDung.isPresent() && findingNguoiDung.get().getMatKhau().equals(loginRequest.getMatKhau()) && findingNguoiDung.get().getTrangThai() == 1) {
             NguoiDungDto dto = nguoiDungMapper.toDto(findingNguoiDung.get());
             dto.setMatKhau("");
             return ResponseEntity.ok(
@@ -71,26 +81,43 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         }
         Optional<CoSo> coSoFinding = coSoService.findByMa(registerRequest.getMaCoSo());
         if (coSoFinding.isEmpty()) {
-            throw new CommonException("Không tim thaấy cơ sở ma: HN");
+            throw new CommonException("Không tim thấy cơ sở ma: HN");
         }
         String sdt = registerRequest.getSdt();
-        sdt = sdt.replaceAll("[^0-9]", "");
-        Optional<NguoiDung> findingNguoiDungBySdt = findBySdt(sdt);
+        if (sdt == null || sdt.isEmpty()) {
+            sdt = registerRequest.getEmail();
+        } else {
+            sdt = sdt.replaceAll("[^0-9]", "");
+        }
+        Optional<NguoiDung> findingNguoiDungBySdt = findBySdtOrEmail(sdt, sdt);
         if (findingNguoiDungBySdt.isPresent()) {
             throw new CommonException("Số điện thoại đã tồn tại: " + sdt);
         }
+
+        Instant now = Instant.now();
+        String otp = calcService.getRandomActiveCode(6l);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("userName", registerRequest.getHoVaTen() != null ? registerRequest.getHoVaTen() : registerRequest.getEmail());
+        params.put("activationCode", otp);
+        params.put("expirationTime", "5 phút");
+
+        emailService.sendHtmlEmailFromTemplate(registerRequest.getEmail(), "Mã kích hoạt tài khoản SLM", "activation.html", params);
+
         NguoiDung nguoiDungCreating = NguoiDung.builder()
                 .coSo(coSoFinding.get())
-                .taoLuc(Instant.now())
+                .taoLuc(now)
                 .phanQuyen(RoleType.CUSTOMER.name())
-                .email(registerRequest.getSdt())
+                .email(registerRequest.getEmail().trim().toLowerCase())
                 .sdt(sdt)
                 .matKhau(registerRequest.getMatKhau())
                 .hoVaTen(registerRequest.getHoVaTen())
                 .phanTramHoaHong(0.0)
                 .tongHoaHong(0.0)
                 .gioiTinh(true)
-                .trangThai(1)
+                .otp(otp)
+                .otpGuiLuc(now)
+                .trangThai(0)
                 .build();
 
         nguoiDungCreating = repo.save(nguoiDungCreating);
@@ -114,7 +141,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
             throw new CommonException("Không tìm thấy người dùng id: " + dto.getId());
         }
 
-        Optional<NguoiDung> findingNguoiDungBySdt = findBySdt(dto.getSdt());
+        Optional<NguoiDung> findingNguoiDungBySdt = findBySdtOrEmail(dto.getSdt(), dto.getSdt());
 
         if (findingNguoiDungBySdt.isPresent() && !findingNguoiDungBySdt.get().getId().equals(dto.getId())) {
             throw new CommonException("Số điện thoại đã có người sử dụng");
@@ -169,8 +196,44 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         );
     }
 
-    public Optional<NguoiDung> findBySdt(String sdt) {
+    public Optional<NguoiDung> findBySdtOrEmail(String sdt, String email) {
         NguoiDungRepository repo = (NguoiDungRepository) super.getRepository();
-        return repo.findBySdt(sdt);
+        return repo.findBySdtOrEmail(sdt, email);
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<String>> activate(ActivateRequest activateRequest) {
+        Optional<NguoiDung> findingNguoiDung = findBySdtOrEmail(activateRequest.getEmail(), activateRequest.getEmail());
+        if(findingNguoiDung.isEmpty()) {
+            throw new CommonException("Không tìm thấy người dùng email: "+activateRequest.getEmail());
+        }
+
+        if(findingNguoiDung.get().getTrangThai() == 1) {
+            throw new CommonException("Tài khoản đã được kích hoạt vui lòng không sử dụng lại otp");
+        }
+
+        if(!findingNguoiDung.get().getOtp().equals(activateRequest.getOtp())) {
+            throw new CommonException("Mã kích hoạt sai hoặc hết hạn");
+        }
+
+        NguoiDung nguoiDung = findingNguoiDung.get();
+        Instant now = Instant.now();
+
+        if(nguoiDung.getOtpGuiLuc().plusSeconds(300l).isBefore(now)) {
+            throw new CommonException("Mã kích hoạt sai hoặc hết hạn");
+        }
+
+        nguoiDung.setTrangThai(1);
+        nguoiDung.setOtp("87@Slm");
+        update(nguoiDung.getId(), nguoiDung);
+
+        return ResponseEntity.ok(
+          ResponseData.<String>builder()
+                  .status(200)
+                  .error(null)
+                  .data("Kích hoạt tài khoản thành công")
+                  .message("Kích hoạt tài khoản thành công")
+                  .build()
+        );
     }
 }
