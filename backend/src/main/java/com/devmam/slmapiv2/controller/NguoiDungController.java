@@ -101,7 +101,7 @@ public class NguoiDungController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseData<NguoiDungDto>> softScheduleDelete(@PathVariable Integer id) {
+    public ResponseEntity<ResponseData<String>> hardDelete(@PathVariable Integer id) {
         Optional<NguoiDung> findingNguoiDung = nguoiDungService.getOne(id);
         if (findingNguoiDung.isEmpty()) {
             throw new CommonException("Không tìm thấy người dùng id: " + id);
@@ -115,14 +115,14 @@ public class NguoiDungController {
 //        checkingAndCleanupJob.addDeletingNguoiDung(nguoiDungDeletingQ);
 
         findingNguoiDung.get().setTrangThai(0);
-        nguoiDungService.update(id, findingNguoiDung.get());
+        nguoiDungService.delete(id);
 
         return ResponseEntity.ok(
-                ResponseData.<NguoiDungDto>builder()
+                ResponseData.<String>builder()
                         .status(200)
                         .error(null)
                         .message("Success")
-                        .data(nguoiDungMapper.toDto(findingNguoiDung.get()))
+                        .data("Xoá tài khoản thành công")
                         .build()
         );
     }

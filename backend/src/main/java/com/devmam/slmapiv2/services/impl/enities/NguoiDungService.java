@@ -80,7 +80,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
             throw new CommonException("Không tim thấy cơ sở ma: HN");
         }
         String sdt = registerRequest.getSdt();
-        if (sdt != null && sdt.trim().isEmpty()) {
+        if (sdt != null && !sdt.trim().isEmpty()) {
             sdt = sdt.replaceAll("[^0-9]", "");
         } else {
             sdt = null;
