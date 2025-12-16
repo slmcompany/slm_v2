@@ -43,7 +43,7 @@ public class NguoiDung implements Serializable {
 
     @Size(max = 20)
     @NotNull
-    @Column(name = "sdt", nullable = false, length = 20)
+    @Column(name = "sdt", length = 20)
     private String sdt;
 
     @Size(max = 50)
