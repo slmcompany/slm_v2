@@ -41,8 +41,7 @@ public class NguoiDung implements Serializable {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Size(max = 20)
-    @NotNull
+    @Size(max = 100)
     @Column(name = "sdt", length = 20)
     private String sdt;
 
