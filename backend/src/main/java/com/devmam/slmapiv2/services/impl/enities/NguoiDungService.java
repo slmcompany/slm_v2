@@ -85,7 +85,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         } else {
             sdt = null;
         }
-        Optional<NguoiDung> findingNguoiDungBySdt = findBySdtOrEmail(sdt, sdt);
+        Optional<NguoiDung> findingNguoiDungBySdt = findBySdtOrEmail(sdt, registerRequest.getEmail());
         if (findingNguoiDungBySdt.isPresent()) {
             throw new CommonException("Tài khoản đã tồn tại: " + sdt + " & " + registerRequest.getEmail());
         }
