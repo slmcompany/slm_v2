@@ -1,10 +1,7 @@
 package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.RoleType;
-import com.devmam.slmapiv2.dto.request.ActivateRequest;
-import com.devmam.slmapiv2.dto.request.ChangePasswordRequest;
-import com.devmam.slmapiv2.dto.request.LoginRequest;
-import com.devmam.slmapiv2.dto.request.RegisterRequest;
+import com.devmam.slmapiv2.dto.request.*;
 import com.devmam.slmapiv2.dto.request.entities.NguoiDungClientUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.NguoiDungDto;
@@ -83,14 +80,14 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
             throw new CommonException("Không tim thấy cơ sở ma: HN");
         }
         String sdt = registerRequest.getSdt();
-        if (sdt == null || sdt.isEmpty()) {
-            sdt = registerRequest.getEmail();
-        } else {
+        if (sdt != null && sdt.trim().isEmpty()) {
             sdt = sdt.replaceAll("[^0-9]", "");
+        } else {
+            sdt = null;
         }
         Optional<NguoiDung> findingNguoiDungBySdt = findBySdtOrEmail(sdt, sdt);
         if (findingNguoiDungBySdt.isPresent()) {
-            throw new CommonException("Số điện thoại đã tồn tại: " + sdt);
+            throw new CommonException("Tài khoản đã tồn tại: " + sdt + " & " + registerRequest.getEmail());
         }
 
         Instant now = Instant.now();
@@ -232,6 +229,45 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
                         .error(null)
                         .data("Kích hoạt tài khoản thành công")
                         .message("Kích hoạt tài khoản thành công")
+                        .build()
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<String>> refreshOtp(RefreshOtpRequest refreshOtpRequest) {
+        Optional<NguoiDung> findingNguoiDung = findBySdtOrEmail(refreshOtpRequest.getEmail(), refreshOtpRequest.getEmail());
+
+        if(findingNguoiDung.isEmpty()) {
+            throw new CommonException("Tài khoản không tồn tại: "+refreshOtpRequest.getEmail());
+        }
+
+        Instant now = Instant.now();
+
+        if(findingNguoiDung.get().getOtpGuiLuc().plusSeconds(300l).isAfter(now)) {
+            throw new CommonException("Mã kích hoạt vẫn còn hiệu lực vui lòng thử lại sau");
+        }
+
+        String otp = calcService.getRandomActiveCode(6l);
+
+        findingNguoiDung.get().setOtp(otp);
+        findingNguoiDung.get().setOtpGuiLuc(now);
+        update(findingNguoiDung.get().getId(), findingNguoiDung.get());
+
+        NguoiDung nguoiDung = findingNguoiDung.get();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("userName", nguoiDung.getHoVaTen() != null ? nguoiDung.getHoVaTen() : nguoiDung.getEmail());
+        params.put("activationCode", otp);
+        params.put("expiryTime", "5 phút");
+
+        emailService.sendHtmlEmailFromTemplate(nguoiDung.getEmail(), "Mã kích hoạt tài khoản SLM", "activation.html", params);
+
+        return ResponseEntity.ok(
+                ResponseData.<String>builder()
+                        .status(200)
+                        .error(null)
+                        .data("Mã kích hoạt đã được gửi lại thành công")
+                        .message("Mã kích hoạt đã được gửi lại thành công")
                         .build()
         );
     }

@@ -84,6 +84,11 @@ public class NguoiDungController {
         return nguoiDungService.register(registerRequest);
     }
 
+    @PostMapping("refresh-otp")
+    public ResponseEntity<ResponseData<String>> refreshOtp(@RequestBody RefreshOtpRequest refreshOtpRequest) {
+        return nguoiDungService.refreshOtp(refreshOtpRequest);
+    }
+
     @PostMapping("/activate")
     public ResponseEntity<ResponseData<String>> activate(@RequestBody ActivateRequest activateRequest) {
         return nguoiDungService.activate(activateRequest);
