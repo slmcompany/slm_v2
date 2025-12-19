@@ -114,7 +114,6 @@ public class NguoiDungController {
 //
 //        checkingAndCleanupJob.addDeletingNguoiDung(nguoiDungDeletingQ);
 
-        findingNguoiDung.get().setTrangThai(0);
         nguoiDungService.delete(id);
 
         return ResponseEntity.ok(
