@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,11 +53,13 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
     }
 
     public ResponseEntity<ResponseData<NguoiDungDto>> login(LoginRequest loginRequest) {
-        NguoiDungRepository repo = (NguoiDungRepository) super.getRepository();
-
-        Optional<NguoiDung> findingNguoiDung = repo.findBySdtOrEmail(loginRequest.getSdt(), loginRequest.getSdt());
-        if (findingNguoiDung.isPresent() && findingNguoiDung.get().getMatKhau().equals(loginRequest.getMatKhau()) && findingNguoiDung.get().getTrangThai() == 1) {
-            NguoiDungDto dto = nguoiDungMapper.toDto(findingNguoiDung.get());
+        Optional<NguoiDung> findingNguoiDung = findBySdtOrEmail(loginRequest.getSdt(), loginRequest.getSdt());
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Tài khoản hoặc mật khẩu không đúng");
+        }
+        NguoiDung nguoiDung = findingNguoiDung.get();
+        if (nguoiDung.getMatKhau().equals(loginRequest.getMatKhau()) && nguoiDung.getTrangThai() == 1) {
+            NguoiDungDto dto = nguoiDungMapper.toDto(nguoiDung);
             dto.setMatKhau("");
             return ResponseEntity.ok(
                     ResponseData.<NguoiDungDto>builder()
@@ -86,7 +89,9 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
             sdt = null;
         }
         Optional<NguoiDung> findingNguoiDungBySdt = findBySdtOrEmail(sdt, registerRequest.getEmail());
-        if (findingNguoiDungBySdt.isPresent()) {
+        if (findingNguoiDungBySdt.isPresent() &&
+                (sdt != null || findingNguoiDungBySdt.get().getEmail().equals(registerRequest.getEmail()))
+        ) {
             throw new CommonException("Tài khoản đã tồn tại: " + sdt + " & " + registerRequest.getEmail());
         }
 
@@ -193,8 +198,12 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
     }
 
     public Optional<NguoiDung> findBySdtOrEmail(String sdt, String email) {
+        if (sdt == null || sdt.isEmpty() || email == null || email.isEmpty()) {
+            return Optional.empty();
+        }
         NguoiDungRepository repo = (NguoiDungRepository) super.getRepository();
-        return repo.findBySdtOrEmail(sdt, email);
+        List<NguoiDung> nguoiDungs = repo.findBySdtOrEmail(sdt, email);
+        return nguoiDungs.isEmpty() ? Optional.empty() : Optional.of(nguoiDungs.get(0));
     }
 
     @Transactional
@@ -237,13 +246,13 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
     public ResponseEntity<ResponseData<String>> refreshOtp(RefreshOtpRequest refreshOtpRequest) {
         Optional<NguoiDung> findingNguoiDung = findBySdtOrEmail(refreshOtpRequest.getEmail(), refreshOtpRequest.getEmail());
 
-        if(findingNguoiDung.isEmpty()) {
-            throw new CommonException("Tài khoản không tồn tại: "+refreshOtpRequest.getEmail());
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Tài khoản không tồn tại: " + refreshOtpRequest.getEmail());
         }
 
         Instant now = Instant.now();
 
-        if(findingNguoiDung.get().getOtpGuiLuc().plusSeconds(300l).isAfter(now)) {
+        if (findingNguoiDung.get().getOtpGuiLuc().plusSeconds(300l).isAfter(now)) {
             throw new CommonException("Mã kích hoạt vẫn còn hiệu lực vui lòng thử lại sau");
         }
 
