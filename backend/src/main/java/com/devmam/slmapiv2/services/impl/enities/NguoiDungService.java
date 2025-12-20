@@ -359,8 +359,8 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
                 ResponseData.<String>builder()
                         .status(200)
                         .error(null)
-                        .message("Tài khoản đã được kích hoạt thành công")
-                        .data("Tài khoản đã được kích hoạt thành công")
+                        .message("Mật khẩu đã được thay đổi thành công")
+                        .data("Mật khẩu đã được thay đổi thành công")
                         .build()
         );
 
