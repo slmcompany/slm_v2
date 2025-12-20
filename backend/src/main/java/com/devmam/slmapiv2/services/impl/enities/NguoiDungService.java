@@ -206,6 +206,20 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         return nguoiDungs.isEmpty() ? Optional.empty() : Optional.of(nguoiDungs.get(0));
     }
 
+    public Optional<NguoiDung> findByOtp(String otp) {
+        NguoiDungRepository repo = (NguoiDungRepository) super.getRepository();
+        List<NguoiDung> nguoiDungs = repo.findByOtp(otp);
+        NguoiDung nguoiDung = null;
+        Instant temp = null;
+        for (NguoiDung n : nguoiDungs) {
+            if (temp == null || n.getOtpGuiLuc().isAfter(temp)) {
+                nguoiDung = n;
+                temp = n.getOtpGuiLuc();
+            }
+        }
+        return nguoiDung == null ? Optional.empty() : Optional.of(nguoiDung);
+    }
+
     @Transactional
     public ResponseEntity<ResponseData<String>> activate(ActivateRequest activateRequest) {
         Optional<NguoiDung> findingNguoiDung = findBySdtOrEmail(activateRequest.getEmail(), activateRequest.getEmail());
@@ -279,5 +293,76 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
                         .message("Mã kích hoạt đã được gửi lại thành công")
                         .build()
         );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<String>> forgotPassword(String emailOrSdt) {
+        Optional<NguoiDung> findingNguoiDung = findBySdtOrEmail(emailOrSdt, emailOrSdt);
+
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Không tìm thấy tài khoản: " + emailOrSdt);
+        }
+
+        String otp = calcService.getRandomActiveCode(6l);
+        NguoiDung nguoiDung = findingNguoiDung.get();
+
+        if (nguoiDung.getEmail() == null || nguoiDung.getEmail().isEmpty()) {
+            throw new CommonException("Tài khoản không có được cài đặt email không thể thay đổi mật khẩu bằng phương thức này");
+        }
+
+        nguoiDung.setOtp(otp);
+        nguoiDung.setOtpGuiLuc(Instant.now());
+        update(findingNguoiDung.get().getId(), nguoiDung);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("activationCode", otp);
+        params.put("userName", nguoiDung.getHoVaTen() != null ? nguoiDung.getHoVaTen() : nguoiDung.getEmail());
+        params.put("expiryTime", "5 phút");
+
+        emailService.sendHtmlEmailFromTemplate(nguoiDung.getEmail(), "Yêu cầu thay đổi mật khẩu", "forgot-password.html", params);
+
+        return ResponseEntity.ok(
+                ResponseData.<String>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Yêu cầu thay đổi mật khẩu được gửi thành công")
+                        .data("Yêu cầu thay đổi mật khẩu được gửi thành công")
+                        .build()
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<String>> resetPassword(ResetPasswordRequest resetPasswordRequest) {
+
+        Optional<NguoiDung> findingNguoiDung = findByOtp(resetPasswordRequest.getOtp());
+
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Mã kích hoạt không tồn tại hoặc đã hết hạn");
+        }
+
+        NguoiDung nguoiDung = findingNguoiDung.get();
+
+        Instant now = Instant.now();
+
+        Instant expiryTime = nguoiDung.getOtpGuiLuc().plusSeconds(300l);
+
+        if (expiryTime.isBefore(now)) {
+            throw new CommonException("Mã kích hoạt không tồn tại hoặc đã hết hạn");
+        }
+
+        nguoiDung.setOtp("87@Slm");
+        nguoiDung.setMatKhau(resetPasswordRequest.getPassword());
+
+        update(nguoiDung.getId(), nguoiDung);
+
+        return ResponseEntity.ok(
+                ResponseData.<String>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Tài khoản đã được kích hoạt thành công")
+                        .data("Tài khoản đã được kích hoạt thành công")
+                        .build()
+        );
+
     }
 }

@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface NguoiDungRepository extends JpaRepository<NguoiDung, Integer>, JpaSpecificationExecutor<NguoiDung> {
 
     List<NguoiDung> findBySdtOrEmail(String sdt, String email);
+
+    List<NguoiDung> findByOtp(String otp);
 }

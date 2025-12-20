@@ -154,4 +154,15 @@ public class NguoiDungController {
     public ResponseEntity<ResponseData<NguoiDungDto>> changePassword(@Valid @RequestBody ChangePasswordRequest changePassReq) {
         return nguoiDungService.changePassword(changePassReq);
     }
+
+
+    @PostMapping("/forgot-password")
+    public  ResponseEntity<ResponseData<String>> resetPassword(@Valid @RequestBody ForgotPasswordRequest forgotPassReq){
+        return nguoiDungService.forgotPassword(forgotPassReq.getEmailOrSdt());
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResponseData<String>> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPassReq){
+        return nguoiDungService.resetPassword(resetPassReq);
+    }
 }
