@@ -165,4 +165,9 @@ public class NguoiDungController {
     public ResponseEntity<ResponseData<String>> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPassReq){
         return nguoiDungService.resetPassword(resetPassReq);
     }
+
+    @PostMapping("/check-otp")
+    public ResponseEntity<ResponseData<String>> checkOtp(@Valid @RequestBody CheckOtpRequest otpRequest) {
+        return nguoiDungService.checkOtp(otpRequest.getOtp());
+    }
 }

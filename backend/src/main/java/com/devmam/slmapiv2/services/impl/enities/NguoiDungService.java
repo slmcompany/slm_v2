@@ -337,7 +337,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         Optional<NguoiDung> findingNguoiDung = findByOtp(resetPasswordRequest.getOtp());
 
         if (findingNguoiDung.isEmpty()) {
-            throw new CommonException("Mã kích hoạt không tồn tại hoặc đã hết hạn");
+            throw new CommonException("Mã xác nhận không tồn tại hoặc đã hết hạn");
         }
 
         NguoiDung nguoiDung = findingNguoiDung.get();
@@ -347,7 +347,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         Instant expiryTime = nguoiDung.getOtpGuiLuc().plusSeconds(300l);
 
         if (expiryTime.isBefore(now)) {
-            throw new CommonException("Mã kích hoạt không tồn tại hoặc đã hết hạn");
+            throw new CommonException("Mã xác nhận không tồn tại hoặc đã hết hạn");
         }
 
         nguoiDung.setOtp("87@Slm");
@@ -363,6 +363,23 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
                         .data("Mật khẩu đã được thay đổi thành công")
                         .build()
         );
+    }
 
+    @Transactional
+    public ResponseEntity<ResponseData<String>> checkOtp(String otp) {
+        Optional<NguoiDung> findingNguoiDung = findByOtp(otp);
+
+        if (findingNguoiDung.isEmpty()) {
+            throw new CommonException("Mã xác nhận không tồn tại hoặc đã hết hạn");
+        }
+
+        return ResponseEntity.ok(
+                ResponseData.<String>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Mã xác nhận hợp lệ")
+                        .data("Mã xác nhận hợp lệ")
+                        .build()
+        );
     }
 }
