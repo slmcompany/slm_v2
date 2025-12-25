@@ -73,6 +73,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         throw new CommonException("Tài khoản hoặc mật khẩu không đúng");
     }
 
+    @Transactional
     public ResponseEntity<ResponseData<NguoiDungDto>> register(RegisterRequest registerRequest) {
         NguoiDungRepository repo = (NguoiDungRepository) super.getRepository();
         if (registerRequest.getMaCoSo() == null || registerRequest.getMaCoSo().isEmpty()) {
@@ -83,17 +84,23 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
             throw new CommonException("Không tim thấy cơ sở ma: HN");
         }
         String sdt = registerRequest.getSdt();
+        String temp = null;
         if (sdt != null && !sdt.trim().isEmpty()) {
             sdt = sdt.replaceAll("[^0-9]", "");
+            temp = sdt;
         } else {
             sdt = null;
+            temp = registerRequest.getEmail();
         }
-        Optional<NguoiDung> findingNguoiDungBySdt = findBySdtOrEmail(sdt, registerRequest.getEmail());
+        Optional<NguoiDung> findingNguoiDungBySdt = findBySdtOrEmail(temp, registerRequest.getEmail());
         if (findingNguoiDungBySdt.isPresent() &&
                 (sdt != null || findingNguoiDungBySdt.get().getEmail().equals(registerRequest.getEmail()))
         ) {
+            System.out.println("Đi qua đây");
             throw new CommonException("Tài khoản đã tồn tại: " + sdt + " & " + registerRequest.getEmail());
         }
+
+        System.out.println(sdt != null);
 
         Instant now = Instant.now();
         String otp = calcService.getRandomActiveCode(6l);
