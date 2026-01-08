@@ -2,6 +2,7 @@ package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.FileType;
 import com.devmam.slmapiv2.dto.request.entities.BaiVietCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.BaiVietUpdatingDto;
 import com.devmam.slmapiv2.dto.response.BaiVietDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.entities.BaiViet;
@@ -52,7 +53,7 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
     @Transactional
     public ResponseEntity<ResponseData<BaiVietDto>> create(BaiVietCreatingDto dto, MultipartFile anhBia, MultipartFile noiDung) {
         NguoiDung nguoiDung = null;
-        if(dto.getTaoBoi() != null){
+        if (dto.getTaoBoi() != null) {
             Optional<NguoiDung> nguoiDungFinding = nguoiDungService.getOne(dto.getTaoBoi());
             if (nguoiDungFinding.isEmpty()) {
                 throw new CommonException("Không tìm thấy người dùng id: " + dto.getTaoBoi());
@@ -60,7 +61,7 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
             nguoiDung = nguoiDungFinding.get();
         }
 
-        BaiViet creatingBaiViet  = BaiViet.builder()
+        BaiViet creatingBaiViet = BaiViet.builder()
                 .loaiBaiViet(dto.getLoaiBaiViet())
                 .tieuDe(dto.getTieuDe())
                 .taoBoi(nguoiDung)
@@ -74,12 +75,12 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
         if (anhBia != null && noiDung != null) {
             try {
                 Date now = new Date();
-                String objectNameAnhBia = minioService.upload(anhBia, "bai_viet_anh_bia_"+dto.getTieuDe()+"_"+now.getTime());
-                String objectNameNoiDUng = minioService.upload(noiDung, "bai_viet_noi_dung_"+dto.getTieuDe()+"_"+now.getTime());
+                String objectNameAnhBia = minioService.upload(anhBia, "bai_viet_anh_bia_" + dto.getTieuDe() + "_" + now.getTime());
+                String objectNameNoiDUng = minioService.upload(noiDung, "bai_viet_noi_dung_" + dto.getTieuDe() + "_" + now.getTime());
 
                 TepTin tepTinAnhBia = TepTin.builder()
-                        .tenTepGoc(dto.getTieuDe()+"_anh_bia")
-                        .tenTaiLen(dto.getTieuDe()+"_anh_bia")
+                        .tenTepGoc(dto.getTieuDe() + "_anh_bia")
+                        .tenTaiLen(dto.getTieuDe() + "_anh_bia")
                         .tenLuuTru(objectNameAnhBia)
                         .duongDan(minioService.getPublicUrl(objectNameAnhBia))
                         .loaiTepTin(FileType.IMAGE.toString())
@@ -89,8 +90,8 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
                         .build();
 
                 TepTin tepTinNoiDung = TepTin.builder()
-                        .tenTepGoc(dto.getTieuDe()+"_noi_dung")
-                        .tenTaiLen(dto.getTieuDe()+"_noi_dung")
+                        .tenTepGoc(dto.getTieuDe() + "_noi_dung")
+                        .tenTaiLen(dto.getTieuDe() + "_noi_dung")
                         .tenLuuTru(objectNameNoiDUng)
                         .duongDan(minioService.getPublicUrl(objectNameNoiDUng))
                         .loaiTepTin(FileType.TEXT.toString())
@@ -117,5 +118,99 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
                         .data(baiVietMapper.toDto(creatingBaiViet))
                         .build()
         );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<BaiVietDto>> update(BaiVietUpdatingDto dto, MultipartFile anhBia, MultipartFile noiDung) {
+        Optional<BaiViet> findingBaiViet = getOne(dto.getId());
+
+        if (findingBaiViet.isEmpty()) {
+            throw new CommonException("Bài viết không tồn tại");
+        }
+
+        BaiViet baiViet = findingBaiViet.get();
+
+        TepTin tepTinAnhBia = baiViet.getAnhBia();
+
+        TepTin tepTinNoiDung = baiViet.getNoiDung();
+
+        boolean tepTinAnhBiaIsNew = false;
+        boolean tepTinNoiDungIsNew = false;
+
+        if (tepTinAnhBia == null) {
+            tepTinAnhBiaIsNew = true;
+            tepTinAnhBia = TepTin.builder().build();
+        }
+
+        if (tepTinNoiDung == null) {
+            tepTinNoiDungIsNew = true;
+            tepTinNoiDung = TepTin.builder().build();
+        }
+
+        try {
+            if (!tepTinAnhBiaIsNew) {
+                minioService.delete(tepTinAnhBia.getTenLuuTru());
+            }
+            if (!tepTinNoiDungIsNew) {
+                minioService.delete(tepTinNoiDung.getTenLuuTru());
+            }
+        } catch (Exception ignore) {
+        }
+
+        try {
+            baiViet.setTieuDe(dto.getTieuDe());
+            baiViet.setLienQuan(dto.getLienQuan());
+            baiViet.setTrangThai(dto.getTrangThai());
+            baiViet = update(baiViet.getId(), baiViet);
+            Date now = new Date();
+            if (anhBia != null) {
+                String objectNameAnhBia = minioService.upload(anhBia, "bai_viet_anh_bia_" + dto.getTieuDe() + "_" + now.getTime());
+
+                tepTinAnhBia.setTenTepGoc(dto.getTieuDe() + "_anh_bia");
+                tepTinAnhBia.setTenTaiLen(dto.getTieuDe() + "_anh_bia");
+                tepTinAnhBia.setTenLuuTru(objectNameAnhBia);
+                tepTinAnhBia.setDuongDan(minioService.getPublicUrl(objectNameAnhBia));
+                tepTinAnhBia.setTrangThai(1);
+                tepTinAnhBia.setTaoLuc(baiViet.getTaoLuc());
+                tepTinAnhBia = tepTinService.update(tepTinAnhBia.getId(), tepTinAnhBia);
+            }
+
+            if (noiDung != null) {
+                String objectNameNoiDUng = minioService.upload(noiDung, "bai_viet_noi_dung_" + dto.getTieuDe() + "_" + now.getTime());
+
+                tepTinNoiDung.setTenTepGoc(dto.getTieuDe() + "_noi_dung");
+                tepTinNoiDung.setTenTaiLen(dto.getTieuDe() + "_noi_dung");
+                tepTinNoiDung.setTenLuuTru(objectNameNoiDUng);
+                tepTinNoiDung.setDuongDan(minioService.getPublicUrl(objectNameNoiDUng));
+                tepTinNoiDung.setTrangThai(1);
+                tepTinNoiDung.setTaoLuc(baiViet.getTaoLuc());
+                tepTinNoiDung = tepTinService.update(tepTinNoiDung.getId(), tepTinNoiDung);
+            }
+
+            if (tepTinAnhBiaIsNew) {
+                tepTinAnhBia = tepTinService.create(tepTinAnhBia);
+            }
+
+            if (tepTinNoiDungIsNew) {
+                tepTinNoiDung = tepTinService.create(tepTinNoiDung);
+            }
+
+            baiViet.setAnhBia(tepTinAnhBia);
+            baiViet.setNoiDung(tepTinNoiDung);
+            baiViet = update(baiViet.getId(), baiViet);
+
+        } catch (Exception e) {
+            throw new CommonException("Lỗi xảy ra trong quá trình sửa bài viết: " + baiViet.getTieuDe(), e);
+        }
+
+        return ResponseEntity.ok(
+                ResponseData.<BaiVietDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(baiVietMapper.toDto(baiViet))
+                        .build()
+        );
+
     }
 }

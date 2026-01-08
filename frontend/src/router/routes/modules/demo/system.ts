@@ -127,6 +127,15 @@ const system: AppRouteModule = {
       component: () => import('@/views/demo/system/bai-viet/index.vue'),
     },
     {
+      path: 'bai-viet',
+      name: 'BaiVietManagement',
+      meta: {
+        title: t('routes.demo.system.suaBaiViet'),
+        ignoreKeepAlive: false,
+      },
+      component: () => import('@/views/demo/system/sua-bai-viet/index.vue'),
+    },
+    {
       path: 'hop-dong',
       name: 'HopDongManagement',
       meta: {
