@@ -87,6 +87,9 @@
             (Để trống nếu không muốn thay đổi)
           </div>
         </div>
+        <div v-else style="color: #999; font-size: 14px">
+          Chưa có ảnh bìa
+        </div>
       </FormItem>
 
       <!-- Ảnh bìa mới -->
@@ -290,23 +293,39 @@
     duongDanYoutube.value = detail.duongDanYoutube || '';
     trangThai.value = detail.trangThai ?? 1;
     
-    // Load nội dung từ file txt nếu có
-    if (detail.noiDungUrl) {
+    // Load nội dung từ TepTinDto
+    if (detail.noiDung && detail.noiDung.duongDan) {
       try {
-        const contentResponse = await fetch(detail.noiDungUrl);
-        const content = await contentResponse.text();
-        valueHtml.value = content;
-        
-        if (editorRef.value) {
-          editorRef.value.setHtml(content);
+        const contentResponse = await fetch(detail.noiDung.duongDan);
+        if (contentResponse.ok) {
+          const content = await contentResponse.text();
+          valueHtml.value = content;
+          
+          if (editorRef.value) {
+            editorRef.value.setHtml(content);
+          }
+        } else {
+          console.warn('Không thể load nội dung từ:', detail.noiDung.duongDan);
+          message.warning('Không thể tải nội dung bài viết');
         }
       } catch (error) {
         console.error('Lỗi khi load nội dung:', error);
+        message.error('Lỗi khi tải nội dung bài viết');
+      }
+    } else {
+      // Không có nội dung
+      valueHtml.value = '';
+      if (editorRef.value) {
+        editorRef.value.clear();
       }
     }
 
-    // Set ảnh bìa hiện tại
-    currentAnhBiaUrl.value = detail.anhBiaUrl || '';
+    // Set ảnh bìa hiện tại từ TepTinDto
+    if (detail.anhBia && detail.anhBia.duongDan) {
+      currentAnhBiaUrl.value = detail.anhBia.duongDan;
+    } else {
+      currentAnhBiaUrl.value = '';
+    }
     
     // Reset file mới
     handleRemoveFile();
@@ -669,7 +688,6 @@
     margin-bottom: 24px;
     padding: 24px;
     border-radius: 8px;
-    background: #fafafa;
   }
 
   .selected-info {
@@ -677,7 +695,6 @@
     padding: 12px;
     border: 1px solid #91d5ff;
     border-radius: 4px;
-    background: #e6f7ff;
 
     div {
       margin-bottom: 4px;
@@ -691,7 +708,6 @@
   .bai-viet-form {
     padding: 24px;
     border-radius: 8px;
-    background: white;
   }
 
   .current-image {

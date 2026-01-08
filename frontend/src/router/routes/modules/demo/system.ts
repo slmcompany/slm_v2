@@ -127,8 +127,8 @@ const system: AppRouteModule = {
       component: () => import('@/views/demo/system/bai-viet/index.vue'),
     },
     {
-      path: 'bai-viet',
-      name: 'BaiVietManagement',
+      path: 'sua-bai-viet',
+      name: 'SuaBaiVietManagement',
       meta: {
         title: t('routes.demo.system.suaBaiViet'),
         ignoreKeepAlive: false,
