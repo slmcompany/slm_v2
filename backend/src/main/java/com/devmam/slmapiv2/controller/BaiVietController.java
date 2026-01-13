@@ -3,8 +3,8 @@ package com.devmam.slmapiv2.controller;
 import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
 import com.devmam.slmapiv2.dto.request.entities.BaiVietCreatingDto;
 import com.devmam.slmapiv2.dto.request.entities.BaiVietUpdatingDto;
-import com.devmam.slmapiv2.dto.response.BaiVietDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
+import com.devmam.slmapiv2.dto.response.entities.BaiVietDto;
 import com.devmam.slmapiv2.entities.BaiViet;
 import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.BaiVietMapper;
@@ -61,9 +61,10 @@ public class BaiVietController {
     public ResponseEntity<ResponseData<BaiVietDto>> create(
             @RequestPart("dto") BaiVietCreatingDto dto,
             @RequestPart("anh_bia") MultipartFile anhBia,
+            @RequestPart("anh_ngoai") MultipartFile anhNgoai,
             @RequestPart("noi_dung") MultipartFile noiDung
     ) {
-        return baiVietService.create(dto, anhBia, noiDung);
+        return baiVietService.create(dto, anhBia, anhNgoai, noiDung);
     }
 
     @PutMapping(
@@ -73,8 +74,9 @@ public class BaiVietController {
     public ResponseEntity<ResponseData<BaiVietDto>> update(
             @RequestPart("dto") BaiVietUpdatingDto dto,
             @RequestPart("anh_bia") MultipartFile anhBia,
+            @RequestPart("anh_ngoai") MultipartFile anhNgoai,
             @RequestPart("noi_dung") MultipartFile noiDung) {
-        return baiVietService.update(dto, anhBia, noiDung);
+        return baiVietService.update(dto, anhBia, anhNgoai, noiDung);
     }
 
 

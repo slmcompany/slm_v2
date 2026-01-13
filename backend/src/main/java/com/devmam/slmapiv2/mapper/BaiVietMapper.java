@@ -1,6 +1,6 @@
 package com.devmam.slmapiv2.mapper;
 
-import com.devmam.slmapiv2.dto.response.BaiVietDto;
+import com.devmam.slmapiv2.dto.response.entities.BaiVietDto;
 import com.devmam.slmapiv2.entities.BaiViet;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;

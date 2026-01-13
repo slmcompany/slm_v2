@@ -96,17 +96,55 @@
       <FormItem label="Ảnh bìa mới (tùy chọn)" name="anhBia">
         <div class="upload-container">
           <Upload
-            ref="antUpload"
-            :file-list="fileList"
+            ref="antUploadBia"
+            :file-list="fileListBia"
             list-type="picture-card"
-            :before-upload="beforeUpload"
-            @remove="handleRemoveFile"
-            @change="onUploadChange"
+            :before-upload="beforeUploadBia"
+            @remove="handleRemoveFileBia"
+            @change="onUploadChangeBia"
             accept="image/*"
             :show-upload-list="true"
             :max-count="1"
           >
-            <div v-if="fileList.length < 1" style="cursor: pointer">
+            <div v-if="fileListBia.length < 1" style="cursor: pointer">
+              <PlusOutlined />
+              <div style="margin-top: 8px">Tải ảnh mới</div>
+            </div>
+          </Upload>
+          <div class="upload-hint">
+            Tối đa 1 ảnh, định dạng: JPG, PNG, GIF (Tối đa 5MB)
+          </div>
+        </div>
+      </FormItem>
+
+      <!-- Ảnh ngoài hiện tại -->
+      <FormItem label="Ảnh ngoài hiện tại">
+        <div v-if="currentAnhNgoaiUrl" class="current-image">
+          <img :src="currentAnhNgoaiUrl" alt="Ảnh ngoài hiện tại" style="max-width: 200px; border-radius: 4px" />
+          <div style="margin-top: 8px; color: #999; font-size: 12px">
+            (Để trống nếu không muốn thay đổi)
+          </div>
+        </div>
+        <div v-else style="color: #999; font-size: 14px">
+          Chưa có ảnh ngoài
+        </div>
+      </FormItem>
+
+      <!-- Ảnh ngoài mới -->
+      <FormItem label="Ảnh ngoài mới (tùy chọn)" name="anhNgoai">
+        <div class="upload-container">
+          <Upload
+            ref="antUploadNgoai"
+            :file-list="fileListNgoai"
+            list-type="picture-card"
+            :before-upload="beforeUploadNgoai"
+            @remove="handleRemoveFileNgoai"
+            @change="onUploadChangeNgoai"
+            accept="image/*"
+            :show-upload-list="true"
+            :max-count="1"
+          >
+            <div v-if="fileListNgoai.length < 1" style="cursor: pointer">
               <PlusOutlined />
               <div style="margin-top: 8px">Tải ảnh mới</div>
             </div>
@@ -193,17 +231,26 @@
   const selectedBaiVietId = ref<number | undefined>(undefined);
   const selectedBaiViet = ref<any>(null);
   const currentAnhBiaUrl = ref('');
+  const currentAnhNgoaiUrl = ref('');
 
   // Form data
   const loaiBaiViet = ref('MEGA_STORY');
   const tieuDe = ref('');
   const duongDanYoutube = ref('');
-  const selectedFile = ref<File | null>(null);
-  const fileList = ref<any[]>([]);
+  
+  // Ảnh bìa
+  const selectedFileBia = ref<File | null>(null);
+  const fileListBia = ref<any[]>([]);
+  const antUploadBia = ref<any>(null);
+  
+  // Ảnh ngoài
+  const selectedFileNgoai = ref<File | null>(null);
+  const fileListNgoai = ref<any[]>([]);
+  const antUploadNgoai = ref<any>(null);
+  
   const valueHtml = ref('');
   const trangThai = ref(1);
   const submitting = ref(false);
-  const antUpload = ref<any>(null);
 
   // ============ API HELPERS ============
   const API_BASE = (realHttp.getAxios().defaults.baseURL || 'http://localhost:8080') + '/basic-api/bai-viet';
@@ -313,22 +360,29 @@
         message.error('Lỗi khi tải nội dung bài viết');
       }
     } else {
-      // Không có nội dung
       valueHtml.value = '';
       if (editorRef.value) {
         editorRef.value.clear();
       }
     }
 
-    // Set ảnh bìa hiện tại từ TepTinDto
+    // Set ảnh bìa hiện tại
     if (detail.anhBia && detail.anhBia.duongDan) {
       currentAnhBiaUrl.value = detail.anhBia.duongDan;
     } else {
       currentAnhBiaUrl.value = '';
     }
     
+    // Set ảnh ngoài hiện tại
+    if (detail.anhNgoai && detail.anhNgoai.duongDan) {
+      currentAnhNgoaiUrl.value = detail.anhNgoai.duongDan;
+    } else {
+      currentAnhNgoaiUrl.value = '';
+    }
+    
     // Reset file mới
-    handleRemoveFile();
+    handleRemoveFileBia();
+    handleRemoveFileNgoai();
 
     message.success('Đã tải thông tin bài viết');
   }
@@ -479,8 +533,8 @@
     callback(true);
   };
 
-  // ============ UPLOAD HANDLERS ============
-  const beforeUpload: UploadProps['beforeUpload'] = (file) => {
+  // ============ UPLOAD HANDLERS - ẢNH BÌA ============
+  const beforeUploadBia: UploadProps['beforeUpload'] = (file) => {
     const isImage = file.type && file.type.startsWith('image/');
     if (!isImage) {
       message.error('Chỉ chấp nhận file ảnh!');
@@ -494,10 +548,10 @@
     }
 
     try {
-      selectedFile.value = file as File;
+      selectedFileBia.value = file as File;
 
       const url = URL.createObjectURL(file as File);
-      fileList.value = [
+      fileListBia.value = [
         {
           uid: file.uid ?? `${Date.now()}`,
           name: file.name,
@@ -508,26 +562,26 @@
         },
       ];
     } catch (e) {
-      console.error('beforeUpload error', e);
+      console.error('beforeUploadBia error', e);
     }
 
     return false;
   };
 
-  function handleRemoveFile() {
+  function handleRemoveFileBia() {
     try {
-      const url = fileList.value[0]?.url || fileList.value[0]?.thumbUrl;
+      const url = fileListBia.value[0]?.url || fileListBia.value[0]?.thumbUrl;
       if (url && url.startsWith('blob:')) {
         URL.revokeObjectURL(url);
       }
-      selectedFile.value = null;
-      fileList.value = [];
+      selectedFileBia.value = null;
+      fileListBia.value = [];
     } catch (err) {
-      console.error('handleRemoveFile error', err);
+      console.error('handleRemoveFileBia error', err);
     }
   }
 
-  function onUploadChange(e: any) {
+  function onUploadChangeBia(e: any) {
     try {
       const fl = (e && e.fileList) || [];
       if (fl.length > 0) {
@@ -535,11 +589,11 @@
         const origin = f.originFile || f.originFileObj;
 
         if (origin) {
-          selectedFile.value = origin;
+          selectedFileBia.value = origin;
         }
 
         const url = origin ? URL.createObjectURL(origin) : f.url || f.thumbUrl;
-        fileList.value = [
+        fileListBia.value = [
           {
             uid: f.uid,
             name: f.name,
@@ -550,11 +604,90 @@
           },
         ];
       } else {
-        selectedFile.value = null;
-        fileList.value = [];
+        selectedFileBia.value = null;
+        fileListBia.value = [];
       }
     } catch (err) {
-      console.error('onUploadChange error', err);
+      console.error('onUploadChangeBia error', err);
+    }
+  }
+
+  // ============ UPLOAD HANDLERS - ẢNH NGOÀI ============
+  const beforeUploadNgoai: UploadProps['beforeUpload'] = (file) => {
+    const isImage = file.type && file.type.startsWith('image/');
+    if (!isImage) {
+      message.error('Chỉ chấp nhận file ảnh!');
+      return false;
+    }
+
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('Kích thước ảnh phải nhỏ hơn 5MB!');
+      return false;
+    }
+
+    try {
+      selectedFileNgoai.value = file as File;
+
+      const url = URL.createObjectURL(file as File);
+      fileListNgoai.value = [
+        {
+          uid: file.uid ?? `${Date.now()}`,
+          name: file.name,
+          status: 'done',
+          originFileObj: file,
+          url,
+          thumbUrl: url,
+        },
+      ];
+    } catch (e) {
+      console.error('beforeUploadNgoai error', e);
+    }
+
+    return false;
+  };
+
+  function handleRemoveFileNgoai() {
+    try {
+      const url = fileListNgoai.value[0]?.url || fileListNgoai.value[0]?.thumbUrl;
+      if (url && url.startsWith('blob:')) {
+        URL.revokeObjectURL(url);
+      }
+      selectedFileNgoai.value = null;
+      fileListNgoai.value = [];
+    } catch (err) {
+      console.error('handleRemoveFileNgoai error', err);
+    }
+  }
+
+  function onUploadChangeNgoai(e: any) {
+    try {
+      const fl = (e && e.fileList) || [];
+      if (fl.length > 0) {
+        const f = fl[0];
+        const origin = f.originFile || f.originFileObj;
+
+        if (origin) {
+          selectedFileNgoai.value = origin;
+        }
+
+        const url = origin ? URL.createObjectURL(origin) : f.url || f.thumbUrl;
+        fileListNgoai.value = [
+          {
+            uid: f.uid,
+            name: f.name,
+            status: f.status || 'done',
+            url,
+            thumbUrl: url,
+            originFileObj: origin,
+          },
+        ];
+      } else {
+        selectedFileNgoai.value = null;
+        fileListNgoai.value = [];
+      }
+    } catch (err) {
+      console.error('onUploadChangeNgoai error', err);
     }
   }
 
@@ -616,15 +749,24 @@
       formData.append('dto', dtoBlob);
 
       // 2. Ảnh bìa (nếu có thay đổi)
-      if (selectedFile.value) {
-        formData.append('anh_bia', selectedFile.value);
+      if (selectedFileBia.value) {
+        formData.append('anh_bia', selectedFileBia.value);
       } else {
         // Nếu không có file mới, tạo một blob rỗng
         const emptyBlob = new Blob([''], { type: 'application/octet-stream' });
         formData.append('anh_bia', emptyBlob, 'empty');
       }
 
-      // 3. Nội dung (file txt)
+      // 3. Ảnh ngoài (nếu có thay đổi)
+      if (selectedFileNgoai.value) {
+        formData.append('anh_ngoai', selectedFileNgoai.value);
+      } else {
+        // Nếu không có file mới, tạo một blob rỗng
+        const emptyBlob = new Blob([''], { type: 'application/octet-stream' });
+        formData.append('anh_ngoai', emptyBlob, 'empty');
+      }
+
+      // 4. Nội dung (file txt)
       const noiDungFile = convertHtmlToTxtFile(valueHtml.value, `${tieuDe.value}_noi_dung.txt`);
       formData.append('noi_dung', noiDungFile);
 
@@ -658,12 +800,14 @@
     selectedBaiVietId.value = undefined;
     selectedBaiViet.value = null;
     currentAnhBiaUrl.value = '';
+    currentAnhNgoaiUrl.value = '';
     loaiBaiViet.value = 'MEGA_STORY';
     tieuDe.value = '';
     duongDanYoutube.value = '';
     valueHtml.value = '';
     trangThai.value = 1;
-    handleRemoveFile();
+    handleRemoveFileBia();
+    handleRemoveFileNgoai();
 
     const editor = editorRef.value;
     if (editor) {

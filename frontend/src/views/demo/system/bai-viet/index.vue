@@ -25,7 +25,7 @@
       />
     </FormItem>
 
-    <!-- ĐƯờng dẫn youtube -->
+    <!-- Đường dẫn youtube -->
     <FormItem
       label="Đường dẫn Youtube"
       name="duongDanYoutube"
@@ -42,19 +42,42 @@
     <FormItem label="Ảnh bìa" name="anhBia">
       <div class="upload-container">
         <Upload
-          ref="antUpload"
-          :file-list="fileList"
+          ref="antUploadBia"
+          :file-list="fileListBia"
           list-type="picture-card"
-          :before-upload="beforeUpload"
-          @remove="handleRemoveFile"
-          @change="onUploadChange"
+          :before-upload="beforeUploadBia"
+          @remove="handleRemoveFileBia"
+          @change="onUploadChangeBia"
           accept="image/*"
           :show-upload-list="true"
           :max-count="1"
         >
-          <div v-if="fileList.length < 1" style="cursor: pointer">
+          <div v-if="fileListBia.length < 1" style="cursor: pointer">
             <PlusOutlined />
             <div style="margin-top: 8px">Tải ảnh bìa</div>
+          </div>
+        </Upload>
+        <div class="upload-hint">Tối đa 1 ảnh, định dạng: JPG, PNG, GIF (Tối đa 5MB)</div>
+      </div>
+    </FormItem>
+
+    <!-- Ảnh ngoài -->
+    <FormItem label="Ảnh ngoài" name="anhNgoai">
+      <div class="upload-container">
+        <Upload
+          ref="antUploadNgoai"
+          :file-list="fileListNgoai"
+          list-type="picture-card"
+          :before-upload="beforeUploadNgoai"
+          @remove="handleRemoveFileNgoai"
+          @change="onUploadChangeNgoai"
+          accept="image/*"
+          :show-upload-list="true"
+          :max-count="1"
+        >
+          <div v-if="fileListNgoai.length < 1" style="cursor: pointer">
+            <PlusOutlined />
+            <div style="margin-top: 8px">Tải ảnh ngoài</div>
           </div>
         </Upload>
         <div class="upload-hint">Tối đa 1 ảnh, định dạng: JPG, PNG, GIF (Tối đa 5MB)</div>
@@ -106,11 +129,19 @@
   const loaiBaiViet = ref('MEGA_STORY');
   const tieuDe = ref('');
   const duongDanYoutube = ref('')
-  const selectedFile = ref<File | null>(null);
-  const fileList = ref<any[]>([]);
+  
+  // Ảnh bìa
+  const selectedFileBia = ref<File | null>(null);
+  const fileListBia = ref<any[]>([]);
+  const antUploadBia = ref<any>(null);
+  
+  // Ảnh ngoài
+  const selectedFileNgoai = ref<File | null>(null);
+  const fileListNgoai = ref<any[]>([]);
+  const antUploadNgoai = ref<any>(null);
+  
   const valueHtml = ref('');
   const submitting = ref(false);
-  const antUpload = ref<any>(null);
 
   // ============ EDITOR CONFIG ============
   const toolbarConfig = {
@@ -134,7 +165,7 @@
       'justifyRight',
       '|',
       'insertLink',
-      'uploadImage', // Thay đổi từ 'insertImage' sang 'uploadImage'
+      'uploadImage',
       'insertTable',
       '|',
       'undo',
@@ -145,24 +176,19 @@
   const editorConfig = {
     placeholder: 'Nhập nội dung bài viết của bạn...',
     MENU_CONF: {
-      // Cấu hình upload ảnh
       uploadImage: {
-        // Tùy chỉnh text hiển thị
         fieldName: 'file',
         
-        // Chọn ảnh từ máy và convert sang base64
         customBrowseAndUpload(insertFn: any) {
-          // Tạo input file ẩn
           const input = document.createElement('input');
           input.type = 'file';
           input.accept = 'image/*';
-          input.multiple = true; // Cho phép chọn nhiều ảnh
+          input.multiple = true;
           
           input.onchange = (e: any) => {
             const files = e.target.files;
             if (!files || files.length === 0) return;
             
-            // Xử lý từng file
             Array.from(files).forEach((file: any) => {
               processImageFile(file, insertFn);
             });
@@ -171,7 +197,6 @@
           input.click();
         },
         
-        // Xử lý khi paste ảnh từ clipboard
         customPaste: (editor: any, event: ClipboardEvent) => {
           const items = event.clipboardData?.items;
           if (!items) return false;
@@ -181,10 +206,9 @@
           for (let i = 0; i < items.length; i++) {
             const item = items[i];
             
-            // Kiểm tra nếu là ảnh
             if (item.type.indexOf('image') !== -1) {
               hasImage = true;
-              event.preventDefault(); // Ngăn paste mặc định
+              event.preventDefault();
               
               const file = item.getAsFile();
               if (file) {
@@ -195,10 +219,9 @@
             }
           }
           
-          return hasImage; // true = đã xử lý, false = để editor xử lý mặc định
+          return hasImage;
         },
         
-        // Xử lý khi kéo thả ảnh vào editor
         customDrop: (editor: any, event: DragEvent) => {
           const files = event.dataTransfer?.files;
           if (!files || files.length === 0) return false;
@@ -208,7 +231,7 @@
           Array.from(files).forEach((file: any) => {
             if (file.type.startsWith('image/')) {
               hasImage = true;
-              event.preventDefault(); // Ngăn drop mặc định
+              event.preventDefault();
               
               processImageFile(file, (url: string, alt: string, href: string) => {
                 editor.dangerouslyInsertHtml(`<img src="${url}" alt="${alt}" style="max-width: 100%;" />`);
@@ -219,12 +242,10 @@
           return hasImage;
         },
         
-        // Xử lý khi chèn ảnh
         onInsertedImage(imageNode: any) {
           console.log('Đã chèn ảnh:', imageNode);
         },
         
-        // Kiểm tra file trước khi upload
         onBeforeUpload(file: File) {
           return true;
         },
@@ -232,9 +253,7 @@
     },
   };
 
-  // Hàm xử lý ảnh chung (dùng cho upload, paste, drag-drop)
   function processImageFile(file: File, insertFn: any) {
-    // Kiểm tra file
     const isImage = file.type.startsWith('image/');
     if (!isImage) {
       message.error(`${file.name}: Chỉ chấp nhận file ảnh!`);
@@ -247,14 +266,12 @@
       return;
     }
     
-    // Convert sang base64
     const reader = new FileReader();
     reader.onload = (event: any) => {
       const base64String = event.target.result;
       const alt = file.name || 'image';
       const href = base64String;
       
-      // Chèn ảnh base64 vào editor
       insertFn(base64String, alt, href);
       message.success(`Đã chèn ảnh: ${file.name || 'image'}`);
     };
@@ -277,10 +294,8 @@
   const handleCreated = (editor: any) => {
     editorRef.value = editor;
     
-    // Cấu hình ngôn ngữ tiếng Việt cho editor
     const i18nConfig = {
       zh: {
-        // Thay đổi text tiếng Trung sang tiếng Việt
         textPlaceholder: 'Nhập nội dung...',
         header: {
           text: 'Tiêu đề',
@@ -305,34 +320,28 @@
       },
     };
     
-    // Áp dụng config (nếu editor có hỗ trợ)
     if (editor.i18nChangeLanguage) {
-      editor.i18nChangeLanguage('zh'); // Giữ 'zh' nhưng nội dung đã đổi ở trên
+      editor.i18nChangeLanguage('zh');
     }
   };
 
-  // Xử lý paste ảnh từ clipboard
   const handleCustomPaste = (editor: any, event: ClipboardEvent, callback: any) => {
-    // Lấy dữ liệu từ clipboard
     const items = event.clipboardData?.items;
     if (!items) {
-      callback(true); // Tiếp tục paste mặc định
+      callback(true);
       return;
     }
 
     let hasImage = false;
 
-    // Duyệt qua các items trong clipboard
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
 
-      // Kiểm tra nếu là ảnh
       if (item.type.indexOf('image') !== -1) {
         hasImage = true;
         const file = item.getAsFile();
 
         if (file) {
-          // Kiểm tra kích thước
           const isLt5M = file.size / 1024 / 1024 < 5;
           if (!isLt5M) {
             message.error('Kích thước ảnh phải nhỏ hơn 5MB!');
@@ -341,12 +350,10 @@
             return;
           }
 
-          // Convert sang base64 và chèn vào editor
           const reader = new FileReader();
           reader.onload = (e: any) => {
             const base64String = e.target.result;
             
-            // Chèn ảnh vào editor
             editor.dangerouslyInsertHtml(
               `<img src="${base64String}" alt="pasted-image" style="max-width: 100%;" />`
             );
@@ -361,19 +368,17 @@
           reader.readAsDataURL(file);
         }
 
-        // Ngăn paste mặc định
         event.preventDefault();
         callback(false);
         return;
       }
     }
 
-    // Nếu không có ảnh, tiếp tục paste mặc định
     callback(true);
   };
 
-  // ============ UPLOAD HANDLERS ============
-  const beforeUpload: UploadProps['beforeUpload'] = (file) => {
+  // ============ UPLOAD HANDLERS - ẢNH BÌA ============
+  const beforeUploadBia: UploadProps['beforeUpload'] = (file) => {
     const isImage = file.type && file.type.startsWith('image/');
     if (!isImage) {
       message.error('Chỉ chấp nhận file ảnh!');
@@ -387,10 +392,10 @@
     }
 
     try {
-      selectedFile.value = file as File;
+      selectedFileBia.value = file as File;
 
       const url = URL.createObjectURL(file as File);
-      fileList.value = [
+      fileListBia.value = [
         {
           uid: file.uid ?? `${Date.now()}`,
           name: file.name,
@@ -401,26 +406,26 @@
         },
       ];
     } catch (e) {
-      console.error('beforeUpload error', e);
+      console.error('beforeUploadBia error', e);
     }
 
     return false;
   };
 
-  function handleRemoveFile() {
+  function handleRemoveFileBia() {
     try {
-      const url = fileList.value[0]?.url || fileList.value[0]?.thumbUrl;
+      const url = fileListBia.value[0]?.url || fileListBia.value[0]?.thumbUrl;
       if (url && url.startsWith('blob:')) {
         URL.revokeObjectURL(url);
       }
-      selectedFile.value = null;
-      fileList.value = [];
+      selectedFileBia.value = null;
+      fileListBia.value = [];
     } catch (err) {
-      console.error('handleRemoveFile error', err);
+      console.error('handleRemoveFileBia error', err);
     }
   }
 
-  function onUploadChange(e: any) {
+  function onUploadChangeBia(e: any) {
     try {
       const fl = (e && e.fileList) || [];
       if (fl.length > 0) {
@@ -428,11 +433,11 @@
         const origin = f.originFile || f.originFileObj;
 
         if (origin) {
-          selectedFile.value = origin;
+          selectedFileBia.value = origin;
         }
 
         const url = origin ? URL.createObjectURL(origin) : f.url || f.thumbUrl;
-        fileList.value = [
+        fileListBia.value = [
           {
             uid: f.uid,
             name: f.name,
@@ -443,21 +448,98 @@
           },
         ];
       } else {
-        selectedFile.value = null;
-        fileList.value = [];
+        selectedFileBia.value = null;
+        fileListBia.value = [];
       }
     } catch (err) {
-      console.error('onUploadChange error', err);
+      console.error('onUploadChangeBia error', err);
+    }
+  }
+
+  // ============ UPLOAD HANDLERS - ẢNH NGOÀI ============
+  const beforeUploadNgoai: UploadProps['beforeUpload'] = (file) => {
+    const isImage = file.type && file.type.startsWith('image/');
+    if (!isImage) {
+      message.error('Chỉ chấp nhận file ảnh!');
+      return false;
+    }
+
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('Kích thước ảnh phải nhỏ hơn 5MB!');
+      return false;
+    }
+
+    try {
+      selectedFileNgoai.value = file as File;
+
+      const url = URL.createObjectURL(file as File);
+      fileListNgoai.value = [
+        {
+          uid: file.uid ?? `${Date.now()}`,
+          name: file.name,
+          status: 'done',
+          originFileObj: file,
+          url,
+          thumbUrl: url,
+        },
+      ];
+    } catch (e) {
+      console.error('beforeUploadNgoai error', e);
+    }
+
+    return false;
+  };
+
+  function handleRemoveFileNgoai() {
+    try {
+      const url = fileListNgoai.value[0]?.url || fileListNgoai.value[0]?.thumbUrl;
+      if (url && url.startsWith('blob:')) {
+        URL.revokeObjectURL(url);
+      }
+      selectedFileNgoai.value = null;
+      fileListNgoai.value = [];
+    } catch (err) {
+      console.error('handleRemoveFileNgoai error', err);
+    }
+  }
+
+  function onUploadChangeNgoai(e: any) {
+    try {
+      const fl = (e && e.fileList) || [];
+      if (fl.length > 0) {
+        const f = fl[0];
+        const origin = f.originFile || f.originFileObj;
+
+        if (origin) {
+          selectedFileNgoai.value = origin;
+        }
+
+        const url = origin ? URL.createObjectURL(origin) : f.url || f.thumbUrl;
+        fileListNgoai.value = [
+          {
+            uid: f.uid,
+            name: f.name,
+            status: f.status || 'done',
+            url,
+            thumbUrl: url,
+            originFileObj: origin,
+          },
+        ];
+      } else {
+        selectedFileNgoai.value = null;
+        fileListNgoai.value = [];
+      }
+    } catch (err) {
+      console.error('onUploadChangeNgoai error', err);
     }
   }
 
   // ============ FORM HANDLERS ============
   function convertHtmlToTxtFile(html: string, fileName: string): File {
-    // Thêm UTF-8 BOM để đảm bảo encoding đúng
     const BOM = '\uFEFF';
     const content = BOM + html;
     
-    // Tạo Blob với charset UTF-8
     const blob = new Blob([content], { 
       type: 'text/plain;charset=utf-8' 
     });
@@ -478,8 +560,13 @@
       return false;
     }
 
-    if (!selectedFile.value) {
+    if (!selectedFileBia.value) {
       message.error('Vui lòng chọn ảnh bìa!');
+      return false;
+    }
+
+    if (!selectedFileNgoai.value) {
+      message.error('Vui lòng chọn ảnh ngoài!');
       return false;
     }
 
@@ -513,14 +600,15 @@
       formData.append('dto', dtoBlob);
 
       // 2. Ảnh bìa
-      formData.append('anh_bia', selectedFile.value!);
+      formData.append('anh_bia', selectedFileBia.value!);
 
-      // 3. Nội dung (file txt)
+      // 3. Ảnh ngoài
+      formData.append('anh_ngoai', selectedFileNgoai.value!);
+
+      // 4. Nội dung (file txt)
       const noiDungFile = convertHtmlToTxtFile(valueHtml.value, `${tieuDe.value}_noi_dung.txt`);
       formData.append('noi_dung', noiDungFile);
 
-      // Gửi request - THAY URL NÀY BẰNG API THỰC TẾ CỦA BẠN
-      // let host = 'http://localhost:8080'
       let host = realHttp.getAxios().defaults.baseURL as string
 
       const response = await fetch(host+'/basic-api/bai-viet/create', {
@@ -537,7 +625,6 @@
       message.success('Tạo bài viết thành công!');
       console.log('Response:', result);
 
-      // Reset form sau khi thành công
       handleReset();
 
       return result;
@@ -553,7 +640,8 @@
     loaiBaiViet.value = 'MEGA_STORY';
     tieuDe.value = '';
     valueHtml.value = '';
-    handleRemoveFile();
+    handleRemoveFileBia();
+    handleRemoveFileNgoai();
 
     const editor = editorRef.value;
     if (editor) {
@@ -570,7 +658,8 @@
     loaiBaiViet,
     tieuDe,
     valueHtml,
-    selectedFile,
+    selectedFileBia,
+    selectedFileNgoai,
   });
 </script>
 

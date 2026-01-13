@@ -1,6 +1,5 @@
-package com.devmam.slmapiv2.dto.response;
+package com.devmam.slmapiv2.dto.response.entities;
 
-import com.devmam.slmapiv2.dto.response.entities.TepTinDto;
 import com.devmam.slmapiv2.entities.NguoiDung;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -26,6 +25,7 @@ public class BaiVietDto implements Serializable {
     @Size(max = 500)
     String tieuDe;
     TepTinDto anhBia;
+    TepTinDto anhNgoai;
     String duongDanYoutube;
     TepTinDto noiDung;
     NguoiDung taoBoi;

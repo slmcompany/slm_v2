@@ -1,6 +1,6 @@
 package com.devmam.slmapiv2.mapper;
 
-import com.devmam.slmapiv2.dto.response.BaiVietDto;
+import com.devmam.slmapiv2.dto.response.entities.BaiVietDto;
 import com.devmam.slmapiv2.entities.BaiViet;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-01-08T15:37:19+0700",
+    date = "2026-01-13T16:40:53+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -31,6 +31,7 @@ public class BaiVietMapperImpl implements BaiVietMapper {
         baiVietDto.loaiBaiViet( baiViet.getLoaiBaiViet() );
         baiVietDto.tieuDe( baiViet.getTieuDe() );
         baiVietDto.anhBia( tepTinMapper.toDto( baiViet.getAnhBia() ) );
+        baiVietDto.anhNgoai( tepTinMapper.toDto( baiViet.getAnhNgoai() ) );
         baiVietDto.duongDanYoutube( baiViet.getDuongDanYoutube() );
         baiVietDto.noiDung( tepTinMapper.toDto( baiViet.getNoiDung() ) );
         baiVietDto.taoBoi( baiViet.getTaoBoi() );

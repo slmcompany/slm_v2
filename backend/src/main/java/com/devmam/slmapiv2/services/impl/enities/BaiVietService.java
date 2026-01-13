@@ -3,8 +3,8 @@ package com.devmam.slmapiv2.services.impl.enities;
 import com.devmam.slmapiv2.constant.enums.FileType;
 import com.devmam.slmapiv2.dto.request.entities.BaiVietCreatingDto;
 import com.devmam.slmapiv2.dto.request.entities.BaiVietUpdatingDto;
-import com.devmam.slmapiv2.dto.response.BaiVietDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
+import com.devmam.slmapiv2.dto.response.entities.BaiVietDto;
 import com.devmam.slmapiv2.entities.BaiViet;
 import com.devmam.slmapiv2.entities.NguoiDung;
 import com.devmam.slmapiv2.entities.TepTin;
@@ -51,7 +51,8 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
     }
 
     @Transactional
-    public ResponseEntity<ResponseData<BaiVietDto>> create(BaiVietCreatingDto dto, MultipartFile anhBia, MultipartFile noiDung) {
+    public ResponseEntity<ResponseData<BaiVietDto>> create(BaiVietCreatingDto dto, MultipartFile anhBia,
+                                                           MultipartFile anhNgoai, MultipartFile noiDung) {
         NguoiDung nguoiDung = null;
         if (dto.getTaoBoi() != null) {
             Optional<NguoiDung> nguoiDungFinding = nguoiDungService.getOne(dto.getTaoBoi());
@@ -72,12 +73,10 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
                 .build();
 
         creatingBaiViet = create(creatingBaiViet);
-        if (anhBia != null && noiDung != null) {
-            try {
-                Date now = new Date();
+        try {
+            Date now = new Date();
+            if (anhBia != null) {
                 String objectNameAnhBia = minioService.upload(anhBia, "bai_viet_anh_bia_" + dto.getTieuDe() + "_" + now.getTime());
-                String objectNameNoiDUng = minioService.upload(noiDung, "bai_viet_noi_dung_" + dto.getTieuDe() + "_" + now.getTime());
-
                 TepTin tepTinAnhBia = TepTin.builder()
                         .tenTepGoc(dto.getTieuDe() + "_anh_bia")
                         .tenTaiLen(dto.getTieuDe() + "_anh_bia")
@@ -88,27 +87,46 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
                         .trangThai(1)
                         .taoLuc(creatingBaiViet.getTaoLuc())
                         .build();
-
-                TepTin tepTinNoiDung = TepTin.builder()
-                        .tenTepGoc(dto.getTieuDe() + "_noi_dung")
-                        .tenTaiLen(dto.getTieuDe() + "_noi_dung")
-                        .tenLuuTru(objectNameNoiDUng)
-                        .duongDan(minioService.getPublicUrl(objectNameNoiDUng))
-                        .loaiTepTin(FileType.TEXT.toString())
-                        .duoiTep(minioService.getObjectInfo(objectNameNoiDUng).getUserMetadata().get("file-extension"))
+                tepTinAnhBia = tepTinService.create(tepTinAnhBia);
+                creatingBaiViet.setAnhBia(tepTinAnhBia);
+            }
+            if (anhNgoai != null) {
+                String objectNameAnhNgoai = minioService.upload(anhNgoai, "bai_viet_anh_ngoai_" + dto.getTieuDe() + "_" + now.getTime());
+                TepTin tepTinAnhNgoai = TepTin.builder()
+                        .tenTepGoc(dto.getTieuDe() + "_anh_ngoai")
+                        .tenTaiLen(dto.getTieuDe() + "_anh_ngoai")
+                        .tenLuuTru(objectNameAnhNgoai)
+                        .duongDan(minioService.getPublicUrl(objectNameAnhNgoai))
+                        .loaiTepTin(FileType.IMAGE.toString())
+                        .duoiTep(minioService.getObjectInfo(objectNameAnhNgoai).getUserMetadata().get("file-extension"))
                         .trangThai(1)
                         .taoLuc(creatingBaiViet.getTaoLuc())
                         .build();
-
-                tepTinAnhBia = tepTinService.create(tepTinAnhBia);
-                tepTinNoiDung = tepTinService.create(tepTinNoiDung);
-
-                creatingBaiViet.setAnhBia(tepTinAnhBia);
-                creatingBaiViet.setNoiDung(tepTinNoiDung);
-            } catch (Exception e) {
-                log.error("Lỗi khi tạo tệp tin cho bài viết: {}", dto.getTieuDe(), e);
-                throw new RuntimeException("Lỗi khi tạo tệp tin cho bài viết: " + dto.getTieuDe(), e);
+                tepTinAnhNgoai = tepTinService.create(tepTinAnhNgoai);
+                creatingBaiViet.setAnhNgoai(tepTinAnhNgoai);
             }
+
+            if (noiDung != null) {
+                String objectNameNoiDung = minioService.upload(noiDung, "bai_viet_noi_dung_" + dto.getTieuDe() + "_" + now.getTime());
+                TepTin tepTinNoiDung = TepTin.builder()
+                        .tenTepGoc(dto.getTieuDe() + "_noi_dung")
+                        .tenTaiLen(dto.getTieuDe() + "_noi_dung")
+                        .tenLuuTru(objectNameNoiDung)
+                        .duongDan(minioService.getPublicUrl(objectNameNoiDung))
+                        .loaiTepTin(FileType.TEXT.toString())
+                        .duoiTep(minioService.getObjectInfo(objectNameNoiDung).getUserMetadata().get("file-extension"))
+                        .trangThai(1)
+                        .taoLuc(creatingBaiViet.getTaoLuc())
+                        .build();
+                tepTinNoiDung = tepTinService.create(tepTinNoiDung);
+                creatingBaiViet.setNoiDung(tepTinNoiDung);
+            }
+
+            creatingBaiViet = update(creatingBaiViet.getId(), creatingBaiViet);
+
+        } catch (Exception e) {
+            log.error("Lỗi khi tạo tệp tin cho bài viết: {}", dto.getTieuDe(), e);
+            throw new RuntimeException("Lỗi khi tạo tệp tin cho bài viết: " + dto.getTieuDe(), e);
         }
         return ResponseEntity.ok(
                 ResponseData.<BaiVietDto>builder()
@@ -121,7 +139,7 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
     }
 
     @Transactional
-    public ResponseEntity<ResponseData<BaiVietDto>> update(BaiVietUpdatingDto dto, MultipartFile anhBia, MultipartFile noiDung) {
+    public ResponseEntity<ResponseData<BaiVietDto>> update(BaiVietUpdatingDto dto, MultipartFile anhBia, MultipartFile anhNgoai, MultipartFile noiDung) {
         Optional<BaiViet> findingBaiViet = getOne(dto.getId());
 
         if (findingBaiViet.isEmpty()) {
@@ -132,14 +150,22 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
 
         TepTin tepTinAnhBia = baiViet.getAnhBia();
 
+        TepTin tepTinAnhNgoai = baiViet.getAnhNgoai();
+
         TepTin tepTinNoiDung = baiViet.getNoiDung();
 
         boolean tepTinAnhBiaIsNew = false;
+        boolean tepTinAnhNgoaiIsNew = false;
         boolean tepTinNoiDungIsNew = false;
 
         if (tepTinAnhBia == null) {
             tepTinAnhBiaIsNew = true;
             tepTinAnhBia = TepTin.builder().build();
+        }
+
+        if (tepTinAnhNgoai == null) {
+            tepTinAnhNgoaiIsNew = true;
+            tepTinAnhNgoai = TepTin.builder().build();
         }
 
         if (tepTinNoiDung == null) {
@@ -150,6 +176,9 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
         try {
             if (!tepTinAnhBiaIsNew) {
                 minioService.delete(tepTinAnhBia.getTenLuuTru());
+            }
+            if (!tepTinAnhNgoaiIsNew) {
+                minioService.delete(tepTinAnhNgoai.getTenLuuTru());
             }
             if (!tepTinNoiDungIsNew) {
                 minioService.delete(tepTinNoiDung.getTenLuuTru());
@@ -175,6 +204,17 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
                 tepTinAnhBia = tepTinService.update(tepTinAnhBia.getId(), tepTinAnhBia);
             }
 
+            if (anhNgoai != null) {
+                String objectNameAnhNgoai = minioService.upload(anhNgoai, "bai_viet_anh_ngoai_" + dto.getTieuDe() + "_" + now.getTime());
+                tepTinAnhNgoai.setTenTepGoc(dto.getTieuDe() + "_anh_ngoai");
+                tepTinAnhNgoai.setTenTaiLen(dto.getTieuDe() + "_anh_ngoai");
+                tepTinAnhNgoai.setTenLuuTru(objectNameAnhNgoai);
+                tepTinAnhNgoai.setDuongDan(minioService.getPublicUrl(objectNameAnhNgoai));
+                tepTinAnhNgoai.setTrangThai(1);
+                tepTinAnhNgoai.setTaoLuc(baiViet.getTaoLuc());
+                tepTinAnhNgoai = tepTinService.update(tepTinAnhNgoai.getId(), tepTinAnhNgoai);
+            }
+
             if (noiDung != null) {
                 String objectNameNoiDUng = minioService.upload(noiDung, "bai_viet_noi_dung_" + dto.getTieuDe() + "_" + now.getTime());
 
@@ -196,11 +236,13 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
             }
 
             baiViet.setAnhBia(tepTinAnhBia);
+            baiViet.setAnhNgoai(tepTinAnhNgoai);
             baiViet.setNoiDung(tepTinNoiDung);
             baiViet = update(baiViet.getId(), baiViet);
 
         } catch (Exception e) {
-            throw new CommonException("Lỗi xảy ra trong quá trình sửa bài viết: " + baiViet.getTieuDe(), e);
+            log.error("Lỗi khi tạo tệp tin cho bài viết: {}", dto.getTieuDe(), e);
+            throw new CommonException("Lỗi xảy ra trong quá trình sửa bài viết: " + baiViet.getTieuDe() + ": " + e.getMessage(), e);
         }
 
         return ResponseEntity.ok(
