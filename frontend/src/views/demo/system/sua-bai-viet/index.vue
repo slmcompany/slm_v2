@@ -192,9 +192,15 @@
       </div>
     </div>
 
-    <div v-else class="empty-state">
-      <p style=" padding: 40px 0; color: #999;text-align: center">
+    <div v-else-if="!loadingInitial" class="empty-state">
+      <p style="padding: 40px 0; color: #999; text-align: center">
         Vui lòng tìm kiếm và chọn bài viết cần cập nhật
+      </p>
+    </div>
+
+    <div v-else class="empty-state">
+      <p style="padding: 40px 0; color: #1890ff; text-align: center">
+        Đang tải thông tin bài viết...
       </p>
     </div>
   </div>
@@ -203,7 +209,8 @@
 <script setup lang="ts">
   import '@wangeditor/editor/dist/css/style.css';
 
-  import { ref, shallowRef, onBeforeUnmount } from 'vue';
+  import { ref, shallowRef, onBeforeUnmount, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
   import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
   import {
     FormItem,
@@ -221,12 +228,14 @@
   import { realHttp } from '@/utils/http/axios';
 
   // ============ STATES ============
+  const route = useRoute();
   const editorRef = shallowRef();
   
   // Tìm kiếm và chọn bài viết
   const searchKeyword = ref('');
   const searching = ref(false);
   const loadingSelect = ref(false);
+  const loadingInitial = ref(false);
   const baiVietList = ref<any[]>([]);
   const selectedBaiVietId = ref<number | undefined>(undefined);
   const selectedBaiViet = ref<any>(null);
@@ -387,6 +396,41 @@
     message.success('Đã tải thông tin bài viết');
   }
 
+  // ============ INIT FROM ROUTE PARAMS ============
+  async function initFromRouteParams() {
+    // Lấy ID từ route params hoặc query
+    const idFromParams = route.params.id || route.query.id;
+    
+    if (idFromParams) {
+      loadingInitial.value = true;
+      const id = Number(idFromParams);
+      
+      if (!isNaN(id) && id > 0) {
+        try {
+          // Set selected ID
+          selectedBaiVietId.value = id;
+          
+          // Load danh sách để có trong dropdown
+          await fetchBaiVietList();
+          
+          // Load chi tiết bài viết
+          await handleSelectChange(id);
+        } catch (error) {
+          console.error('Error loading initial data:', error);
+          message.error('Không thể tải thông tin bài viết từ URL');
+        } finally {
+          loadingInitial.value = false;
+        }
+      } else {
+        message.warning('ID bài viết không hợp lệ');
+        loadingInitial.value = false;
+      }
+    } else {
+      // Không có ID trong params, load danh sách bình thường
+      await fetchBaiVietList();
+    }
+  }
+
   // ============ EDITOR CONFIG ============
   const toolbarConfig = {
     toolbarKeys: [
@@ -472,6 +516,10 @@
   }
 
   // ============ LIFECYCLE ============
+  onMounted(() => {
+    initFromRouteParams();
+  });
+
   onBeforeUnmount(() => {
     const editor = editorRef.value;
     if (editor == null) return;
@@ -752,7 +800,6 @@
       if (selectedFileBia.value) {
         formData.append('anh_bia', selectedFileBia.value);
       } else {
-        // Nếu không có file mới, tạo một blob rỗng
         const emptyBlob = new Blob([''], { type: 'application/octet-stream' });
         formData.append('anh_bia', emptyBlob, 'empty');
       }
@@ -761,7 +808,6 @@
       if (selectedFileNgoai.value) {
         formData.append('anh_ngoai', selectedFileNgoai.value);
       } else {
-        // Nếu không có file mới, tạo một blob rỗng
         const emptyBlob = new Blob([''], { type: 'application/octet-stream' });
         formData.append('anh_ngoai', emptyBlob, 'empty');
       }
@@ -816,9 +862,6 @@
 
     message.info('Đã hủy chỉnh sửa');
   }
-
-  // Load danh sách ban đầu
-  fetchBaiVietList();
 </script>
 
 <style lang="less" scoped>

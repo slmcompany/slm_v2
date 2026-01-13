@@ -118,6 +118,15 @@ const system: AppRouteModule = {
       component: () => import('@/views/demo/system/tron-goi/index.vue'),
     },
     {
+      path:'quan-ly-bai-viet',
+      name:'QuanLyBaiViet',
+      meta:{
+        title:t('routes.demo.system.quanLyBaiViet'),
+        ignoreKeepAlive:false,
+      },
+      component:()=>import('@/views/demo/system/quan-ly-bai-viet/index.vue'),
+    },
+    {
       path: 'bai-viet',
       name: 'BaiVietManagement',
       meta: {
