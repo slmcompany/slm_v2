@@ -140,6 +140,7 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
 
     @Transactional
     public ResponseEntity<ResponseData<BaiVietDto>> update(BaiVietUpdatingDto dto, MultipartFile anhBia, MultipartFile anhNgoai, MultipartFile noiDung) {
+
         Optional<BaiViet> findingBaiViet = getOne(dto.getId());
 
         if (findingBaiViet.isEmpty()) {
@@ -238,6 +239,7 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
             baiViet.setAnhBia(tepTinAnhBia);
             baiViet.setAnhNgoai(tepTinAnhNgoai);
             baiViet.setNoiDung(tepTinNoiDung);
+            baiViet.setTaoLuc(Instant.now());
             baiViet = update(baiViet.getId(), baiViet);
 
         } catch (Exception e) {
@@ -254,5 +256,37 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
                         .build()
         );
 
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<String>> hardDelete(Integer id) {
+        Optional<BaiViet> findingBaiViet = getOne(id);
+        if (findingBaiViet.isEmpty()) {
+            throw new CommonException("Không tìm thấy bài viết id: " + id);
+        }
+
+        BaiViet baiViet = findingBaiViet.get();
+
+        if (baiViet.getAnhBia() != null) {
+            tepTinService.hardDelete(baiViet.getAnhBia().getId());
+        }
+
+        if (baiViet.getAnhNgoai() != null) {
+            tepTinService.hardDelete(baiViet.getAnhNgoai().getId());
+        }
+        if (baiViet.getNoiDung() != null) {
+            tepTinService.hardDelete(baiViet.getNoiDung().getId());
+        }
+
+        delete(id);
+
+        return ResponseEntity.ok(
+                ResponseData.<String>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data("Success")
+                        .build()
+        );
     }
 }

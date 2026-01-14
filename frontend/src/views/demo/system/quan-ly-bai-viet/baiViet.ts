@@ -5,7 +5,7 @@ import { realHttp } from '@/utils/http/axios';
 enum Api {
   Filter = '/bai-viet/filter',
   GetById = '/bai-viet/get-by-id/',
-  Delete = '/bai-viet/', // Placeholder - chưa có API
+  Delete = '/bai-viet/delete',
 }
 
 export interface FilterCriteria {
@@ -177,9 +177,19 @@ export function getBaiVietById(id: number) {
 
 // Placeholder - API chưa có
 export function deleteBaiViet(id: number) {
-  return Promise.resolve({
-    status: 501,
-    message: 'Chức năng này hiện tại chưa được hỗ trợ',
-    data: null,
-  });
+  return realHttp
+    .delete<ResponseData<null>>(
+      {
+        url: `${Api.Delete}/${id}`,
+      },
+      {
+        isTransformResponse: false,
+      },
+    )
+    .then((res: any) => res as ResponseData<String>);
+  // return Promise.resolve({
+  //   status: 501,
+  //   message: 'Chức năng này hiện tại chưa được hỗ trợ',
+  //   data: null,
+  // });
 }

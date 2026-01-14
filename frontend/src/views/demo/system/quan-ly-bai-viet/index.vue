@@ -31,10 +31,10 @@
                 color: 'error',
                 tooltip: 'Xóa',
                 popConfirm: {
-                  title: 'Chức năng này hiện tại chưa được hỗ trợ',
+                  title: 'Bạn có chắc chắn muốn xóa bài viết này không?',
                   placement: 'left',
-                  okText: 'Đã hiểu',
-                  cancelText: null,
+                  okText: 'Xóa',
+                  cancelText: 'Hủy',
                   confirm: () => handleDelete(record as BaiVietDto),
                 },
               },

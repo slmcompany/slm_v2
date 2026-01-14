@@ -3,6 +3,7 @@ package com.devmam.slmapiv2.mapper;
 import com.devmam.slmapiv2.dto.response.entities.TepTinDto;
 import com.devmam.slmapiv2.entities.TepTin;
 import org.mapstruct.Mapper;
+import org.springframework.data.domain.Page;
 
 @Mapper(componentModel = "spring")
 public interface TepTinMapper {
@@ -29,5 +30,12 @@ public interface TepTinMapper {
                 .suaLuc(tepTin.getSuaLuc())
                 .trangThai(tepTin.getTrangThai())
                 .build();
+    }
+
+    default Page<TepTinDto> toDtoPage(Page<TepTin> tepTinPage){
+        if(tepTinPage == null){
+            return Page.empty();
+        }
+        return tepTinPage.map(this::toDto);
     }
 }

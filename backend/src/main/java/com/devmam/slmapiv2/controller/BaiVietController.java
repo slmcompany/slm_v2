@@ -92,4 +92,9 @@ public class BaiVietController {
         );
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseData<String>> hardDelete(@PathVariable Integer id) {
+        return baiVietService.hardDelete(id);
+    }
+
 }

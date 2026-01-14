@@ -6,11 +6,6 @@ import { Tag } from 'ant-design-vue';
 
 export const columns: BasicColumn[] = [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    width: 80,
-  },
-  {
     title: 'Tiêu đề',
     dataIndex: 'tieuDe',
     width: 300,
@@ -56,7 +51,7 @@ export const columns: BasicColumn[] = [
       if (!record.taoBoi?.ten) {
         return h('span', { style: { color: '#999' } }, '-');
       }
-      return record.taoBoi.ten;
+      return record.taoBoi.hoVaTen;
     },
   },
   {
@@ -77,15 +72,6 @@ export const columns: BasicColumn[] = [
     customRender: ({ record }) => {
       if (!record.taoLuc) return '-';
       return new Date(record.taoLuc).toLocaleString('vi-VN');
-    },
-  },
-  {
-    title: 'Ngày sửa',
-    dataIndex: 'suaLuc',
-    width: 180,
-    customRender: ({ record }) => {
-      if (!record.suaLuc) return '-';
-      return new Date(record.suaLuc).toLocaleString('vi-VN');
     },
   },
 ];

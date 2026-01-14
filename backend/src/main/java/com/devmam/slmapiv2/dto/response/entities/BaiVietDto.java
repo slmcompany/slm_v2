@@ -28,7 +28,7 @@ public class BaiVietDto implements Serializable {
     TepTinDto anhNgoai;
     String duongDanYoutube;
     TepTinDto noiDung;
-    NguoiDung taoBoi;
+    NguoiDungDto taoBoi;
     @Size(max = 500)
     String lienQuan;
     Boolean hoatDong;
