@@ -106,7 +106,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         NguoiDung nguoiDungCreating = NguoiDung.builder()
                 .coSo(coSoFinding.get())
                 .taoLuc(now)
-                .phanQuyen(RoleType.CUSTOMER.name())
+                .phanQuyen(RoleType.AGENT.name())
                 .email(registerRequest.getEmail().trim().toLowerCase())
                 .sdt(sdt)
                 .matKhau(registerRequest.getMatKhau())
