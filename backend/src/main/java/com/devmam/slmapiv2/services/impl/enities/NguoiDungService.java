@@ -43,6 +43,8 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
     @Autowired
     private CalcService calcService;
 
+    private final NguoiDungRepository repo = (NguoiDungRepository) getRepository();
+
     public NguoiDungService(NguoiDungRepository repository) {
         super(repository);
     }
@@ -74,8 +76,63 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
     }
 
     @Transactional
+    public ResponseEntity<ResponseData<NguoiDungDto>> creatAccount(RegisterRequest registerRequest) {
+        if (registerRequest.getMaCoSo() == null || registerRequest.getMaCoSo().isEmpty()) {
+            registerRequest.setMaCoSo("HN");
+        }
+        Optional<CoSo> coSoFinding = coSoService.findByMa(registerRequest.getMaCoSo());
+        if (coSoFinding.isEmpty()) {
+            throw new CommonException("Không tim thấy cơ sở ma: HN");
+        }
+        String sdt = registerRequest.getSdt();
+        String temp = null;
+        if (sdt != null && !sdt.trim().isEmpty()) {
+            sdt = sdt.replaceAll("[^0-9]", "");
+            temp = sdt;
+        } else {
+            sdt = null;
+            temp = registerRequest.getEmail();
+        }
+        Optional<NguoiDung> findingNguoiDungBySdt = findBySdtOrEmail(temp, registerRequest.getEmail());
+        if (findingNguoiDungBySdt.isPresent() &&
+                (sdt != null || findingNguoiDungBySdt.get().getEmail().equals(registerRequest.getEmail()))
+        ) {
+            System.out.println("Đi qua đây");
+            throw new CommonException("Tài khoản đã tồn tại: " + sdt + " & " + registerRequest.getEmail());
+        }
+
+        Instant now = Instant.now();
+
+        NguoiDung nguoiDungCreating = NguoiDung.builder()
+                .coSo(coSoFinding.get())
+                .taoLuc(now)
+                .phanQuyen(RoleType.CUSTOMER.name())
+                .email(registerRequest.getEmail().trim().toLowerCase())
+                .sdt(sdt)
+                .matKhau(registerRequest.getMatKhau())
+                .hoVaTen(registerRequest.getHoVaTen())
+                .phanTramHoaHong(5.0)
+                .tongHoaHong(0.0)
+                .gioiTinh(true)
+                .otp("87@Slm")
+                .otpGuiLuc(now)
+                .trangThai(1)
+                .build();
+
+        nguoiDungCreating = repo.save(nguoiDungCreating);
+
+        return ResponseEntity.ok(
+                ResponseData.<NguoiDungDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(nguoiDungMapper.toDto(nguoiDungCreating))
+                        .build()
+        );
+    }
+
+    @Transactional
     public ResponseEntity<ResponseData<NguoiDungDto>> register(RegisterRequest registerRequest) {
-        NguoiDungRepository repo = (NguoiDungRepository) super.getRepository();
         if (registerRequest.getMaCoSo() == null || registerRequest.getMaCoSo().isEmpty()) {
             registerRequest.setMaCoSo("HN");
         }
@@ -120,7 +177,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
                 .sdt(sdt)
                 .matKhau(registerRequest.getMatKhau())
                 .hoVaTen(registerRequest.getHoVaTen())
-                .phanTramHoaHong(0.0)
+                .phanTramHoaHong(5.0)
                 .tongHoaHong(0.0)
                 .gioiTinh(true)
                 .otp(otp)

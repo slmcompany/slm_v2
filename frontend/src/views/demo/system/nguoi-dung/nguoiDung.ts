@@ -4,6 +4,7 @@ enum Api {
   Filter = '/nguoi-dung/filter',
   GetAll = '/nguoi-dung/all',
   GetById = '/nguoi-dung/',
+  CreateAccount = '/nguoi-dung/create-account',
 }
 
 export interface FilterCriteria {
@@ -88,6 +89,14 @@ export interface NguoiDungDto {
   taoLuc: string;
   trangThai: number;
   khachHangs: KhachHangDto[];
+}
+
+export interface CreateAccountRequest {
+  sdt: string;
+  matKhau: string;
+  hoVaTen: string;
+  email: string;
+  maCoSo: string;
 }
 
 export function convertToFilterRequest(params: any): BaseFilterRequest {
@@ -193,4 +202,16 @@ export function getNguoiDungById(id: number) {
       },
     )
     .then((res: any) => res.data as ResponseData<NguoiDungDto>);
+}
+
+export function createAccount(data: CreateAccountRequest) {
+  return realHttp.post<ResponseData<NguoiDungDto>>(
+    {
+      url: Api.CreateAccount,
+      data,
+    },
+    {
+      isTransformResponse: false,
+    }
+  ).then((res: any) => res as ResponseData<NguoiDungDto>);
 }

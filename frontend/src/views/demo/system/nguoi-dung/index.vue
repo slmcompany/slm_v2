@@ -111,6 +111,9 @@
         </div>
       </template>
     </BasicTable>
+
+    <!-- Modal tạo tài khoản -->
+    <NguoiDungModal @register="registerModal" @success="handleRefresh" />
   </div>
 </template>
 
@@ -122,10 +125,13 @@
   import { filterNguoiDung } from './nguoiDung';
   import type { NguoiDungDto } from './nguoiDung';
   import { Button, Descriptions, DescriptionsItem, Divider, message, Table, Tag } from 'ant-design-vue';
+  import { useModal } from '@/components/Modal';
+  import NguoiDungModal from './NguoiDungModal.vue';
 
   defineOptions({ name: 'NguoiDungManagement' });
 
   const loadError = ref<string | null>(null);
+  const [registerModal, { openModal }] = useModal();
 
   const khachHangColumns = [
     { title: 'Họ và tên', dataIndex: 'hoVaTen', width: 150 },
@@ -211,7 +217,7 @@
   }
 
   function handleCreate() {
-    message.info('Chức năng đang phát triển');
+    openModal(true, {});
   }
 
   function handleEdit(record: NguoiDungDto) {

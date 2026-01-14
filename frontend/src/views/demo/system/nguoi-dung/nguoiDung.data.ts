@@ -167,3 +167,74 @@ export const searchFormSchema: FormSchema[] = [
     },
   },
 ];
+
+// Schema cho form tạo tài khoản
+export const formSchema: FormSchema[] = [
+  {
+    field: 'hoVaTen',
+    label: 'Họ và tên',
+    component: 'Input',
+    required: true,
+    componentProps: {
+      placeholder: 'Nhập họ và tên',
+    },
+  },
+  {
+    field: 'email',
+    label: 'Email',
+    component: 'Input',
+    required: true,
+    componentProps: {
+      placeholder: 'Nhập email',
+    },
+    rules: [
+      {
+        type: 'email',
+        message: 'Email không hợp lệ',
+      },
+    ],
+  },
+  {
+    field: 'sdt',
+    label: 'Số điện thoại',
+    component: 'Input',
+    required: true,
+    componentProps: {
+      placeholder: 'Nhập số điện thoại',
+    },
+    rules: [
+      {
+        pattern: /^[0-9]{10,11}$/,
+        message: 'Số điện thoại phải từ 10-11 chữ số',
+      },
+    ],
+  },
+  {
+    field: 'matKhau',
+    label: 'Mật khẩu',
+    component: 'InputPassword',
+    required: true,
+    componentProps: {
+      placeholder: 'Nhập mật khẩu',
+    },
+    rules: [
+      {
+        min: 6,
+        message: 'Mật khẩu phải có ít nhất 6 ký tự',
+      },
+    ],
+  },
+  {
+    field: 'maCoSo',
+    label: 'Mã cơ sở',
+    component: 'Select',
+    required: true,
+    componentProps: {
+      placeholder: 'Chọn cơ sở',
+      options: [
+        { label: 'Hà Nội', value: 'HN' },
+        { label: 'Hồ Chí Minh', value: 'HCM' },
+      ],
+    },
+  },
+];

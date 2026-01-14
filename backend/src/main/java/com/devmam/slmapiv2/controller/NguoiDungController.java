@@ -79,6 +79,11 @@ public class NguoiDungController {
         return nguoiDungService.login(loginRequest);
     }
 
+    @PostMapping("/create-account")
+    public ResponseEntity<ResponseData<NguoiDungDto>> creatAccount(@RequestBody RegisterRequest registerRequest){
+        return nguoiDungService.creatAccount(registerRequest);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<ResponseData<NguoiDungDto>> register(@RequestBody RegisterRequest registerRequest) {
         return nguoiDungService.register(registerRequest);
