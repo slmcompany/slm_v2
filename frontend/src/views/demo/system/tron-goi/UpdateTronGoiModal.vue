@@ -858,6 +858,7 @@
         vatTuTronGois: allVatTu.map((v) => ({
           id: v.id,
           duocBaoHanh: v.duocBaoHanh,
+          thoiGianBaoHanh: v.thoiGianBaoHanh,
           duocXem: v.duocXem,
           trangThai: v.trangThai,
         })),
