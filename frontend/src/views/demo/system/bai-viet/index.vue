@@ -38,8 +38,8 @@
       />
     </FormItem>
 
-    <!-- Ảnh bìa -->
-    <FormItem label="Ảnh bìa" name="anhBia">
+    <!-- Ảnh bìa (tùy chọn) -->
+    <FormItem label="Ảnh bìa (tùy chọn)" name="anhBia">
       <div class="upload-container">
         <Upload
           ref="antUploadBia"
@@ -61,8 +61,8 @@
       </div>
     </FormItem>
 
-    <!-- Ảnh ngoài -->
-    <FormItem label="Ảnh ngoài" name="anhNgoai">
+    <!-- Ảnh ngoài (tùy chọn) -->
+    <FormItem label="Ảnh ngoài (tùy chọn)" name="anhNgoai">
       <div class="upload-container">
         <Upload
           ref="antUploadNgoai"
@@ -560,15 +560,7 @@
       return false;
     }
 
-    if (!selectedFileBia.value) {
-      message.error('Vui lòng chọn ảnh bìa!');
-      return false;
-    }
-
-    if (!selectedFileNgoai.value) {
-      message.error('Vui lòng chọn ảnh ngoài!');
-      return false;
-    }
+    // Bỏ validation cho ảnh bìa và ảnh ngoài - không còn bắt buộc
 
     if (!valueHtml.value || valueHtml.value === '<p></p>' || valueHtml.value.trim() === '') {
       message.error('Vui lòng nhập nội dung!');
@@ -599,11 +591,15 @@
       const dtoBlob = new Blob([JSON.stringify(dto)], { type: 'application/json' });
       formData.append('dto', dtoBlob);
 
-      // 2. Ảnh bìa
-      formData.append('anh_bia', selectedFileBia.value!);
+      // 2. Ảnh bìa (chỉ thêm nếu có)
+      if (selectedFileBia.value) {
+        formData.append('anh_bia', selectedFileBia.value);
+      }
 
-      // 3. Ảnh ngoài
-      formData.append('anh_ngoai', selectedFileNgoai.value!);
+      // 3. Ảnh ngoài (chỉ thêm nếu có)
+      if (selectedFileNgoai.value) {
+        formData.append('anh_ngoai', selectedFileNgoai.value);
+      }
 
       // 4. Nội dung (file txt)
       const noiDungFile = convertHtmlToTxtFile(valueHtml.value, `${tieuDe.value}_noi_dung.txt`);
@@ -639,6 +635,7 @@
   function handleReset() {
     loaiBaiViet.value = 'MEGA_STORY';
     tieuDe.value = '';
+    duongDanYoutube.value = '';
     valueHtml.value = '';
     handleRemoveFileBia();
     handleRemoveFileNgoai();
