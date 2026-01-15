@@ -159,29 +159,29 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
         boolean tepTinAnhNgoaiIsNew = false;
         boolean tepTinNoiDungIsNew = false;
 
-        if (tepTinAnhBia == null) {
+        if (tepTinAnhBia == null && anhBia != null) {
             tepTinAnhBiaIsNew = true;
             tepTinAnhBia = TepTin.builder().build();
         }
 
-        if (tepTinAnhNgoai == null) {
+        if (tepTinAnhNgoai == null && anhNgoai != null) {
             tepTinAnhNgoaiIsNew = true;
             tepTinAnhNgoai = TepTin.builder().build();
         }
 
-        if (tepTinNoiDung == null) {
+        if (tepTinNoiDung == null && noiDung != null) {
             tepTinNoiDungIsNew = true;
             tepTinNoiDung = TepTin.builder().build();
         }
 
         try {
-            if (!tepTinAnhBiaIsNew && anhBia != null) {
+            if (!tepTinAnhBiaIsNew) {
                 minioService.delete(tepTinAnhBia.getTenLuuTru());
             }
-            if (!tepTinAnhNgoaiIsNew && anhNgoai != null) {
+            if (!tepTinAnhNgoaiIsNew) {
                 minioService.delete(tepTinAnhNgoai.getTenLuuTru());
             }
-            if (!tepTinNoiDungIsNew && noiDung != null) {
+            if (!tepTinNoiDungIsNew) {
                 minioService.delete(tepTinNoiDung.getTenLuuTru());
             }
         } catch (Exception ignore) {
