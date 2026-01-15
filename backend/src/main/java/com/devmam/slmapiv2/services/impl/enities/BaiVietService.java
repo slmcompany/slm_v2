@@ -175,13 +175,13 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
         }
 
         try {
-            if (!tepTinAnhBiaIsNew) {
+            if (!tepTinAnhBiaIsNew && anhBia != null) {
                 minioService.delete(tepTinAnhBia.getTenLuuTru());
             }
-            if (!tepTinAnhNgoaiIsNew) {
+            if (!tepTinAnhNgoaiIsNew && anhNgoai != null) {
                 minioService.delete(tepTinAnhNgoai.getTenLuuTru());
             }
-            if (!tepTinNoiDungIsNew) {
+            if (!tepTinNoiDungIsNew && noiDung != null) {
                 minioService.delete(tepTinNoiDung.getTenLuuTru());
             }
         } catch (Exception ignore) {
