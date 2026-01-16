@@ -60,9 +60,9 @@ public class BaiVietController {
     )
     public ResponseEntity<ResponseData<BaiVietDto>> create(
             @RequestPart("dto") BaiVietCreatingDto dto,
-            @RequestPart("anh_bia") MultipartFile anhBia,
-            @RequestPart("anh_ngoai") MultipartFile anhNgoai,
-            @RequestPart("noi_dung") MultipartFile noiDung
+            @RequestPart(value = "anh_bia", required = false) MultipartFile anhBia,
+            @RequestPart(value = "anh_ngoai", required = false) MultipartFile anhNgoai,
+            @RequestPart(value = "noi_dung", required = false) MultipartFile noiDung
     ) {
         return baiVietService.create(dto, anhBia, anhNgoai, noiDung);
     }
@@ -73,9 +73,10 @@ public class BaiVietController {
     )
     public ResponseEntity<ResponseData<BaiVietDto>> update(
             @RequestPart("dto") BaiVietUpdatingDto dto,
-            @RequestPart("anh_bia") MultipartFile anhBia,
-            @RequestPart("anh_ngoai") MultipartFile anhNgoai,
-            @RequestPart("noi_dung") MultipartFile noiDung) {
+            @RequestPart(value = "anh_bia", required = false) MultipartFile anhBia,
+            @RequestPart(value = "anh_ngoai", required = false) MultipartFile anhNgoai,
+            @RequestPart(value = "noi_dung", required = false) MultipartFile noiDung
+    ) {
         return baiVietService.update(dto, anhBia, anhNgoai, noiDung);
     }
 
