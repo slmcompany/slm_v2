@@ -68,6 +68,7 @@ export interface NhomTronGoiDto {
 }
 
 export interface NhomTronGoiCreateDto {
+  id?: number;
   nganhHangId: number;
   ten: string;
   thuongHieuTamPinId: number;

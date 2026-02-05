@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
@@ -82,8 +81,8 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
             throw new CommonException("Không tìm thấy người giới thiệu id: " + dto.getNguoiGioiThieuId());
         }
 
-        if(dto.getEmailKhachHang() == null || dto.getEmailKhachHang().isEmpty()){
-            dto.setEmailKhachHang(dto.getSdtKhachHang()) ;
+        if (dto.getEmailKhachHang() == null || dto.getEmailKhachHang().isEmpty()) {
+            dto.setEmailKhachHang(dto.getSdtKhachHang());
         }
         KhachHang khachHangCreating = KhachHang.builder()
                 .email(dto.getEmailKhachHang())
@@ -179,7 +178,7 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
         HoaHong hoaHongCreating = HoaHong.builder()
                 .hopDong(hopDongCreating)
                 .phanTram(nguoiGioiThieu.getPhanTramHoaHong())
-                .thanhTien(hopDongCreating.getTongGia() * nguoiGioiThieu.getPhanTramHoaHong() / 100)
+                .thanhTien(hopDongCreating.getTongGia() * nguoiGioiThieu.getPhanTramHoaHong() / 1.08 / 100)
                 .daTra(true)
                 .taoLuc(dto.getTaoLuc())
                 .trangThai(1)
@@ -192,7 +191,7 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
         }
 
         nguoiGioiThieu.setTongHoaHong(nguoiGioiThieu.getTongHoaHong() + nguoiGioiThieu.getPhanTramHoaHong() * hopDongCreating.getTongGia() / 100);
-        if(nguoiGioiThieu.getPhanQuyen().equals(RoleType.CUSTOMER.name())){
+        if (nguoiGioiThieu.getPhanQuyen().equals(RoleType.CUSTOMER.name())) {
             nguoiGioiThieu.setPhanQuyen(RoleType.AGENT.name());
         }
         nguoiDungService.update(nguoiGioiThieu.getId(), nguoiGioiThieu);
@@ -207,10 +206,10 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
     }
 
     @Transactional
-    public ResponseEntity<ResponseData<HopDongDto>> deleteHopDong(Integer id){
+    public ResponseEntity<ResponseData<HopDongDto>> deleteHopDong(Integer id) {
         Optional<HopDong> hopDongFinding = getOne(id);
 
-        if(hopDongFinding.isEmpty()){
+        if (hopDongFinding.isEmpty()) {
             throw new CommonException("Không tìm thấy hợp đồng id: " + id);
         }
 

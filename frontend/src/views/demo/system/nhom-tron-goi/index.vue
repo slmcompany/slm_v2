@@ -294,11 +294,9 @@ function handleCreate() {
 
 async function handleEdit(record: NhomTronGoiDto) {
   try {
-    // Load chi tiết từ API
-    const result = await getNhomTronGoiById(record.id);
     
     openModal(true, {
-      record: result?.data || record,
+      record: record,
       isUpdate: true,
       nganhHangOptions: nganhHangOptions.value,
     });
@@ -315,8 +313,8 @@ async function handleEdit(record: NhomTronGoiDto) {
 
 async function handleDelete(record: NhomTronGoiDto) {
   try {
-    const result = await realHttp.post(
-      { url: `/nhom-tron-goi/delete/${record.id}` },
+    const result = await realHttp.delete(
+      { url: `/nhom-tron-goi/soft-delete/${record.id}` },
       { isTransformResponse: false }
     );
 

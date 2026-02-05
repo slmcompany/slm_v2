@@ -1,6 +1,7 @@
 package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.dto.request.entities.NhomTronGoiCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.NhomTronGoiUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.NhomTronGoiDto;
 import com.devmam.slmapiv2.entities.NganhHang;
@@ -85,6 +86,25 @@ public class NhomTronGoiService extends BaseServiceImpl<NhomTronGoi, Integer> {
                         .error(null)
                         .message("Success")
                         .data(nhomTronGoiMapper.toDto(creatingNhomTronGoi))
+                        .build()
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<NhomTronGoiDto>> update(NhomTronGoiUpdatingDto dto) {
+        NhomTronGoi nhomTronGoi = getOne(dto.getId()).orElseThrow(
+                () -> new CommonException("Không tìm thấy nhóm trọn gói id: " + dto.getId())
+        );
+        nhomTronGoi.setTen(dto.getTen());
+        nhomTronGoi.setTrangThai(dto.getTrangThai());
+        nhomTronGoi = update(dto.getId(), nhomTronGoi);
+
+        return ResponseEntity.ok(
+                ResponseData.<NhomTronGoiDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(nhomTronGoiMapper.toDto(nhomTronGoi))
                         .build()
         );
     }
