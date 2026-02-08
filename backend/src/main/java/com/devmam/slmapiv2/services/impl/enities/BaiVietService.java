@@ -266,19 +266,20 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
         }
 
         BaiViet baiViet = findingBaiViet.get();
-
-        if (baiViet.getAnhBia() != null) {
-            tepTinService.hardDelete(baiViet.getAnhBia().getId());
-        }
-
-        if (baiViet.getAnhNgoai() != null) {
-            tepTinService.hardDelete(baiViet.getAnhNgoai().getId());
-        }
-        if (baiViet.getNoiDung() != null) {
-            tepTinService.hardDelete(baiViet.getNoiDung().getId());
-        }
+        Integer anhBiaId = baiViet.getAnhBia() != null ? baiViet.getAnhBia().getId() : null;
+        Integer anhNgoaiId = baiViet.getAnhNgoai() != null ? baiViet.getAnhNgoai().getId() : null;
+        Integer noiDungId = baiViet.getNoiDung() != null ? baiViet.getNoiDung().getId() : null;
 
         delete(id);
+        if (anhBiaId != null) {
+            tepTinService.hardDelete(anhBiaId);
+        }
+        if (anhNgoaiId != null) {
+            tepTinService.hardDelete(anhNgoaiId);
+        }
+        if (noiDungId != null) {
+            tepTinService.hardDelete(noiDungId);
+        }
 
         return ResponseEntity.ok(
                 ResponseData.<String>builder()
