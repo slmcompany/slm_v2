@@ -8,6 +8,7 @@ import com.devmam.slmapiv2.dto.response.entities.VatTuDto;
 import com.devmam.slmapiv2.entities.*;
 import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.VatTuMapper;
+import com.devmam.slmapiv2.services.CalcService;
 import com.devmam.slmapiv2.services.JwtService;
 import com.devmam.slmapiv2.services.MinioService;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
@@ -57,6 +58,9 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
     @Autowired
     private VatTuMapper vatTuMapper;
 
+    @Autowired
+    private CalcService calcService;
+
 
     public VatTuService(JpaRepository<VatTu, Integer> repository) {
         super(repository);
@@ -92,7 +96,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
             for (MultipartFile file : files) {
                 i++;
                 try {
-                    String objectName = minioService.upload(file, "vat_tu_anh_" + creatingVattu.getTen() + "_" + now.getTime() + "_" + i);
+                    String objectName = minioService.upload(file, "vat_tu_anh_" + calcService.genTenKhongDau(creatingVattu.getTen()) + "_" + now.getTime() + "_" + i);
                     TepTin creatingTepTin = tepTinService.create(
                             TepTin.builder()
                                     .tenTepGoc(objectName)
@@ -156,7 +160,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         // Xử lý upload sheet PDF
         if (sheet != null) {
             try {
-                String objectName = minioService.upload(sheet, "vat_tu_sheet_" + dto.getTen() + "_" + now.getTime());
+                String objectName = minioService.upload(sheet, "vat_tu_sheet_" + calcService.genTenKhongDau(dto.getTen()) + "_" + now.getTime());
                 TepTin creatingTepTin = TepTin.builder()
                         .tenTepGoc(objectName)
                         .tenTaiLen(objectName)
@@ -184,7 +188,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 String objectName;
 
                 try {
-                    objectName = minioService.upload(file, "vat_tu_anh_" + dto.getTen() + "_" + now.getTime() + "_" + (i + 1));
+                    objectName = minioService.upload(file, "vat_tu_anh_" + calcService.genTenKhongDau(dto.getTen()) + "_" + now.getTime() + "_" + (i + 1));
                 } catch (Exception e) {
                     log.error("Lỗi tạo tệp tin cho vật tư: {}", dto.getTen(), e);
                     throw new CommonException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
