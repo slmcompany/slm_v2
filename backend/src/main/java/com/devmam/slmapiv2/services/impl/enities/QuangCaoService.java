@@ -10,6 +10,7 @@ import com.devmam.slmapiv2.entities.QuangCao;
 import com.devmam.slmapiv2.entities.TepTin;
 import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.QuangCaoMapper;
+import com.devmam.slmapiv2.services.CalcService;
 import com.devmam.slmapiv2.services.MinioService;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
 import jakarta.persistence.EntityManager;
@@ -44,6 +45,9 @@ public class QuangCaoService extends BaseServiceImpl<QuangCao, Integer> {
     @Autowired
     private QuangCaoMapper quangCaoMapper;
 
+    @Autowired
+    private CalcService calcService;
+
     public QuangCaoService(JpaRepository<QuangCao, Integer> repository) {
         super(repository);
     }
@@ -65,24 +69,36 @@ public class QuangCaoService extends BaseServiceImpl<QuangCao, Integer> {
         TepTin creatingTepTin = null;
 
         try {
+            // Bước 1: Upload
+            log.info("Bắt đầu upload file cho quảng cáo: {}", dto.getTieuDe());
+            String objectName = minioService.upload(file, "quang_cao_" + calcService.genTenKhongDau(dto.getTieuDe()) + "_" + new Date().getTime());
+            log.info("Upload thành công, objectName: {}", objectName);
 
-            String objectName = minioService.upload(file, "quang_cao_" + dto.getTieuDe() + "_" + new Date().getTime());
+            // Bước 2: Lấy public URL (có thể lỗi ở đây)
+            log.info("Đang lấy public URL...");
+            String publicUrl = minioService.getPublicUrl(objectName);
+            log.info("Public URL: {}", publicUrl);
+
+            // Bước 3: Lấy object info (rất có thể lỗi ở đây)
+            log.info("Đang lấy object info...");
+            String fileExtension = minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension");
+            log.info("File extension: {}", fileExtension);
+
             creatingTepTin = tepTinService.create(
                     TepTin.builder()
                             .tenTepGoc(dto.getTieuDe())
                             .tenTaiLen(dto.getTieuDe())
                             .tenLuuTru(objectName)
-                            .duongDan(minioService.getPublicUrl(objectName))
+                            .duongDan(publicUrl)
                             .loaiTepTin(FileType.IMAGE.toString())
-                            .duoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"))
+                            .duoiTep(fileExtension)
                             .trangThai(1)
                             .taoLuc(Instant.now())
                             .build()
             );
 
-
         } catch (Exception e) {
-            log.error("Lỗi tạo tệp tin cho quản cáo: {}", dto.getTieuDe(), e);
+            log.error("Lỗi tại bước nào đó: ", e);
             throw new RuntimeException("Lỗi tạo tệp tin cho quảng cáo: " + dto.getTieuDe(), e);
         }
 
@@ -136,7 +152,7 @@ public class QuangCaoService extends BaseServiceImpl<QuangCao, Integer> {
         minioService.delete(tepTinUpdating.getTenLuuTru());
 
         try {
-            String objectName = minioService.upload(file, "quang_cao_" + dto.getTieuDe() + "_" + new Date().getTime());
+            String objectName = minioService.upload(file, "quang_cao_" + calcService.genTenKhongDau(dto.getTieuDe()) + "_" + new Date().getTime());
             tepTinUpdating.setTenLuuTru(objectName);
             tepTinUpdating.setDuongDan(minioService.getPublicUrl(objectName));
             tepTinUpdating.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));

@@ -118,20 +118,11 @@ export const formSchema: FormSchema[] = [
   {
     field: 'viTri',
     label: 'Vị trí',
-    component: 'Select',
+    component: 'Input',
     required: true,
     componentProps: {
       placeholder: 'Chọn vị trí',
-      options: [
-        {
-          label: 'Trang chủ',
-          value: 'TRANG_CHU'
-        }
-      ],
-      showSearch: true,
-      filterOption: (input: string, option: any) => {
-        return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-      },
+      maxlength: 200,
     },
   },
   {

@@ -11,6 +11,7 @@ import com.devmam.slmapiv2.entities.TepTin;
 import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.BaiVietMapper;
 import com.devmam.slmapiv2.repository.BaiVietRepository;
+import com.devmam.slmapiv2.services.CalcService;
 import com.devmam.slmapiv2.services.MinioService;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
 import jakarta.persistence.EntityManager;
@@ -40,6 +41,8 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
     private MinioService minioService;
     @Autowired
     private BaiVietMapper baiVietMapper;
+    @Autowired
+    private CalcService calcService;
 
     public BaiVietService(BaiVietRepository repository) {
         super(repository);
@@ -75,11 +78,12 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
         creatingBaiViet = create(creatingBaiViet);
         try {
             Date now = new Date();
+            String tieuDeKhongDau = calcService.genTenKhongDau(dto.getTieuDe());
             if (anhBia != null) {
-                String objectNameAnhBia = minioService.upload(anhBia, "bai_viet_anh_bia_" + dto.getTieuDe() + "_" + now.getTime());
+                String objectNameAnhBia = minioService.upload(anhBia, "bai_viet_anh_bia_" + tieuDeKhongDau + "_" + now.getTime());
                 TepTin tepTinAnhBia = TepTin.builder()
-                        .tenTepGoc(dto.getTieuDe() + "_anh_bia")
-                        .tenTaiLen(dto.getTieuDe() + "_anh_bia")
+                        .tenTepGoc(objectNameAnhBia)
+                        .tenTaiLen(objectNameAnhBia)
                         .tenLuuTru(objectNameAnhBia)
                         .duongDan(minioService.getPublicUrl(objectNameAnhBia))
                         .loaiTepTin(FileType.IMAGE.toString())
@@ -91,10 +95,10 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
                 creatingBaiViet.setAnhBia(tepTinAnhBia);
             }
             if (anhNgoai != null) {
-                String objectNameAnhNgoai = minioService.upload(anhNgoai, "bai_viet_anh_ngoai_" + dto.getTieuDe() + "_" + now.getTime());
+                String objectNameAnhNgoai = minioService.upload(anhNgoai, "bai_viet_anh_ngoai_" + tieuDeKhongDau + "_" + now.getTime());
                 TepTin tepTinAnhNgoai = TepTin.builder()
-                        .tenTepGoc(dto.getTieuDe() + "_anh_ngoai")
-                        .tenTaiLen(dto.getTieuDe() + "_anh_ngoai")
+                        .tenTepGoc(objectNameAnhNgoai)
+                        .tenTaiLen(objectNameAnhNgoai)
                         .tenLuuTru(objectNameAnhNgoai)
                         .duongDan(minioService.getPublicUrl(objectNameAnhNgoai))
                         .loaiTepTin(FileType.IMAGE.toString())
@@ -107,10 +111,10 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
             }
 
             if (noiDung != null) {
-                String objectNameNoiDung = minioService.upload(noiDung, "bai_viet_noi_dung_" + dto.getTieuDe() + "_" + now.getTime());
+                String objectNameNoiDung = minioService.upload(noiDung, "bai_viet_noi_dung_" + tieuDeKhongDau + "_" + now.getTime());
                 TepTin tepTinNoiDung = TepTin.builder()
-                        .tenTepGoc(dto.getTieuDe() + "_noi_dung")
-                        .tenTaiLen(dto.getTieuDe() + "_noi_dung")
+                        .tenTepGoc(objectNameNoiDung)
+                        .tenTaiLen(objectNameNoiDung)
                         .tenLuuTru(objectNameNoiDung)
                         .duongDan(minioService.getPublicUrl(objectNameNoiDung))
                         .loaiTepTin(FileType.TEXT.toString())
@@ -193,11 +197,12 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
             baiViet.setTrangThai(dto.getTrangThai());
             baiViet = update(baiViet.getId(), baiViet);
             Date now = new Date();
+            String tieuDeKhongDau = calcService.genTenKhongDau(dto.getTieuDe());
             if (anhBia != null) {
-                String objectNameAnhBia = minioService.upload(anhBia, "bai_viet_anh_bia_" + dto.getTieuDe() + "_" + now.getTime());
+                String objectNameAnhBia = minioService.upload(anhBia, "bai_viet_anh_bia_" + tieuDeKhongDau + "_" + now.getTime());
 
-                tepTinAnhBia.setTenTepGoc(dto.getTieuDe() + "_anh_bia");
-                tepTinAnhBia.setTenTaiLen(dto.getTieuDe() + "_anh_bia");
+                tepTinAnhBia.setTenTepGoc(objectNameAnhBia);
+                tepTinAnhBia.setTenTaiLen(objectNameAnhBia);
                 tepTinAnhBia.setTenLuuTru(objectNameAnhBia);
                 tepTinAnhBia.setDuongDan(minioService.getPublicUrl(objectNameAnhBia));
                 tepTinAnhBia.setTrangThai(1);
@@ -206,9 +211,9 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
             }
 
             if (anhNgoai != null) {
-                String objectNameAnhNgoai = minioService.upload(anhNgoai, "bai_viet_anh_ngoai_" + dto.getTieuDe() + "_" + now.getTime());
-                tepTinAnhNgoai.setTenTepGoc(dto.getTieuDe() + "_anh_ngoai");
-                tepTinAnhNgoai.setTenTaiLen(dto.getTieuDe() + "_anh_ngoai");
+                String objectNameAnhNgoai = minioService.upload(anhNgoai, "bai_viet_anh_ngoai_" + tieuDeKhongDau + "_" + now.getTime());
+                tepTinAnhNgoai.setTenTepGoc(objectNameAnhNgoai);
+                tepTinAnhNgoai.setTenTaiLen(objectNameAnhNgoai);
                 tepTinAnhNgoai.setTenLuuTru(objectNameAnhNgoai);
                 tepTinAnhNgoai.setDuongDan(minioService.getPublicUrl(objectNameAnhNgoai));
                 tepTinAnhNgoai.setTrangThai(1);
@@ -217,12 +222,12 @@ public class BaiVietService extends BaseServiceImpl<BaiViet, Integer> {
             }
 
             if (noiDung != null) {
-                String objectNameNoiDUng = minioService.upload(noiDung, "bai_viet_noi_dung_" + dto.getTieuDe() + "_" + now.getTime());
+                String objectNameNoiDung = minioService.upload(noiDung, "bai_viet_noi_dung_" + tieuDeKhongDau + "_" + now.getTime());
 
-                tepTinNoiDung.setTenTepGoc(dto.getTieuDe() + "_noi_dung");
-                tepTinNoiDung.setTenTaiLen(dto.getTieuDe() + "_noi_dung");
-                tepTinNoiDung.setTenLuuTru(objectNameNoiDUng);
-                tepTinNoiDung.setDuongDan(minioService.getPublicUrl(objectNameNoiDUng));
+                tepTinNoiDung.setTenTepGoc(objectNameNoiDung);
+                tepTinNoiDung.setTenTaiLen(objectNameNoiDung);
+                tepTinNoiDung.setTenLuuTru(objectNameNoiDung);
+                tepTinNoiDung.setDuongDan(minioService.getPublicUrl(objectNameNoiDung));
                 tepTinNoiDung.setTrangThai(1);
                 tepTinNoiDung.setTaoLuc(baiViet.getTaoLuc());
                 tepTinNoiDung = tepTinService.update(tepTinNoiDung.getId(), tepTinNoiDung);

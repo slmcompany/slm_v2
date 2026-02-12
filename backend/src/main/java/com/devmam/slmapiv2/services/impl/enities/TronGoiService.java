@@ -8,6 +8,7 @@ import com.devmam.slmapiv2.entities.*;
 import com.devmam.slmapiv2.entities.commons.GiaInfo;
 import com.devmam.slmapiv2.exception.customize.CommonException;
 import com.devmam.slmapiv2.mapper.TronGoiMapper;
+import com.devmam.slmapiv2.services.CalcService;
 import com.devmam.slmapiv2.services.JwtService;
 import com.devmam.slmapiv2.services.MinioService;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
@@ -53,6 +54,9 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
 
     @Autowired
     private TronGoiMapper tronGoiMapper;
+
+    @Autowired
+    private CalcService calcService;
 
     @Autowired
     private EntityManager entityManager;
@@ -130,7 +134,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             }
             Date now = new Date();
             try {
-                String objectName = minioService.upload(file, "tron_goi_" + tronGoi.getTen() + "_" + coSo.get().getMa() + "_" + now.getTime());
+                String objectName = minioService.upload(file, "tron_goi_" + calcService.genTenKhongDau(tronGoi.getTen()) + "_" + coSo.get().getMa() + "_" + now.getTime());
                 TepTin creatingTepTin = tepTinService.create(
                         TepTin.builder()
                                 .tenTepGoc(objectName)
@@ -209,7 +213,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             tronGoi.setBanChay(dto.getBanChay());
             tronGoi.setTrangThai(dto.getTrangThai());
             if (file != null) {
-                String objectName = minioService.upload(file, "tron_goi" + "_" + tronGoi.getTen() + '_' + tronGoi.getCoSo().getMa() + "_" + new Date().getTime());
+                String objectName = minioService.upload(file, "tron_goi" + "_" + calcService.genTenKhongDau(tronGoi.getTen()) + '_' + tronGoi.getCoSo().getMa() + "_" + new Date().getTime());
                 tepTin.setTenLuuTru(objectName);
                 tepTin.setTenTepGoc(objectName);
                 tepTin.setDuongDan(minioService.getPublicUrl(objectName));
