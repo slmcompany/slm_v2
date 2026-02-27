@@ -35,8 +35,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-12T21:03:27+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
+    date = "2026-02-25T15:17:10+0700",
+    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
 public class TronGoiMapperImpl implements TronGoiMapper {
@@ -52,22 +52,22 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         TronGoiDto.TronGoiDtoBuilder tronGoiDto = TronGoiDto.builder();
 
-        tronGoiDto.id( tronGoi.getId() );
-        tronGoiDto.nhomTronGoi( nhomTronGoiToNhomTronGoiDto( tronGoi.getNhomTronGoi() ) );
+        tronGoiDto.banChay( tronGoi.getBanChay() );
         tronGoiDto.coSo( coSoToCoSoDto( tronGoi.getCoSo() ) );
-        tronGoiDto.ten( tronGoi.getTen() );
-        tronGoiDto.tepTin( tepTinMapper.toDto( tronGoi.getTepTin() ) );
+        tronGoiDto.congSuatHeThong( tronGoi.getCongSuatHeThong() );
+        tronGoiDto.giaKhungSat( tronGoi.getGiaKhungSat() );
+        tronGoiDto.gmTong( tronGoi.getGmTong() );
+        tronGoiDto.id( tronGoi.getId() );
         tronGoiDto.loaiHeThong( tronGoi.getLoaiHeThong() );
         tronGoiDto.loaiPha( tronGoi.getLoaiPha() );
-        tronGoiDto.congSuatHeThong( tronGoi.getCongSuatHeThong() );
-        tronGoiDto.sanLuongToiThieu( tronGoi.getSanLuongToiThieu() );
-        tronGoiDto.sanLuongToiDa( tronGoi.getSanLuongToiDa() );
-        tronGoiDto.giaKhungSat( tronGoi.getGiaKhungSat() );
         tronGoiDto.moTa( tronGoi.getMoTa() );
+        tronGoiDto.nhomTronGoi( nhomTronGoiToNhomTronGoiDto( tronGoi.getNhomTronGoi() ) );
+        tronGoiDto.sanLuongToiDa( tronGoi.getSanLuongToiDa() );
+        tronGoiDto.sanLuongToiThieu( tronGoi.getSanLuongToiThieu() );
         tronGoiDto.taoLuc( tronGoi.getTaoLuc() );
+        tronGoiDto.ten( tronGoi.getTen() );
+        tronGoiDto.tepTin( tepTinMapper.toDto( tronGoi.getTepTin() ) );
         tronGoiDto.tongGia( tronGoi.getTongGia() );
-        tronGoiDto.gmTong( tronGoi.getGmTong() );
-        tronGoiDto.banChay( tronGoi.getBanChay() );
         tronGoiDto.trangThai( tronGoi.getTrangThai() );
         tronGoiDto.vatTuTronGois( vatTuTronGoiListToVatTuTronGoiDtoSet( tronGoi.getVatTuTronGois() ) );
 
@@ -82,26 +82,44 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         TronGoi.TronGoiBuilder tronGoi = TronGoi.builder();
 
-        tronGoi.id( tronGoiDto.getId() );
+        tronGoi.banChay( tronGoiDto.getBanChay() );
         tronGoi.coSo( coSoDtoToCoSo( tronGoiDto.getCoSo() ) );
-        tronGoi.nhomTronGoi( nhomTronGoiDtoToNhomTronGoi( tronGoiDto.getNhomTronGoi() ) );
-        tronGoi.ten( tronGoiDto.getTen() );
-        tronGoi.tepTin( tepTinDtoToTepTin( tronGoiDto.getTepTin() ) );
+        tronGoi.congSuatHeThong( tronGoiDto.getCongSuatHeThong() );
+        tronGoi.giaKhungSat( tronGoiDto.getGiaKhungSat() );
+        tronGoi.gmTong( tronGoiDto.getGmTong() );
+        tronGoi.id( tronGoiDto.getId() );
         tronGoi.loaiHeThong( tronGoiDto.getLoaiHeThong() );
         tronGoi.loaiPha( tronGoiDto.getLoaiPha() );
-        tronGoi.congSuatHeThong( tronGoiDto.getCongSuatHeThong() );
-        tronGoi.sanLuongToiThieu( tronGoiDto.getSanLuongToiThieu() );
-        tronGoi.sanLuongToiDa( tronGoiDto.getSanLuongToiDa() );
-        tronGoi.giaKhungSat( tronGoiDto.getGiaKhungSat() );
         tronGoi.moTa( tronGoiDto.getMoTa() );
-        tronGoi.tongGia( tronGoiDto.getTongGia() );
-        tronGoi.gmTong( tronGoiDto.getGmTong() );
-        tronGoi.banChay( tronGoiDto.getBanChay() );
+        tronGoi.nhomTronGoi( nhomTronGoiDtoToNhomTronGoi( tronGoiDto.getNhomTronGoi() ) );
+        tronGoi.sanLuongToiDa( tronGoiDto.getSanLuongToiDa() );
+        tronGoi.sanLuongToiThieu( tronGoiDto.getSanLuongToiThieu() );
         tronGoi.taoLuc( tronGoiDto.getTaoLuc() );
+        tronGoi.ten( tronGoiDto.getTen() );
+        tronGoi.tepTin( tepTinDtoToTepTin( tronGoiDto.getTepTin() ) );
+        tronGoi.tongGia( tronGoiDto.getTongGia() );
         tronGoi.trangThai( tronGoiDto.getTrangThai() );
         tronGoi.vatTuTronGois( vatTuTronGoiDtoSetToVatTuTronGoiList( tronGoiDto.getVatTuTronGois() ) );
 
         return tronGoi.build();
+    }
+
+    protected CoSoDto coSoToCoSoDto(CoSo coSo) {
+        if ( coSo == null ) {
+            return null;
+        }
+
+        CoSoDto.CoSoDtoBuilder coSoDto = CoSoDto.builder();
+
+        coSoDto.dcKho( coSo.getDcKho() );
+        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
+        coSoDto.id( coSo.getId() );
+        coSoDto.ma( coSo.getMa() );
+        coSoDto.taoLuc( coSo.getTaoLuc() );
+        coSoDto.ten( coSo.getTen() );
+        coSoDto.trangThai( coSo.getTrangThai() );
+
+        return coSoDto.build();
     }
 
     protected NganhHangDto nganhHangToNganhHangDto(NganhHang nganhHang) {
@@ -111,13 +129,13 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         NganhHangDto.NganhHangDtoBuilder nganhHangDto = NganhHangDto.builder();
 
-        nganhHangDto.id( nganhHang.getId() );
-        nganhHangDto.ma( nganhHang.getMa() );
-        nganhHangDto.ten( nganhHang.getTen() );
-        nganhHangDto.sdtSale( nganhHang.getSdtSale() );
-        nganhHangDto.sdtTech( nganhHang.getSdtTech() );
         nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
         nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
+        nganhHangDto.id( nganhHang.getId() );
+        nganhHangDto.ma( nganhHang.getMa() );
+        nganhHangDto.sdtSale( nganhHang.getSdtSale() );
+        nganhHangDto.sdtTech( nganhHang.getSdtTech() );
+        nganhHangDto.ten( nganhHang.getTen() );
         nganhHangDto.trangThai( nganhHang.getTrangThai() );
 
         return nganhHangDto.build();
@@ -130,13 +148,13 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         ThuongHieuDto.ThuongHieuDtoBuilder thuongHieuDto = ThuongHieuDto.builder();
 
+        thuongHieuDto.email( thuongHieu.getEmail() );
         thuongHieuDto.id( thuongHieu.getId() );
-        thuongHieuDto.tenQuocTe( thuongHieu.getTenQuocTe() );
-        thuongHieuDto.ten( thuongHieu.getTen() );
+        thuongHieuDto.moTa( thuongHieu.getMoTa() );
         thuongHieuDto.quocGia( thuongHieu.getQuocGia() );
         thuongHieuDto.sdt( thuongHieu.getSdt() );
-        thuongHieuDto.email( thuongHieu.getEmail() );
-        thuongHieuDto.moTa( thuongHieu.getMoTa() );
+        thuongHieuDto.ten( thuongHieu.getTen() );
+        thuongHieuDto.tenQuocTe( thuongHieu.getTenQuocTe() );
         thuongHieuDto.tepTin( tepTinMapper.toDto( thuongHieu.getTepTin() ) );
         thuongHieuDto.trangThai( thuongHieu.getTrangThai() );
 
@@ -152,55 +170,14 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         nhomTronGoiDto.id( nhomTronGoi.getId() );
         nhomTronGoiDto.nganhHang( nganhHangToNganhHangDto( nhomTronGoi.getNganhHang() ) );
+        nhomTronGoiDto.taoLuc( nhomTronGoi.getTaoLuc() );
         nhomTronGoiDto.ten( nhomTronGoi.getTen() );
-        nhomTronGoiDto.thuongHieuTamPin( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuTamPin() ) );
         nhomTronGoiDto.thuongHieuInverter( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuInverter() ) );
         nhomTronGoiDto.thuongHieuPinLuuTru( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuPinLuuTru() ) );
-        nhomTronGoiDto.taoLuc( nhomTronGoi.getTaoLuc() );
+        nhomTronGoiDto.thuongHieuTamPin( thuongHieuToThuongHieuDto( nhomTronGoi.getThuongHieuTamPin() ) );
         nhomTronGoiDto.trangThai( nhomTronGoi.getTrangThai() );
 
         return nhomTronGoiDto.build();
-    }
-
-    protected CoSoDto coSoToCoSoDto(CoSo coSo) {
-        if ( coSo == null ) {
-            return null;
-        }
-
-        CoSoDto.CoSoDtoBuilder coSoDto = CoSoDto.builder();
-
-        coSoDto.id( coSo.getId() );
-        coSoDto.ma( coSo.getMa() );
-        coSoDto.ten( coSo.getTen() );
-        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
-        coSoDto.dcKho( coSo.getDcKho() );
-        coSoDto.taoLuc( coSo.getTaoLuc() );
-        coSoDto.trangThai( coSo.getTrangThai() );
-
-        return coSoDto.build();
-    }
-
-    protected NhomVatTuDto nhomVatTuToNhomVatTuDto(NhomVatTu nhomVatTu) {
-        if ( nhomVatTu == null ) {
-            return null;
-        }
-
-        NhomVatTuDto.NhomVatTuDtoBuilder nhomVatTuDto = NhomVatTuDto.builder();
-
-        nhomVatTuDto.id( nhomVatTu.getId() );
-        nhomVatTuDto.ma( nhomVatTu.getMa() );
-        nhomVatTuDto.nghanhHang( nganhHangToNganhHangDto( nhomVatTu.getNghanhHang() ) );
-        nhomVatTuDto.ten( nhomVatTu.getTen() );
-        Map<String, Object> map = nhomVatTu.getThuocTinhRieng();
-        if ( map != null ) {
-            nhomVatTuDto.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
-        }
-        nhomVatTuDto.gm( nhomVatTu.getGm() );
-        nhomVatTuDto.vatTuChinh( nhomVatTu.getVatTuChinh() );
-        nhomVatTuDto.taoLuc( nhomVatTu.getTaoLuc() );
-        nhomVatTuDto.trangThai( nhomVatTu.getTrangThai() );
-
-        return nhomVatTuDto.build();
     }
 
     protected AnhVatTuDto anhVatTuToAnhVatTuDto(AnhVatTu anhVatTu) {
@@ -210,9 +187,9 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         AnhVatTuDto.AnhVatTuDtoBuilder anhVatTuDto = AnhVatTuDto.builder();
 
+        anhVatTuDto.anhChinh( anhVatTu.getAnhChinh() );
         anhVatTuDto.id( anhVatTu.getId() );
         anhVatTuDto.tepTin( tepTinMapper.toDto( anhVatTu.getTepTin() ) );
-        anhVatTuDto.anhChinh( anhVatTu.getAnhChinh() );
         anhVatTuDto.trangThai( anhVatTu.getTrangThai() );
 
         return anhVatTuDto.build();
@@ -231,6 +208,29 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         return list1;
     }
 
+    protected NhomVatTuDto nhomVatTuToNhomVatTuDto(NhomVatTu nhomVatTu) {
+        if ( nhomVatTu == null ) {
+            return null;
+        }
+
+        NhomVatTuDto.NhomVatTuDtoBuilder nhomVatTuDto = NhomVatTuDto.builder();
+
+        nhomVatTuDto.gm( nhomVatTu.getGm() );
+        nhomVatTuDto.id( nhomVatTu.getId() );
+        nhomVatTuDto.ma( nhomVatTu.getMa() );
+        nhomVatTuDto.nghanhHang( nganhHangToNganhHangDto( nhomVatTu.getNghanhHang() ) );
+        nhomVatTuDto.taoLuc( nhomVatTu.getTaoLuc() );
+        nhomVatTuDto.ten( nhomVatTu.getTen() );
+        Map<String, Object> map = nhomVatTu.getThuocTinhRieng();
+        if ( map != null ) {
+            nhomVatTuDto.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
+        }
+        nhomVatTuDto.trangThai( nhomVatTu.getTrangThai() );
+        nhomVatTuDto.vatTuChinh( nhomVatTu.getVatTuChinh() );
+
+        return nhomVatTuDto.build();
+    }
+
     protected ThongTinGiaDto thongTinGiaToThongTinGiaDto(ThongTinGia thongTinGia) {
         if ( thongTinGia == null ) {
             return null;
@@ -238,11 +238,11 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         ThongTinGiaDto.ThongTinGiaDtoBuilder thongTinGiaDto = ThongTinGiaDto.builder();
 
-        thongTinGiaDto.id( thongTinGia.getId() );
         List<GiaInfo> list = thongTinGia.getDsGia();
         if ( list != null ) {
             thongTinGiaDto.dsGia( new ArrayList<GiaInfo>( list ) );
         }
+        thongTinGiaDto.id( thongTinGia.getId() );
         thongTinGiaDto.taoLuc( thongTinGia.getTaoLuc() );
         thongTinGiaDto.trangThai( thongTinGia.getTrangThai() );
 
@@ -269,26 +269,26 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         VatTuDto.VatTuDtoBuilder vatTuDto = VatTuDto.builder();
 
-        vatTuDto.id( vatTu.getId() );
-        vatTuDto.ma( vatTu.getMa() );
-        vatTuDto.nhomVatTu( nhomVatTuToNhomVatTuDto( vatTu.getNhomVatTu() ) );
-        vatTuDto.thuongHieu( thuongHieuToThuongHieuDto( vatTu.getThuongHieu() ) );
-        vatTuDto.ten( vatTu.getTen() );
-        vatTuDto.sheetLink( vatTu.getSheetLink() );
+        vatTuDto.anhVatTus( anhVatTuListToAnhVatTuDtoList( vatTu.getAnhVatTus() ) );
         vatTuDto.donVi( vatTu.getDonVi() );
-        vatTuDto.moTaBaoGia( vatTu.getMoTaBaoGia() );
-        vatTuDto.moTaHopDong( vatTu.getMoTaHopDong() );
         Map<String, Object> map = vatTu.getDuLieuRieng();
         if ( map != null ) {
             vatTuDto.duLieuRieng( new LinkedHashMap<String, Object>( map ) );
         }
-        vatTuDto.thoiGianBaoHanh( vatTu.getThoiGianBaoHanh() );
         vatTuDto.gm( vatTu.getGm() );
-        vatTuDto.vatTuChinh( vatTu.getVatTuChinh() );
+        vatTuDto.id( vatTu.getId() );
+        vatTuDto.ma( vatTu.getMa() );
+        vatTuDto.moTaBaoGia( vatTu.getMoTaBaoGia() );
+        vatTuDto.moTaHopDong( vatTu.getMoTaHopDong() );
+        vatTuDto.nhomVatTu( nhomVatTuToNhomVatTuDto( vatTu.getNhomVatTu() ) );
+        vatTuDto.sheetLink( vatTu.getSheetLink() );
         vatTuDto.taoLuc( vatTu.getTaoLuc() );
-        vatTuDto.trangThai( vatTu.getTrangThai() );
-        vatTuDto.anhVatTus( anhVatTuListToAnhVatTuDtoList( vatTu.getAnhVatTus() ) );
+        vatTuDto.ten( vatTu.getTen() );
+        vatTuDto.thoiGianBaoHanh( vatTu.getThoiGianBaoHanh() );
         vatTuDto.thongTinGias( thongTinGiaListToThongTinGiaDtoList( vatTu.getThongTinGias() ) );
+        vatTuDto.thuongHieu( thuongHieuToThuongHieuDto( vatTu.getThuongHieu() ) );
+        vatTuDto.trangThai( vatTu.getTrangThai() );
+        vatTuDto.vatTuChinh( vatTu.getVatTuChinh() );
 
         return vatTuDto.build();
     }
@@ -300,17 +300,17 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         VatTuTronGoiDto.VatTuTronGoiDtoBuilder vatTuTronGoiDto = VatTuTronGoiDto.builder();
 
-        vatTuTronGoiDto.id( vatTuTronGoi.getId() );
-        vatTuTronGoiDto.vatTu( vatTuToVatTuDto( vatTuTronGoi.getVatTu() ) );
-        vatTuTronGoiDto.moTa( vatTuTronGoi.getMoTa() );
-        vatTuTronGoiDto.soLuong( vatTuTronGoi.getSoLuong() );
-        vatTuTronGoiDto.gia( vatTuTronGoi.getGia() );
-        vatTuTronGoiDto.gm( vatTuTronGoi.getGm() );
-        vatTuTronGoiDto.taoLuc( vatTuTronGoi.getTaoLuc() );
-        vatTuTronGoiDto.thoiGianBaoHanh( vatTuTronGoi.getThoiGianBaoHanh() );
         vatTuTronGoiDto.duocBaoHanh( vatTuTronGoi.getDuocBaoHanh() );
         vatTuTronGoiDto.duocXem( vatTuTronGoi.getDuocXem() );
+        vatTuTronGoiDto.gia( vatTuTronGoi.getGia() );
+        vatTuTronGoiDto.gm( vatTuTronGoi.getGm() );
+        vatTuTronGoiDto.id( vatTuTronGoi.getId() );
+        vatTuTronGoiDto.moTa( vatTuTronGoi.getMoTa() );
+        vatTuTronGoiDto.soLuong( vatTuTronGoi.getSoLuong() );
+        vatTuTronGoiDto.taoLuc( vatTuTronGoi.getTaoLuc() );
+        vatTuTronGoiDto.thoiGianBaoHanh( vatTuTronGoi.getThoiGianBaoHanh() );
         vatTuTronGoiDto.trangThai( vatTuTronGoi.getTrangThai() );
+        vatTuTronGoiDto.vatTu( vatTuToVatTuDto( vatTuTronGoi.getVatTu() ) );
 
         return vatTuTronGoiDto.build();
     }
@@ -335,12 +335,12 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         CoSo.CoSoBuilder coSo = CoSo.builder();
 
+        coSo.dcKho( coSoDto.getDcKho() );
+        coSo.dcVanPhong( coSoDto.getDcVanPhong() );
         coSo.id( coSoDto.getId() );
         coSo.ma( coSoDto.getMa() );
-        coSo.ten( coSoDto.getTen() );
-        coSo.dcVanPhong( coSoDto.getDcVanPhong() );
-        coSo.dcKho( coSoDto.getDcKho() );
         coSo.taoLuc( coSoDto.getTaoLuc() );
+        coSo.ten( coSoDto.getTen() );
         coSo.trangThai( coSoDto.getTrangThai() );
 
         return coSo.build();
@@ -353,13 +353,13 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         NganhHang.NganhHangBuilder nganhHang = NganhHang.builder();
 
-        nganhHang.id( nganhHangDto.getId() );
-        nganhHang.ma( nganhHangDto.getMa() );
-        nganhHang.ten( nganhHangDto.getTen() );
-        nganhHang.sdtSale( nganhHangDto.getSdtSale() );
-        nganhHang.sdtTech( nganhHangDto.getSdtTech() );
         nganhHang.anhNgang( nganhHangDto.getAnhNgang() );
         nganhHang.anhVuong( nganhHangDto.getAnhVuong() );
+        nganhHang.id( nganhHangDto.getId() );
+        nganhHang.ma( nganhHangDto.getMa() );
+        nganhHang.sdtSale( nganhHangDto.getSdtSale() );
+        nganhHang.sdtTech( nganhHangDto.getSdtTech() );
+        nganhHang.ten( nganhHangDto.getTen() );
         nganhHang.trangThai( nganhHangDto.getTrangThai() );
 
         return nganhHang.build();
@@ -372,17 +372,17 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         TepTin.TepTinBuilder tepTin = TepTin.builder();
 
-        tepTin.id( tepTinDto.getId() );
-        tepTin.tenTepGoc( tepTinDto.getTenTepGoc() );
-        tepTin.tenTaiLen( tepTinDto.getTenTaiLen() );
-        tepTin.tenLuuTru( tepTinDto.getTenLuuTru() );
-        tepTin.duongDan( tepTinDto.getDuongDan() );
-        tepTin.loaiTepTin( tepTinDto.getLoaiTepTin() );
         tepTin.duoiTep( tepTinDto.getDuoiTep() );
+        tepTin.duongDan( tepTinDto.getDuongDan() );
+        tepTin.id( tepTinDto.getId() );
         tepTin.kichCo( tepTinDto.getKichCo() );
+        tepTin.loaiTepTin( tepTinDto.getLoaiTepTin() );
         tepTin.moTa( tepTinDto.getMoTa() );
-        tepTin.taoLuc( tepTinDto.getTaoLuc() );
         tepTin.suaLuc( tepTinDto.getSuaLuc() );
+        tepTin.taoLuc( tepTinDto.getTaoLuc() );
+        tepTin.tenLuuTru( tepTinDto.getTenLuuTru() );
+        tepTin.tenTaiLen( tepTinDto.getTenTaiLen() );
+        tepTin.tenTepGoc( tepTinDto.getTenTepGoc() );
         tepTin.trangThai( tepTinDto.getTrangThai() );
 
         return tepTin.build();
@@ -395,13 +395,13 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         ThuongHieu.ThuongHieuBuilder thuongHieu = ThuongHieu.builder();
 
+        thuongHieu.email( thuongHieuDto.getEmail() );
         thuongHieu.id( thuongHieuDto.getId() );
-        thuongHieu.tenQuocTe( thuongHieuDto.getTenQuocTe() );
-        thuongHieu.ten( thuongHieuDto.getTen() );
+        thuongHieu.moTa( thuongHieuDto.getMoTa() );
         thuongHieu.quocGia( thuongHieuDto.getQuocGia() );
         thuongHieu.sdt( thuongHieuDto.getSdt() );
-        thuongHieu.email( thuongHieuDto.getEmail() );
-        thuongHieu.moTa( thuongHieuDto.getMoTa() );
+        thuongHieu.ten( thuongHieuDto.getTen() );
+        thuongHieu.tenQuocTe( thuongHieuDto.getTenQuocTe() );
         thuongHieu.tepTin( tepTinDtoToTepTin( thuongHieuDto.getTepTin() ) );
         thuongHieu.trangThai( thuongHieuDto.getTrangThai() );
 
@@ -417,37 +417,14 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         nhomTronGoi.id( nhomTronGoiDto.getId() );
         nhomTronGoi.nganhHang( nganhHangDtoToNganhHang( nhomTronGoiDto.getNganhHang() ) );
+        nhomTronGoi.taoLuc( nhomTronGoiDto.getTaoLuc() );
         nhomTronGoi.ten( nhomTronGoiDto.getTen() );
-        nhomTronGoi.thuongHieuTamPin( thuongHieuDtoToThuongHieu( nhomTronGoiDto.getThuongHieuTamPin() ) );
         nhomTronGoi.thuongHieuInverter( thuongHieuDtoToThuongHieu( nhomTronGoiDto.getThuongHieuInverter() ) );
         nhomTronGoi.thuongHieuPinLuuTru( thuongHieuDtoToThuongHieu( nhomTronGoiDto.getThuongHieuPinLuuTru() ) );
-        nhomTronGoi.taoLuc( nhomTronGoiDto.getTaoLuc() );
+        nhomTronGoi.thuongHieuTamPin( thuongHieuDtoToThuongHieu( nhomTronGoiDto.getThuongHieuTamPin() ) );
         nhomTronGoi.trangThai( nhomTronGoiDto.getTrangThai() );
 
         return nhomTronGoi.build();
-    }
-
-    protected NhomVatTu nhomVatTuDtoToNhomVatTu(NhomVatTuDto nhomVatTuDto) {
-        if ( nhomVatTuDto == null ) {
-            return null;
-        }
-
-        NhomVatTu.NhomVatTuBuilder nhomVatTu = NhomVatTu.builder();
-
-        nhomVatTu.id( nhomVatTuDto.getId() );
-        nhomVatTu.ma( nhomVatTuDto.getMa() );
-        nhomVatTu.nghanhHang( nganhHangDtoToNganhHang( nhomVatTuDto.getNghanhHang() ) );
-        nhomVatTu.ten( nhomVatTuDto.getTen() );
-        Map<String, Object> map = nhomVatTuDto.getThuocTinhRieng();
-        if ( map != null ) {
-            nhomVatTu.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
-        }
-        nhomVatTu.gm( nhomVatTuDto.getGm() );
-        nhomVatTu.vatTuChinh( nhomVatTuDto.getVatTuChinh() );
-        nhomVatTu.taoLuc( nhomVatTuDto.getTaoLuc() );
-        nhomVatTu.trangThai( nhomVatTuDto.getTrangThai() );
-
-        return nhomVatTu.build();
     }
 
     protected AnhVatTu anhVatTuDtoToAnhVatTu(AnhVatTuDto anhVatTuDto) {
@@ -457,9 +434,9 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         AnhVatTu.AnhVatTuBuilder anhVatTu = AnhVatTu.builder();
 
+        anhVatTu.anhChinh( anhVatTuDto.getAnhChinh() );
         anhVatTu.id( anhVatTuDto.getId() );
         anhVatTu.tepTin( tepTinDtoToTepTin( anhVatTuDto.getTepTin() ) );
-        anhVatTu.anhChinh( anhVatTuDto.getAnhChinh() );
         anhVatTu.trangThai( anhVatTuDto.getTrangThai() );
 
         return anhVatTu.build();
@@ -478,6 +455,29 @@ public class TronGoiMapperImpl implements TronGoiMapper {
         return list1;
     }
 
+    protected NhomVatTu nhomVatTuDtoToNhomVatTu(NhomVatTuDto nhomVatTuDto) {
+        if ( nhomVatTuDto == null ) {
+            return null;
+        }
+
+        NhomVatTu.NhomVatTuBuilder nhomVatTu = NhomVatTu.builder();
+
+        nhomVatTu.gm( nhomVatTuDto.getGm() );
+        nhomVatTu.id( nhomVatTuDto.getId() );
+        nhomVatTu.ma( nhomVatTuDto.getMa() );
+        nhomVatTu.nghanhHang( nganhHangDtoToNganhHang( nhomVatTuDto.getNghanhHang() ) );
+        nhomVatTu.taoLuc( nhomVatTuDto.getTaoLuc() );
+        nhomVatTu.ten( nhomVatTuDto.getTen() );
+        Map<String, Object> map = nhomVatTuDto.getThuocTinhRieng();
+        if ( map != null ) {
+            nhomVatTu.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
+        }
+        nhomVatTu.trangThai( nhomVatTuDto.getTrangThai() );
+        nhomVatTu.vatTuChinh( nhomVatTuDto.getVatTuChinh() );
+
+        return nhomVatTu.build();
+    }
+
     protected ThongTinGia thongTinGiaDtoToThongTinGia(ThongTinGiaDto thongTinGiaDto) {
         if ( thongTinGiaDto == null ) {
             return null;
@@ -485,11 +485,11 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         ThongTinGia.ThongTinGiaBuilder thongTinGia = ThongTinGia.builder();
 
-        thongTinGia.id( thongTinGiaDto.getId() );
         List<GiaInfo> list = thongTinGiaDto.getDsGia();
         if ( list != null ) {
             thongTinGia.dsGia( new ArrayList<GiaInfo>( list ) );
         }
+        thongTinGia.id( thongTinGiaDto.getId() );
         thongTinGia.taoLuc( thongTinGiaDto.getTaoLuc() );
         thongTinGia.trangThai( thongTinGiaDto.getTrangThai() );
 
@@ -516,26 +516,26 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         VatTu.VatTuBuilder vatTu = VatTu.builder();
 
-        vatTu.id( vatTuDto.getId() );
-        vatTu.ma( vatTuDto.getMa() );
-        vatTu.nhomVatTu( nhomVatTuDtoToNhomVatTu( vatTuDto.getNhomVatTu() ) );
-        vatTu.thuongHieu( thuongHieuDtoToThuongHieu( vatTuDto.getThuongHieu() ) );
-        vatTu.ten( vatTuDto.getTen() );
-        vatTu.sheetLink( vatTuDto.getSheetLink() );
+        vatTu.anhVatTus( anhVatTuDtoListToAnhVatTuList( vatTuDto.getAnhVatTus() ) );
         vatTu.donVi( vatTuDto.getDonVi() );
-        vatTu.moTaBaoGia( vatTuDto.getMoTaBaoGia() );
-        vatTu.moTaHopDong( vatTuDto.getMoTaHopDong() );
         Map<String, Object> map = vatTuDto.getDuLieuRieng();
         if ( map != null ) {
             vatTu.duLieuRieng( new LinkedHashMap<String, Object>( map ) );
         }
-        vatTu.thoiGianBaoHanh( vatTuDto.getThoiGianBaoHanh() );
         vatTu.gm( vatTuDto.getGm() );
-        vatTu.vatTuChinh( vatTuDto.getVatTuChinh() );
+        vatTu.id( vatTuDto.getId() );
+        vatTu.ma( vatTuDto.getMa() );
+        vatTu.moTaBaoGia( vatTuDto.getMoTaBaoGia() );
+        vatTu.moTaHopDong( vatTuDto.getMoTaHopDong() );
+        vatTu.nhomVatTu( nhomVatTuDtoToNhomVatTu( vatTuDto.getNhomVatTu() ) );
+        vatTu.sheetLink( vatTuDto.getSheetLink() );
         vatTu.taoLuc( vatTuDto.getTaoLuc() );
-        vatTu.trangThai( vatTuDto.getTrangThai() );
-        vatTu.anhVatTus( anhVatTuDtoListToAnhVatTuList( vatTuDto.getAnhVatTus() ) );
+        vatTu.ten( vatTuDto.getTen() );
+        vatTu.thoiGianBaoHanh( vatTuDto.getThoiGianBaoHanh() );
         vatTu.thongTinGias( thongTinGiaDtoListToThongTinGiaList( vatTuDto.getThongTinGias() ) );
+        vatTu.thuongHieu( thuongHieuDtoToThuongHieu( vatTuDto.getThuongHieu() ) );
+        vatTu.trangThai( vatTuDto.getTrangThai() );
+        vatTu.vatTuChinh( vatTuDto.getVatTuChinh() );
 
         return vatTu.build();
     }
@@ -547,17 +547,17 @@ public class TronGoiMapperImpl implements TronGoiMapper {
 
         VatTuTronGoi.VatTuTronGoiBuilder vatTuTronGoi = VatTuTronGoi.builder();
 
-        vatTuTronGoi.id( vatTuTronGoiDto.getId() );
-        vatTuTronGoi.vatTu( vatTuDtoToVatTu( vatTuTronGoiDto.getVatTu() ) );
-        vatTuTronGoi.moTa( vatTuTronGoiDto.getMoTa() );
-        vatTuTronGoi.soLuong( vatTuTronGoiDto.getSoLuong() );
-        vatTuTronGoi.gia( vatTuTronGoiDto.getGia() );
-        vatTuTronGoi.gm( vatTuTronGoiDto.getGm() );
-        vatTuTronGoi.thoiGianBaoHanh( vatTuTronGoiDto.getThoiGianBaoHanh() );
         vatTuTronGoi.duocBaoHanh( vatTuTronGoiDto.getDuocBaoHanh() );
         vatTuTronGoi.duocXem( vatTuTronGoiDto.getDuocXem() );
+        vatTuTronGoi.gia( vatTuTronGoiDto.getGia() );
+        vatTuTronGoi.gm( vatTuTronGoiDto.getGm() );
+        vatTuTronGoi.id( vatTuTronGoiDto.getId() );
+        vatTuTronGoi.moTa( vatTuTronGoiDto.getMoTa() );
+        vatTuTronGoi.soLuong( vatTuTronGoiDto.getSoLuong() );
         vatTuTronGoi.taoLuc( vatTuTronGoiDto.getTaoLuc() );
+        vatTuTronGoi.thoiGianBaoHanh( vatTuTronGoiDto.getThoiGianBaoHanh() );
         vatTuTronGoi.trangThai( vatTuTronGoiDto.getTrangThai() );
+        vatTuTronGoi.vatTu( vatTuDtoToVatTu( vatTuTronGoiDto.getVatTu() ) );
 
         return vatTuTronGoi.build();
     }

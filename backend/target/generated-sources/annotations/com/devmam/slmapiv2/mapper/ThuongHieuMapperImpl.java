@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-12T21:03:27+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
+    date = "2026-02-25T15:17:09+0700",
+    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
 public class ThuongHieuMapperImpl implements ThuongHieuMapper {
@@ -27,13 +27,13 @@ public class ThuongHieuMapperImpl implements ThuongHieuMapper {
 
         ThuongHieuDto.ThuongHieuDtoBuilder thuongHieuDto = ThuongHieuDto.builder();
 
+        thuongHieuDto.email( thuongHieu.getEmail() );
         thuongHieuDto.id( thuongHieu.getId() );
-        thuongHieuDto.tenQuocTe( thuongHieu.getTenQuocTe() );
-        thuongHieuDto.ten( thuongHieu.getTen() );
+        thuongHieuDto.moTa( thuongHieu.getMoTa() );
         thuongHieuDto.quocGia( thuongHieu.getQuocGia() );
         thuongHieuDto.sdt( thuongHieu.getSdt() );
-        thuongHieuDto.email( thuongHieu.getEmail() );
-        thuongHieuDto.moTa( thuongHieu.getMoTa() );
+        thuongHieuDto.ten( thuongHieu.getTen() );
+        thuongHieuDto.tenQuocTe( thuongHieu.getTenQuocTe() );
         thuongHieuDto.tepTin( tepTinMapper.toDto( thuongHieu.getTepTin() ) );
         thuongHieuDto.trangThai( thuongHieu.getTrangThai() );
 

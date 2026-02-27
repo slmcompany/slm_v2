@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-12T21:03:28+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
+    date = "2026-02-25T15:17:09+0700",
+    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
 public class QuangCaoMapperImpl implements QuangCaoMapper {
@@ -29,14 +29,14 @@ public class QuangCaoMapperImpl implements QuangCaoMapper {
 
         QuangCaoDto.QuangCaoDtoBuilder quangCaoDto = QuangCaoDto.builder();
 
+        quangCaoDto.hoatDong( quangCao.getHoatDong() );
         quangCaoDto.id( quangCao.getId() );
         quangCaoDto.nganhHang( nganhHangToNganhHangDto( quangCao.getNganhHang() ) );
+        quangCaoDto.taoLuc( quangCao.getTaoLuc() );
         quangCaoDto.tepTin( tepTinMapper.toDto( quangCao.getTepTin() ) );
         quangCaoDto.tieuDe( quangCao.getTieuDe() );
-        quangCaoDto.viTri( quangCao.getViTri() );
-        quangCaoDto.hoatDong( quangCao.getHoatDong() );
-        quangCaoDto.taoLuc( quangCao.getTaoLuc() );
         quangCaoDto.trangThai( quangCao.getTrangThai() );
+        quangCaoDto.viTri( quangCao.getViTri() );
 
         return quangCaoDto.build();
     }
@@ -62,13 +62,13 @@ public class QuangCaoMapperImpl implements QuangCaoMapper {
 
         NganhHangDto.NganhHangDtoBuilder nganhHangDto = NganhHangDto.builder();
 
-        nganhHangDto.id( nganhHang.getId() );
-        nganhHangDto.ma( nganhHang.getMa() );
-        nganhHangDto.ten( nganhHang.getTen() );
-        nganhHangDto.sdtSale( nganhHang.getSdtSale() );
-        nganhHangDto.sdtTech( nganhHang.getSdtTech() );
         nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
         nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
+        nganhHangDto.id( nganhHang.getId() );
+        nganhHangDto.ma( nganhHang.getMa() );
+        nganhHangDto.sdtSale( nganhHang.getSdtSale() );
+        nganhHangDto.sdtTech( nganhHang.getSdtTech() );
+        nganhHangDto.ten( nganhHang.getTen() );
         nganhHangDto.trangThai( nganhHang.getTrangThai() );
 
         return nganhHangDto.build();

@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-12T21:03:28+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
+    date = "2026-02-25T15:17:10+0700",
+    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
 public class NguoiDungMapperImpl implements NguoiDungMapper {
@@ -27,23 +27,23 @@ public class NguoiDungMapperImpl implements NguoiDungMapper {
 
         NguoiDungDto.NguoiDungDtoBuilder nguoiDungDto = NguoiDungDto.builder();
 
-        nguoiDungDto.id( nguoiDung.getId() );
         nguoiDungDto.coSo( coSoToCoSoDto( nguoiDung.getCoSo() ) );
-        nguoiDungDto.phanQuyen( nguoiDung.getPhanQuyen() );
-        nguoiDungDto.email( nguoiDung.getEmail() );
-        nguoiDungDto.sdt( nguoiDung.getSdt() );
-        nguoiDungDto.matKhau( nguoiDung.getMatKhau() );
-        nguoiDungDto.hoVaTen( nguoiDung.getHoVaTen() );
-        nguoiDungDto.gioiTinh( nguoiDung.getGioiTinh() );
-        nguoiDungDto.sinhNhat( nguoiDung.getSinhNhat() );
-        nguoiDungDto.phanTramHoaHong( nguoiDung.getPhanTramHoaHong() );
-        nguoiDungDto.tongHoaHong( nguoiDung.getTongHoaHong() );
         nguoiDungDto.diaChi( nguoiDung.getDiaChi() );
-        nguoiDungDto.nganHang( nguoiDung.getNganHang() );
-        nguoiDungDto.maNganHang( nguoiDung.getMaNganHang() );
-        nguoiDungDto.taoLuc( nguoiDung.getTaoLuc() );
-        nguoiDungDto.trangThai( nguoiDung.getTrangThai() );
+        nguoiDungDto.email( nguoiDung.getEmail() );
+        nguoiDungDto.gioiTinh( nguoiDung.getGioiTinh() );
+        nguoiDungDto.hoVaTen( nguoiDung.getHoVaTen() );
+        nguoiDungDto.id( nguoiDung.getId() );
         nguoiDungDto.khachHangs( khachHangListToKhachHangDtoList( nguoiDung.getKhachHangs() ) );
+        nguoiDungDto.maNganHang( nguoiDung.getMaNganHang() );
+        nguoiDungDto.matKhau( nguoiDung.getMatKhau() );
+        nguoiDungDto.nganHang( nguoiDung.getNganHang() );
+        nguoiDungDto.phanQuyen( nguoiDung.getPhanQuyen() );
+        nguoiDungDto.phanTramHoaHong( nguoiDung.getPhanTramHoaHong() );
+        nguoiDungDto.sdt( nguoiDung.getSdt() );
+        nguoiDungDto.sinhNhat( nguoiDung.getSinhNhat() );
+        nguoiDungDto.taoLuc( nguoiDung.getTaoLuc() );
+        nguoiDungDto.tongHoaHong( nguoiDung.getTongHoaHong() );
+        nguoiDungDto.trangThai( nguoiDung.getTrangThai() );
 
         return nguoiDungDto.build();
     }
@@ -69,12 +69,12 @@ public class NguoiDungMapperImpl implements NguoiDungMapper {
 
         CoSoDto.CoSoDtoBuilder coSoDto = CoSoDto.builder();
 
+        coSoDto.dcKho( coSo.getDcKho() );
+        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
         coSoDto.id( coSo.getId() );
         coSoDto.ma( coSo.getMa() );
-        coSoDto.ten( coSo.getTen() );
-        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
-        coSoDto.dcKho( coSo.getDcKho() );
         coSoDto.taoLuc( coSo.getTaoLuc() );
+        coSoDto.ten( coSo.getTen() );
         coSoDto.trangThai( coSo.getTrangThai() );
 
         return coSoDto.build();
@@ -87,14 +87,14 @@ public class NguoiDungMapperImpl implements NguoiDungMapper {
 
         KhachHangDto.KhachHangDtoBuilder khachHangDto = KhachHangDto.builder();
 
-        khachHangDto.id( khachHang.getId() );
-        khachHangDto.email( khachHang.getEmail() );
-        khachHangDto.sdt( khachHang.getSdt() );
-        khachHangDto.hoVaTen( khachHang.getHoVaTen() );
-        khachHangDto.gioiTinh( khachHang.getGioiTinh() );
-        khachHangDto.sinhNhat( khachHang.getSinhNhat() );
-        khachHangDto.diaChi( khachHang.getDiaChi() );
         khachHangDto.daBanDuocHang( khachHang.getDaBanDuocHang() );
+        khachHangDto.diaChi( khachHang.getDiaChi() );
+        khachHangDto.email( khachHang.getEmail() );
+        khachHangDto.gioiTinh( khachHang.getGioiTinh() );
+        khachHangDto.hoVaTen( khachHang.getHoVaTen() );
+        khachHangDto.id( khachHang.getId() );
+        khachHangDto.sdt( khachHang.getSdt() );
+        khachHangDto.sinhNhat( khachHang.getSinhNhat() );
         khachHangDto.taoLuc( khachHang.getTaoLuc() );
         khachHangDto.trangThai( khachHang.getTrangThai() );
 

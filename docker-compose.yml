@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  nginxproxymanager:
+  nginx-proxy-manager:
     image: jc21/nginx-proxy-manager:latest
     container_name: nginx-proxy-manager
     restart: unless-stopped
@@ -14,6 +14,10 @@ services:
       - npm_letsencrypt:/etc/letsencrypt
     networks:
       - app-network
+    depends_on:
+      - backend
+      - frontend
+      - minio
 
   backend:
     build: ./backend
@@ -25,6 +29,8 @@ services:
       - "8080"
     networks:
       - app-network
+    depends_on:
+      - minio
 
   frontend:
     build: ./frontend
@@ -34,6 +40,28 @@ services:
       - "80"
     networks:
       - app-network
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console (Web UI)
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=slm123slm123
+    volumes:
+      - /data/minio:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
   npm_data:
