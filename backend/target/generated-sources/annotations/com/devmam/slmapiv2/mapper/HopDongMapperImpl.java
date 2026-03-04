@@ -33,8 +33,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-25T15:17:09+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2026-03-04T17:31:13+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class HopDongMapperImpl implements HopDongMapper {
@@ -50,20 +50,20 @@ public class HopDongMapperImpl implements HopDongMapper {
 
         HopDongDto.HopDongDtoBuilder hopDongDto = HopDongDto.builder();
 
-        hopDongDto.coSo( coSoToCoSoDto( hopDong.getCoSo() ) );
-        hopDongDto.giaKhungSat( hopDong.getGiaKhungSat() );
         hopDongDto.id( hopDong.getId() );
-        hopDongDto.khachHang( khachHangToKhachHangDto( hopDong.getKhachHang() ) );
+        hopDongDto.coSo( coSoToCoSoDto( hopDong.getCoSo() ) );
+        hopDongDto.nghanhHang( nganhHangToNganhHangDto( hopDong.getNghanhHang() ) );
+        hopDongDto.ten( hopDong.getTen() );
         hopDongDto.loaiHeThong( hopDong.getLoaiHeThong() );
         hopDongDto.loaiPha( hopDong.getLoaiPha() );
-        hopDongDto.moTa( hopDong.getMoTa() );
-        hopDongDto.nghanhHang( nganhHangToNganhHangDto( hopDong.getNghanhHang() ) );
-        hopDongDto.nguoiGioiThieu( nguoiDungToNguoiDungDto( hopDong.getNguoiGioiThieu() ) );
-        hopDongDto.sanLuongToiDa( hopDong.getSanLuongToiDa() );
         hopDongDto.sanLuongToiThieu( hopDong.getSanLuongToiThieu() );
-        hopDongDto.taoLuc( hopDong.getTaoLuc() );
-        hopDongDto.ten( hopDong.getTen() );
+        hopDongDto.sanLuongToiDa( hopDong.getSanLuongToiDa() );
+        hopDongDto.giaKhungSat( hopDong.getGiaKhungSat() );
+        hopDongDto.moTa( hopDong.getMoTa() );
+        hopDongDto.nguoiGioiThieu( nguoiDungToNguoiDungDto( hopDong.getNguoiGioiThieu() ) );
+        hopDongDto.khachHang( khachHangToKhachHangDto( hopDong.getKhachHang() ) );
         hopDongDto.tongGia( hopDong.getTongGia() );
+        hopDongDto.taoLuc( hopDong.getTaoLuc() );
         hopDongDto.trangThai( hopDong.getTrangThai() );
         hopDongDto.vatTuHopDongs( vatTuHopDongListToVatTuHopDongDtoList( hopDong.getVatTuHopDongs() ) );
 
@@ -91,36 +91,15 @@ public class HopDongMapperImpl implements HopDongMapper {
 
         CoSoDto.CoSoDtoBuilder coSoDto = CoSoDto.builder();
 
-        coSoDto.dcKho( coSo.getDcKho() );
-        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
         coSoDto.id( coSo.getId() );
         coSoDto.ma( coSo.getMa() );
-        coSoDto.taoLuc( coSo.getTaoLuc() );
         coSoDto.ten( coSo.getTen() );
+        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
+        coSoDto.dcKho( coSo.getDcKho() );
+        coSoDto.taoLuc( coSo.getTaoLuc() );
         coSoDto.trangThai( coSo.getTrangThai() );
 
         return coSoDto.build();
-    }
-
-    protected KhachHangDto khachHangToKhachHangDto(KhachHang khachHang) {
-        if ( khachHang == null ) {
-            return null;
-        }
-
-        KhachHangDto.KhachHangDtoBuilder khachHangDto = KhachHangDto.builder();
-
-        khachHangDto.daBanDuocHang( khachHang.getDaBanDuocHang() );
-        khachHangDto.diaChi( khachHang.getDiaChi() );
-        khachHangDto.email( khachHang.getEmail() );
-        khachHangDto.gioiTinh( khachHang.getGioiTinh() );
-        khachHangDto.hoVaTen( khachHang.getHoVaTen() );
-        khachHangDto.id( khachHang.getId() );
-        khachHangDto.sdt( khachHang.getSdt() );
-        khachHangDto.sinhNhat( khachHang.getSinhNhat() );
-        khachHangDto.taoLuc( khachHang.getTaoLuc() );
-        khachHangDto.trangThai( khachHang.getTrangThai() );
-
-        return khachHangDto.build();
     }
 
     protected NganhHangDto nganhHangToNganhHangDto(NganhHang nganhHang) {
@@ -130,16 +109,37 @@ public class HopDongMapperImpl implements HopDongMapper {
 
         NganhHangDto.NganhHangDtoBuilder nganhHangDto = NganhHangDto.builder();
 
-        nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
-        nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
         nganhHangDto.id( nganhHang.getId() );
         nganhHangDto.ma( nganhHang.getMa() );
+        nganhHangDto.ten( nganhHang.getTen() );
         nganhHangDto.sdtSale( nganhHang.getSdtSale() );
         nganhHangDto.sdtTech( nganhHang.getSdtTech() );
-        nganhHangDto.ten( nganhHang.getTen() );
+        nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
+        nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
         nganhHangDto.trangThai( nganhHang.getTrangThai() );
 
         return nganhHangDto.build();
+    }
+
+    protected KhachHangDto khachHangToKhachHangDto(KhachHang khachHang) {
+        if ( khachHang == null ) {
+            return null;
+        }
+
+        KhachHangDto.KhachHangDtoBuilder khachHangDto = KhachHangDto.builder();
+
+        khachHangDto.id( khachHang.getId() );
+        khachHangDto.email( khachHang.getEmail() );
+        khachHangDto.sdt( khachHang.getSdt() );
+        khachHangDto.hoVaTen( khachHang.getHoVaTen() );
+        khachHangDto.gioiTinh( khachHang.getGioiTinh() );
+        khachHangDto.sinhNhat( khachHang.getSinhNhat() );
+        khachHangDto.diaChi( khachHang.getDiaChi() );
+        khachHangDto.daBanDuocHang( khachHang.getDaBanDuocHang() );
+        khachHangDto.taoLuc( khachHang.getTaoLuc() );
+        khachHangDto.trangThai( khachHang.getTrangThai() );
+
+        return khachHangDto.build();
     }
 
     protected List<KhachHangDto> khachHangListToKhachHangDtoList(List<KhachHang> list) {
@@ -162,25 +162,68 @@ public class HopDongMapperImpl implements HopDongMapper {
 
         NguoiDungDto.NguoiDungDtoBuilder nguoiDungDto = NguoiDungDto.builder();
 
-        nguoiDungDto.coSo( coSoToCoSoDto( nguoiDung.getCoSo() ) );
-        nguoiDungDto.diaChi( nguoiDung.getDiaChi() );
-        nguoiDungDto.email( nguoiDung.getEmail() );
-        nguoiDungDto.gioiTinh( nguoiDung.getGioiTinh() );
-        nguoiDungDto.hoVaTen( nguoiDung.getHoVaTen() );
         nguoiDungDto.id( nguoiDung.getId() );
-        nguoiDungDto.khachHangs( khachHangListToKhachHangDtoList( nguoiDung.getKhachHangs() ) );
-        nguoiDungDto.maNganHang( nguoiDung.getMaNganHang() );
-        nguoiDungDto.matKhau( nguoiDung.getMatKhau() );
-        nguoiDungDto.nganHang( nguoiDung.getNganHang() );
+        nguoiDungDto.coSo( coSoToCoSoDto( nguoiDung.getCoSo() ) );
         nguoiDungDto.phanQuyen( nguoiDung.getPhanQuyen() );
-        nguoiDungDto.phanTramHoaHong( nguoiDung.getPhanTramHoaHong() );
+        nguoiDungDto.email( nguoiDung.getEmail() );
         nguoiDungDto.sdt( nguoiDung.getSdt() );
+        nguoiDungDto.matKhau( nguoiDung.getMatKhau() );
+        nguoiDungDto.hoVaTen( nguoiDung.getHoVaTen() );
+        nguoiDungDto.gioiTinh( nguoiDung.getGioiTinh() );
         nguoiDungDto.sinhNhat( nguoiDung.getSinhNhat() );
-        nguoiDungDto.taoLuc( nguoiDung.getTaoLuc() );
+        nguoiDungDto.phanTramHoaHong( nguoiDung.getPhanTramHoaHong() );
         nguoiDungDto.tongHoaHong( nguoiDung.getTongHoaHong() );
+        nguoiDungDto.diaChi( nguoiDung.getDiaChi() );
+        nguoiDungDto.nganHang( nguoiDung.getNganHang() );
+        nguoiDungDto.maNganHang( nguoiDung.getMaNganHang() );
+        nguoiDungDto.taoLuc( nguoiDung.getTaoLuc() );
         nguoiDungDto.trangThai( nguoiDung.getTrangThai() );
+        nguoiDungDto.khachHangs( khachHangListToKhachHangDtoList( nguoiDung.getKhachHangs() ) );
 
         return nguoiDungDto.build();
+    }
+
+    protected NhomVatTuDto nhomVatTuToNhomVatTuDto(NhomVatTu nhomVatTu) {
+        if ( nhomVatTu == null ) {
+            return null;
+        }
+
+        NhomVatTuDto.NhomVatTuDtoBuilder nhomVatTuDto = NhomVatTuDto.builder();
+
+        nhomVatTuDto.id( nhomVatTu.getId() );
+        nhomVatTuDto.ma( nhomVatTu.getMa() );
+        nhomVatTuDto.nghanhHang( nganhHangToNganhHangDto( nhomVatTu.getNghanhHang() ) );
+        nhomVatTuDto.ten( nhomVatTu.getTen() );
+        Map<String, Object> map = nhomVatTu.getThuocTinhRieng();
+        if ( map != null ) {
+            nhomVatTuDto.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
+        }
+        nhomVatTuDto.gm( nhomVatTu.getGm() );
+        nhomVatTuDto.vatTuChinh( nhomVatTu.getVatTuChinh() );
+        nhomVatTuDto.taoLuc( nhomVatTu.getTaoLuc() );
+        nhomVatTuDto.trangThai( nhomVatTu.getTrangThai() );
+
+        return nhomVatTuDto.build();
+    }
+
+    protected ThuongHieuDto thuongHieuToThuongHieuDto(ThuongHieu thuongHieu) {
+        if ( thuongHieu == null ) {
+            return null;
+        }
+
+        ThuongHieuDto.ThuongHieuDtoBuilder thuongHieuDto = ThuongHieuDto.builder();
+
+        thuongHieuDto.id( thuongHieu.getId() );
+        thuongHieuDto.tenQuocTe( thuongHieu.getTenQuocTe() );
+        thuongHieuDto.ten( thuongHieu.getTen() );
+        thuongHieuDto.quocGia( thuongHieu.getQuocGia() );
+        thuongHieuDto.sdt( thuongHieu.getSdt() );
+        thuongHieuDto.email( thuongHieu.getEmail() );
+        thuongHieuDto.moTa( thuongHieu.getMoTa() );
+        thuongHieuDto.tepTin( tepTinMapper.toDto( thuongHieu.getTepTin() ) );
+        thuongHieuDto.trangThai( thuongHieu.getTrangThai() );
+
+        return thuongHieuDto.build();
     }
 
     protected AnhVatTuDto anhVatTuToAnhVatTuDto(AnhVatTu anhVatTu) {
@@ -190,9 +233,9 @@ public class HopDongMapperImpl implements HopDongMapper {
 
         AnhVatTuDto.AnhVatTuDtoBuilder anhVatTuDto = AnhVatTuDto.builder();
 
-        anhVatTuDto.anhChinh( anhVatTu.getAnhChinh() );
         anhVatTuDto.id( anhVatTu.getId() );
         anhVatTuDto.tepTin( tepTinMapper.toDto( anhVatTu.getTepTin() ) );
+        anhVatTuDto.anhChinh( anhVatTu.getAnhChinh() );
         anhVatTuDto.trangThai( anhVatTu.getTrangThai() );
 
         return anhVatTuDto.build();
@@ -211,29 +254,6 @@ public class HopDongMapperImpl implements HopDongMapper {
         return list1;
     }
 
-    protected NhomVatTuDto nhomVatTuToNhomVatTuDto(NhomVatTu nhomVatTu) {
-        if ( nhomVatTu == null ) {
-            return null;
-        }
-
-        NhomVatTuDto.NhomVatTuDtoBuilder nhomVatTuDto = NhomVatTuDto.builder();
-
-        nhomVatTuDto.gm( nhomVatTu.getGm() );
-        nhomVatTuDto.id( nhomVatTu.getId() );
-        nhomVatTuDto.ma( nhomVatTu.getMa() );
-        nhomVatTuDto.nghanhHang( nganhHangToNganhHangDto( nhomVatTu.getNghanhHang() ) );
-        nhomVatTuDto.taoLuc( nhomVatTu.getTaoLuc() );
-        nhomVatTuDto.ten( nhomVatTu.getTen() );
-        Map<String, Object> map = nhomVatTu.getThuocTinhRieng();
-        if ( map != null ) {
-            nhomVatTuDto.thuocTinhRieng( new LinkedHashMap<String, Object>( map ) );
-        }
-        nhomVatTuDto.trangThai( nhomVatTu.getTrangThai() );
-        nhomVatTuDto.vatTuChinh( nhomVatTu.getVatTuChinh() );
-
-        return nhomVatTuDto.build();
-    }
-
     protected ThongTinGiaDto thongTinGiaToThongTinGiaDto(ThongTinGia thongTinGia) {
         if ( thongTinGia == null ) {
             return null;
@@ -241,11 +261,11 @@ public class HopDongMapperImpl implements HopDongMapper {
 
         ThongTinGiaDto.ThongTinGiaDtoBuilder thongTinGiaDto = ThongTinGiaDto.builder();
 
+        thongTinGiaDto.id( thongTinGia.getId() );
         List<GiaInfo> list = thongTinGia.getDsGia();
         if ( list != null ) {
             thongTinGiaDto.dsGia( new ArrayList<GiaInfo>( list ) );
         }
-        thongTinGiaDto.id( thongTinGia.getId() );
         thongTinGiaDto.taoLuc( thongTinGia.getTaoLuc() );
         thongTinGiaDto.trangThai( thongTinGia.getTrangThai() );
 
@@ -265,26 +285,6 @@ public class HopDongMapperImpl implements HopDongMapper {
         return list1;
     }
 
-    protected ThuongHieuDto thuongHieuToThuongHieuDto(ThuongHieu thuongHieu) {
-        if ( thuongHieu == null ) {
-            return null;
-        }
-
-        ThuongHieuDto.ThuongHieuDtoBuilder thuongHieuDto = ThuongHieuDto.builder();
-
-        thuongHieuDto.email( thuongHieu.getEmail() );
-        thuongHieuDto.id( thuongHieu.getId() );
-        thuongHieuDto.moTa( thuongHieu.getMoTa() );
-        thuongHieuDto.quocGia( thuongHieu.getQuocGia() );
-        thuongHieuDto.sdt( thuongHieu.getSdt() );
-        thuongHieuDto.ten( thuongHieu.getTen() );
-        thuongHieuDto.tenQuocTe( thuongHieu.getTenQuocTe() );
-        thuongHieuDto.tepTin( tepTinMapper.toDto( thuongHieu.getTepTin() ) );
-        thuongHieuDto.trangThai( thuongHieu.getTrangThai() );
-
-        return thuongHieuDto.build();
-    }
-
     protected VatTuDto vatTuToVatTuDto(VatTu vatTu) {
         if ( vatTu == null ) {
             return null;
@@ -292,26 +292,26 @@ public class HopDongMapperImpl implements HopDongMapper {
 
         VatTuDto.VatTuDtoBuilder vatTuDto = VatTuDto.builder();
 
-        vatTuDto.anhVatTus( anhVatTuListToAnhVatTuDtoList( vatTu.getAnhVatTus() ) );
+        vatTuDto.id( vatTu.getId() );
+        vatTuDto.ma( vatTu.getMa() );
+        vatTuDto.nhomVatTu( nhomVatTuToNhomVatTuDto( vatTu.getNhomVatTu() ) );
+        vatTuDto.thuongHieu( thuongHieuToThuongHieuDto( vatTu.getThuongHieu() ) );
+        vatTuDto.ten( vatTu.getTen() );
+        vatTuDto.sheetLink( vatTu.getSheetLink() );
         vatTuDto.donVi( vatTu.getDonVi() );
+        vatTuDto.moTaBaoGia( vatTu.getMoTaBaoGia() );
+        vatTuDto.moTaHopDong( vatTu.getMoTaHopDong() );
         Map<String, Object> map = vatTu.getDuLieuRieng();
         if ( map != null ) {
             vatTuDto.duLieuRieng( new LinkedHashMap<String, Object>( map ) );
         }
-        vatTuDto.gm( vatTu.getGm() );
-        vatTuDto.id( vatTu.getId() );
-        vatTuDto.ma( vatTu.getMa() );
-        vatTuDto.moTaBaoGia( vatTu.getMoTaBaoGia() );
-        vatTuDto.moTaHopDong( vatTu.getMoTaHopDong() );
-        vatTuDto.nhomVatTu( nhomVatTuToNhomVatTuDto( vatTu.getNhomVatTu() ) );
-        vatTuDto.sheetLink( vatTu.getSheetLink() );
-        vatTuDto.taoLuc( vatTu.getTaoLuc() );
-        vatTuDto.ten( vatTu.getTen() );
         vatTuDto.thoiGianBaoHanh( vatTu.getThoiGianBaoHanh() );
-        vatTuDto.thongTinGias( thongTinGiaListToThongTinGiaDtoList( vatTu.getThongTinGias() ) );
-        vatTuDto.thuongHieu( thuongHieuToThuongHieuDto( vatTu.getThuongHieu() ) );
-        vatTuDto.trangThai( vatTu.getTrangThai() );
+        vatTuDto.gm( vatTu.getGm() );
         vatTuDto.vatTuChinh( vatTu.getVatTuChinh() );
+        vatTuDto.taoLuc( vatTu.getTaoLuc() );
+        vatTuDto.trangThai( vatTu.getTrangThai() );
+        vatTuDto.anhVatTus( anhVatTuListToAnhVatTuDtoList( vatTu.getAnhVatTus() ) );
+        vatTuDto.thongTinGias( thongTinGiaListToThongTinGiaDtoList( vatTu.getThongTinGias() ) );
 
         return vatTuDto.build();
     }
@@ -323,19 +323,19 @@ public class HopDongMapperImpl implements HopDongMapper {
 
         VatTuHopDongDto.VatTuHopDongDtoBuilder vatTuHopDongDto = VatTuHopDongDto.builder();
 
+        vatTuHopDongDto.id( vatTuHopDong.getId() );
+        vatTuHopDongDto.vatTu( vatTuToVatTuDto( vatTuHopDong.getVatTu() ) );
+        vatTuHopDongDto.moTa( vatTuHopDong.getMoTa() );
+        vatTuHopDongDto.soLuong( vatTuHopDong.getSoLuong() );
+        vatTuHopDongDto.gm( vatTuHopDong.getGm() );
+        vatTuHopDongDto.giaHeThong( vatTuHopDong.getGiaHeThong() );
+        vatTuHopDongDto.giaHienThi( vatTuHopDong.getGiaHienThi() );
+        vatTuHopDongDto.thoiGianBaoHanh( vatTuHopDong.getThoiGianBaoHanh() );
         vatTuHopDongDto.baoHanhBatDau( vatTuHopDong.getBaoHanhBatDau() );
         vatTuHopDongDto.baoHanhKetThuc( vatTuHopDong.getBaoHanhKetThuc() );
         vatTuHopDongDto.duocBaoHanh( vatTuHopDong.getDuocBaoHanh() );
-        vatTuHopDongDto.giaHeThong( vatTuHopDong.getGiaHeThong() );
-        vatTuHopDongDto.giaHienThi( vatTuHopDong.getGiaHienThi() );
-        vatTuHopDongDto.gm( vatTuHopDong.getGm() );
-        vatTuHopDongDto.id( vatTuHopDong.getId() );
-        vatTuHopDongDto.moTa( vatTuHopDong.getMoTa() );
-        vatTuHopDongDto.soLuong( vatTuHopDong.getSoLuong() );
         vatTuHopDongDto.taoLuc( vatTuHopDong.getTaoLuc() );
-        vatTuHopDongDto.thoiGianBaoHanh( vatTuHopDong.getThoiGianBaoHanh() );
         vatTuHopDongDto.trangThai( vatTuHopDong.getTrangThai() );
-        vatTuHopDongDto.vatTu( vatTuToVatTuDto( vatTuHopDong.getVatTu() ) );
 
         return vatTuHopDongDto.build();
     }

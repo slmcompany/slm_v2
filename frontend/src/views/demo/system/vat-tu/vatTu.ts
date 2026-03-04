@@ -58,6 +58,13 @@ export interface GiaCreatingDto {
   giaNhap: number | null;
   giaBan: number | null;
 }
+
+export interface GiaUpdatingDto {
+  maCoSo: string;
+  tenCoSo: string;
+  giaNhap: number | null;
+  giaBan: number | null;
+}
 export interface TepTinDto {
   id: number;
   tenTepGoc: string;
@@ -147,6 +154,7 @@ export interface VatTuUpdateDto {
   thoiGianBaoHanh: number;
   gm: number;
   trangThai: number;
+  dsGia?: GiaUpdatingDto[];
 }
 
 export interface PageResponse<T> {

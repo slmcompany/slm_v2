@@ -1,7 +1,10 @@
 package com.devmam.slmapiv2.dto.request.entities;
 
+import com.devmam.slmapiv2.entities.commons.GiaInfo;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -15,4 +18,5 @@ public class VatTuUpdatingDto {
     Integer thoiGianBaoHanh;
     Double gm;
     Integer trangThai;
+    List<GiaInfo> dsGia;
 }

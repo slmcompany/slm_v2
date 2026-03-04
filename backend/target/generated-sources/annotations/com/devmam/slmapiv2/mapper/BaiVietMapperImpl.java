@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-25T15:17:09+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2026-03-04T17:31:13+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class BaiVietMapperImpl implements BaiVietMapper {
@@ -33,17 +33,17 @@ public class BaiVietMapperImpl implements BaiVietMapper {
 
         BaiVietDto.BaiVietDtoBuilder baiVietDto = BaiVietDto.builder();
 
+        baiVietDto.id( baiViet.getId() );
+        baiVietDto.loaiBaiViet( baiViet.getLoaiBaiViet() );
+        baiVietDto.tieuDe( baiViet.getTieuDe() );
         baiVietDto.anhBia( tepTinMapper.toDto( baiViet.getAnhBia() ) );
         baiVietDto.anhNgoai( tepTinMapper.toDto( baiViet.getAnhNgoai() ) );
         baiVietDto.duongDanYoutube( baiViet.getDuongDanYoutube() );
-        baiVietDto.hoatDong( baiViet.getHoatDong() );
-        baiVietDto.id( baiViet.getId() );
-        baiVietDto.lienQuan( baiViet.getLienQuan() );
-        baiVietDto.loaiBaiViet( baiViet.getLoaiBaiViet() );
         baiVietDto.noiDung( tepTinMapper.toDto( baiViet.getNoiDung() ) );
         baiVietDto.taoBoi( nguoiDungToNguoiDungDto( baiViet.getTaoBoi() ) );
+        baiVietDto.lienQuan( baiViet.getLienQuan() );
+        baiVietDto.hoatDong( baiViet.getHoatDong() );
         baiVietDto.taoLuc( baiViet.getTaoLuc() );
-        baiVietDto.tieuDe( baiViet.getTieuDe() );
         baiVietDto.trangThai( baiViet.getTrangThai() );
 
         return baiVietDto.build();
@@ -70,12 +70,12 @@ public class BaiVietMapperImpl implements BaiVietMapper {
 
         CoSoDto.CoSoDtoBuilder coSoDto = CoSoDto.builder();
 
-        coSoDto.dcKho( coSo.getDcKho() );
-        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
         coSoDto.id( coSo.getId() );
         coSoDto.ma( coSo.getMa() );
-        coSoDto.taoLuc( coSo.getTaoLuc() );
         coSoDto.ten( coSo.getTen() );
+        coSoDto.dcVanPhong( coSo.getDcVanPhong() );
+        coSoDto.dcKho( coSo.getDcKho() );
+        coSoDto.taoLuc( coSo.getTaoLuc() );
         coSoDto.trangThai( coSo.getTrangThai() );
 
         return coSoDto.build();
@@ -88,14 +88,14 @@ public class BaiVietMapperImpl implements BaiVietMapper {
 
         KhachHangDto.KhachHangDtoBuilder khachHangDto = KhachHangDto.builder();
 
-        khachHangDto.daBanDuocHang( khachHang.getDaBanDuocHang() );
-        khachHangDto.diaChi( khachHang.getDiaChi() );
-        khachHangDto.email( khachHang.getEmail() );
-        khachHangDto.gioiTinh( khachHang.getGioiTinh() );
-        khachHangDto.hoVaTen( khachHang.getHoVaTen() );
         khachHangDto.id( khachHang.getId() );
+        khachHangDto.email( khachHang.getEmail() );
         khachHangDto.sdt( khachHang.getSdt() );
+        khachHangDto.hoVaTen( khachHang.getHoVaTen() );
+        khachHangDto.gioiTinh( khachHang.getGioiTinh() );
         khachHangDto.sinhNhat( khachHang.getSinhNhat() );
+        khachHangDto.diaChi( khachHang.getDiaChi() );
+        khachHangDto.daBanDuocHang( khachHang.getDaBanDuocHang() );
         khachHangDto.taoLuc( khachHang.getTaoLuc() );
         khachHangDto.trangThai( khachHang.getTrangThai() );
 
@@ -122,23 +122,23 @@ public class BaiVietMapperImpl implements BaiVietMapper {
 
         NguoiDungDto.NguoiDungDtoBuilder nguoiDungDto = NguoiDungDto.builder();
 
-        nguoiDungDto.coSo( coSoToCoSoDto( nguoiDung.getCoSo() ) );
-        nguoiDungDto.diaChi( nguoiDung.getDiaChi() );
-        nguoiDungDto.email( nguoiDung.getEmail() );
-        nguoiDungDto.gioiTinh( nguoiDung.getGioiTinh() );
-        nguoiDungDto.hoVaTen( nguoiDung.getHoVaTen() );
         nguoiDungDto.id( nguoiDung.getId() );
-        nguoiDungDto.khachHangs( khachHangListToKhachHangDtoList( nguoiDung.getKhachHangs() ) );
-        nguoiDungDto.maNganHang( nguoiDung.getMaNganHang() );
-        nguoiDungDto.matKhau( nguoiDung.getMatKhau() );
-        nguoiDungDto.nganHang( nguoiDung.getNganHang() );
+        nguoiDungDto.coSo( coSoToCoSoDto( nguoiDung.getCoSo() ) );
         nguoiDungDto.phanQuyen( nguoiDung.getPhanQuyen() );
-        nguoiDungDto.phanTramHoaHong( nguoiDung.getPhanTramHoaHong() );
+        nguoiDungDto.email( nguoiDung.getEmail() );
         nguoiDungDto.sdt( nguoiDung.getSdt() );
+        nguoiDungDto.matKhau( nguoiDung.getMatKhau() );
+        nguoiDungDto.hoVaTen( nguoiDung.getHoVaTen() );
+        nguoiDungDto.gioiTinh( nguoiDung.getGioiTinh() );
         nguoiDungDto.sinhNhat( nguoiDung.getSinhNhat() );
-        nguoiDungDto.taoLuc( nguoiDung.getTaoLuc() );
+        nguoiDungDto.phanTramHoaHong( nguoiDung.getPhanTramHoaHong() );
         nguoiDungDto.tongHoaHong( nguoiDung.getTongHoaHong() );
+        nguoiDungDto.diaChi( nguoiDung.getDiaChi() );
+        nguoiDungDto.nganHang( nguoiDung.getNganHang() );
+        nguoiDungDto.maNganHang( nguoiDung.getMaNganHang() );
+        nguoiDungDto.taoLuc( nguoiDung.getTaoLuc() );
         nguoiDungDto.trangThai( nguoiDung.getTrangThai() );
+        nguoiDungDto.khachHangs( khachHangListToKhachHangDtoList( nguoiDung.getKhachHangs() ) );
 
         return nguoiDungDto.build();
     }

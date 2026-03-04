@@ -102,11 +102,17 @@
           <Descriptions title="Thông tin giá" :column="1" bordered size="small">
             <template v-if="record.thongTinGias && record.thongTinGias.length > 0">
               <DescriptionsItem label="Danh sách giá">
-                <div v-for="(gia, idx) in record.thongTinGias[0]?.dsGia" :key="idx" style="margin-bottom: 8px">
+              <div v-for="(thongTinGia, idx) in record.thongTinGias" :key="idx" style="margin-bottom: 8px">
+                <div v-for="(gia, idx) in thongTinGia.dsGia" :key="idx" style="margin-bottom: 8px">
                   <strong>{{ gia.tenCoSo }}:</strong> 
                   Giá nhập: {{ formatCurrency(gia.giaNhap) }} | 
                   Giá bán: {{ formatCurrency(gia.giaBan) }}
                 </div>
+                <!-- đến cuối danh sách sẽ chú thích đây là giá mới nhất -->
+                <div v-if="idx === record.thongTinGias.length - 1" style=" color: #888;font-style: italic">
+                  (Giá mới nhất)</div>
+              </div>
+                
               </DescriptionsItem>
             </template>
             <template v-else>

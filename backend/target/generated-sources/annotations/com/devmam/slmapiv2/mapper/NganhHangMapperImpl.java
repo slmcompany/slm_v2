@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-25T15:17:09+0700",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2026-03-04T17:31:13+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class NganhHangMapperImpl implements NganhHangMapper {
@@ -23,13 +23,13 @@ public class NganhHangMapperImpl implements NganhHangMapper {
 
         NganhHangDto.NganhHangDtoBuilder nganhHangDto = NganhHangDto.builder();
 
-        nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
-        nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
         nganhHangDto.id( nganhHang.getId() );
         nganhHangDto.ma( nganhHang.getMa() );
+        nganhHangDto.ten( nganhHang.getTen() );
         nganhHangDto.sdtSale( nganhHang.getSdtSale() );
         nganhHangDto.sdtTech( nganhHang.getSdtTech() );
-        nganhHangDto.ten( nganhHang.getTen() );
+        nganhHangDto.anhNgang( nganhHang.getAnhNgang() );
+        nganhHangDto.anhVuong( nganhHang.getAnhVuong() );
         nganhHangDto.trangThai( nganhHang.getTrangThai() );
 
         return nganhHangDto.build();

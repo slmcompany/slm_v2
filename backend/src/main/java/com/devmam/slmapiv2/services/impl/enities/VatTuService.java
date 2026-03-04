@@ -278,9 +278,14 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         vatTu.setTrangThai(dto.getTrangThai());
         vatTu.setThoiGianBaoHanh(dto.getThoiGianBaoHanh());
         vatTu.setGm(dto.getGm());
-
+        List<ThongTinGia> dsThongTinGia = vatTu.getThongTinGias();
+        ThongTinGia creatingThongTinGia = ThongTinGia.builder().vatTu(vatTu).dsGia(dto.getDsGia()).taoLuc(Instant.now()).trangThai(1).build();
+        creatingThongTinGia = thongTinGiaService.create(creatingThongTinGia);
+        dsThongTinGia.add(creatingThongTinGia);
         // Lấy lại thông tin mới nhất
         vatTuFinding = getOne(dto.getId());
+        vatTu = vatTuFinding.get();
+        vatTu.setThongTinGias(dsThongTinGia);
 
         return ResponseEntity.ok(
                 ResponseData.<VatTuDto>builder()
