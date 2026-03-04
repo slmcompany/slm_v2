@@ -183,4 +183,22 @@ public class QuangCaoService extends BaseServiceImpl<QuangCao, Integer> {
                         .build()
         );
     }
+
+    @Transactional
+    public ResponseEntity<ResponseData<String>> hardDelete(Integer id){
+        QuangCao quangCao = getOne(id).orElseThrow(
+                () -> new CommonException("Không tìm được quảng cáo id: "+id)
+        );
+        tepTinService.hardDelete(quangCao.getTepTin().getId());
+
+        delete(id);
+        return ResponseEntity.ok(
+                ResponseData.<String>builder()
+                        .status(200)
+                        .message("Success")
+                        .error(null)
+                        .data(null)
+                        .build()
+        );
+    }
 }

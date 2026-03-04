@@ -73,4 +73,9 @@ public class QuangCaoController {
     ) {
         return quangCaoService.update(dto, file);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseData<String>> delete(@PathVariable Integer id) {
+        return quangCaoService.hardDelete(id);
+    }
 }
