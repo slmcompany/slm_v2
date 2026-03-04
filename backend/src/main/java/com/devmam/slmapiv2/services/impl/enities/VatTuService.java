@@ -285,7 +285,6 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         // Lấy lại thông tin mới nhất
         vatTuFinding = getOne(dto.getId());
         vatTu = vatTuFinding.get();
-        vatTu.setThongTinGias(dsThongTinGia);
 
         return ResponseEntity.ok(
                 ResponseData.<VatTuDto>builder()
