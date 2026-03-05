@@ -3,16 +3,13 @@ package com.devmam.slmapiv2.mapper;
 import com.devmam.slmapiv2.dto.response.entities.AnhVatTuDto;
 import com.devmam.slmapiv2.dto.response.entities.NganhHangDto;
 import com.devmam.slmapiv2.dto.response.entities.NhomVatTuDto;
-import com.devmam.slmapiv2.dto.response.entities.ThongTinGiaDto;
 import com.devmam.slmapiv2.dto.response.entities.ThuongHieuDto;
 import com.devmam.slmapiv2.dto.response.entities.VatTuDto;
 import com.devmam.slmapiv2.entities.AnhVatTu;
 import com.devmam.slmapiv2.entities.NganhHang;
 import com.devmam.slmapiv2.entities.NhomVatTu;
-import com.devmam.slmapiv2.entities.ThongTinGia;
 import com.devmam.slmapiv2.entities.ThuongHieu;
 import com.devmam.slmapiv2.entities.VatTu;
-import com.devmam.slmapiv2.entities.commons.GiaInfo;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-04T18:09:21+0700",
+    date = "2026-03-05T23:59:26+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -31,6 +28,8 @@ public class VatTuMapperImpl implements VatTuMapper {
 
     @Autowired
     private TepTinMapper tepTinMapper;
+    @Autowired
+    private ThongTinGiaMapper thongTinGiaMapper;
 
     @Override
     public VatTuDto toDto(VatTu vatTu) {
@@ -59,7 +58,7 @@ public class VatTuMapperImpl implements VatTuMapper {
         vatTuDto.taoLuc( vatTu.getTaoLuc() );
         vatTuDto.trangThai( vatTu.getTrangThai() );
         vatTuDto.anhVatTus( anhVatTuListToAnhVatTuDtoList( vatTu.getAnhVatTus() ) );
-        vatTuDto.thongTinGias( thongTinGiaListToThongTinGiaDtoList( vatTu.getThongTinGias() ) );
+        vatTuDto.thongTinGias( thongTinGiaMapper.toDtoList( vatTu.getThongTinGias() ) );
 
         return vatTuDto.build();
     }
@@ -163,37 +162,6 @@ public class VatTuMapperImpl implements VatTuMapper {
         List<AnhVatTuDto> list1 = new ArrayList<AnhVatTuDto>( list.size() );
         for ( AnhVatTu anhVatTu : list ) {
             list1.add( anhVatTuToAnhVatTuDto( anhVatTu ) );
-        }
-
-        return list1;
-    }
-
-    protected ThongTinGiaDto thongTinGiaToThongTinGiaDto(ThongTinGia thongTinGia) {
-        if ( thongTinGia == null ) {
-            return null;
-        }
-
-        ThongTinGiaDto.ThongTinGiaDtoBuilder thongTinGiaDto = ThongTinGiaDto.builder();
-
-        thongTinGiaDto.id( thongTinGia.getId() );
-        List<GiaInfo> list = thongTinGia.getDsGia();
-        if ( list != null ) {
-            thongTinGiaDto.dsGia( new ArrayList<GiaInfo>( list ) );
-        }
-        thongTinGiaDto.taoLuc( thongTinGia.getTaoLuc() );
-        thongTinGiaDto.trangThai( thongTinGia.getTrangThai() );
-
-        return thongTinGiaDto.build();
-    }
-
-    protected List<ThongTinGiaDto> thongTinGiaListToThongTinGiaDtoList(List<ThongTinGia> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<ThongTinGiaDto> list1 = new ArrayList<ThongTinGiaDto>( list.size() );
-        for ( ThongTinGia thongTinGia : list ) {
-            list1.add( thongTinGiaToThongTinGiaDto( thongTinGia ) );
         }
 
         return list1;

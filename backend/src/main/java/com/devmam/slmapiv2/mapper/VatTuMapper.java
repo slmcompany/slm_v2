@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {TepTinMapper.class})
+@Mapper(componentModel = "spring", uses = {TepTinMapper.class, ThongTinGiaMapper.class})
 public interface VatTuMapper {
 
     VatTuDto toDto(VatTu vatTu);

@@ -7,7 +7,9 @@ public enum FilterOperation {
     GREATER_THAN,
     GREATER_THAN_OR_EQUAL,
     LIKE,
+    NOT_LIKE,
     ILIKE,
+    NOT_ILIKE,
     IN,
     NOT_IN
 }

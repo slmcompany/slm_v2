@@ -2,10 +2,10 @@ package com.devmam.slmapiv2.services.impl;
 
 import com.devmam.slmapiv2.constant.enums.FilterLogicType;
 import com.devmam.slmapiv2.constant.enums.SortDirection;
-import com.devmam.slmapiv2.exception.customize.InvalidFieldException;
 import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
 import com.devmam.slmapiv2.dto.request.FilterCriteria;
 import com.devmam.slmapiv2.dto.request.SortCriteria;
+import com.devmam.slmapiv2.exception.customize.InvalidFieldException;
 import com.devmam.slmapiv2.services.BaseService;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
@@ -93,7 +93,8 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
 
     /**
      * Cập nhật entity từ HashMap, tự động bỏ qua trường @Id
-     * @param id ID của entity cần update
+     *
+     * @param id      ID của entity cần update
      * @param updates HashMap chứa các trường cần cập nhật và giá trị mới
      * @return Entity đã được cập nhật
      */
@@ -147,7 +148,7 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
 
     @Override
     @Transactional
-    public void delete(List<T> entities){
+    public void delete(List<T> entities) {
         repository.deleteAll(entities);
     }
 
@@ -341,13 +342,22 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
                     return cb.like(cb.lower((Expression<String>) path), "%" + str.toLowerCase() + "%");
                 }
                 throw new IllegalArgumentException("LIKE chỉ áp dụng cho String");
+            case NOT_LIKE:
+                if (value instanceof String str) {
+                    return cb.notLike(cb.lower((Expression<String>) path), "%" + str.toLowerCase() + "%");
+                }
+                throw new IllegalArgumentException("NOT_LIKE chỉ áp dụng cho String");
 
             case ILIKE:
                 if (value instanceof String str) {
                     return cb.like(cb.lower((Expression<String>) path), "%" + str.toLowerCase() + "%");
                 }
                 throw new IllegalArgumentException("ILIKE chỉ áp dụng cho String");
-
+            case NOT_ILIKE:
+                if (value instanceof String str) {
+                    return cb.notLike(cb.lower((Expression<String>) path), "%" + str.toLowerCase() + "%");
+                }
+                throw new IllegalArgumentException("NOT_ILIKE chỉ áp dụng cho String");
             case IN:
                 if (value instanceof Collection<?> collection) {
                     return path.in(collection);
