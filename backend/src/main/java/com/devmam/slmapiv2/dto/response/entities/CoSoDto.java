@@ -23,6 +23,8 @@ public class CoSoDto implements Serializable {
     String ma;
     @Size(max = 200)
     String ten;
+    @Size(max = 20)
+    String sdt;
     @Size(max = 500)
     String dcVanPhong;
     @Size(max = 500)

@@ -30,6 +30,10 @@ public class CoSo implements Serializable {
     @Column(name = "ten", length = 200)
     private String ten;
 
+    @Size(max = 20)
+    @Column(name = "sdt", length = 20)
+    private String sdt;
+
     @Size(max = 500)
     @Column(name = "dc_van_phong", length = 500)
     private String dcVanPhong;

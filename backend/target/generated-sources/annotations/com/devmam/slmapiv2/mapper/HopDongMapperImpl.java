@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-05T23:59:26+0700",
+    date = "2026-03-06T00:24:45+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -94,6 +94,7 @@ public class HopDongMapperImpl implements HopDongMapper {
         coSoDto.id( coSo.getId() );
         coSoDto.ma( coSo.getMa() );
         coSoDto.ten( coSo.getTen() );
+        coSoDto.sdt( coSo.getSdt() );
         coSoDto.dcVanPhong( coSo.getDcVanPhong() );
         coSoDto.dcKho( coSo.getDcKho() );
         coSoDto.taoLuc( coSo.getTaoLuc() );
