@@ -134,8 +134,8 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 .trangThai(1)
                 .taoLuc(creatingVattu.getTaoLuc())
                 .build();
-        thongTinGiaService.create(creatingThongTinGia);
-        creatingVattu = getOne(creatingVattu.getId()).get();
+        creatingThongTinGia = thongTinGiaService.create(creatingThongTinGia);
+        creatingVattu.setThongTinGias(List.of(creatingThongTinGia));
         return ResponseEntity.ok(
                 ResponseData.<VatTuDto>builder()
                         .status(200)

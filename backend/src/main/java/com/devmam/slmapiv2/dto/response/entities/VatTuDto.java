@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,5 +40,6 @@ public class VatTuDto implements Serializable {
     Instant taoLuc;
     Integer trangThai;
     List<AnhVatTuDto> anhVatTus;
-    List<ThongTinGiaDto> thongTinGias;
+    @Builder.Default
+    List<ThongTinGiaDto> thongTinGias = new ArrayList<>();
 }
