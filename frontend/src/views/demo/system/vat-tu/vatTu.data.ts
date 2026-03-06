@@ -259,14 +259,11 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    field: 'sheetLink',
-    label: 'Sheet Link',
-    component: 'Input',
-    componentProps: {
-      placeholder: 'Nhập link Google Sheet',
-      maxlength: 1000,
-    },
-  },
+    field: 'sheetFile',
+    label: 'Tải PDF Sheet',
+    slot: 'sheetFile',
+    colProps: { span: 24 },
+  } as FormSchema,
   {
     field: 'moTaBaoGia',
     label: 'Mô tả báo giá',

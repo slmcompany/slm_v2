@@ -72,8 +72,9 @@ public class VatTuController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<ResponseData<VatTuDto>> create(@RequestPart("dto") VatTuCreatingDto dto,
+                                                         @RequestPart(value = "sheet", required = false) MultipartFile sheet,
                                                          @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-        return vatTuService.create(dto, files);
+        return vatTuService.create(dto, sheet, files);
     }
 
 

@@ -275,11 +275,15 @@ export function getVatTuById(id: number) {
     .then((res: any) => res.data as ResponseData<VatTuDto>);
 }
 
-export function createVatTu(data: VatTuCreateDto, files: File[]) {
+export function createVatTu(data: VatTuCreateDto, sheetFile: File | null, files: File[]) {
   const formData = new FormData();
 
   const jsonBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
   formData.append('dto', jsonBlob);
+
+  if (sheetFile) {
+    formData.append('sheet', sheetFile);
+  }
 
   files.forEach((file) => {
     formData.append('files', file);
@@ -366,12 +370,14 @@ export function getAllNhomVatTu() {
 }
 
 export function getAllThuongHieu() {
-  return realHttp.get<ResponseData<ThuongHieuDto[]>>(
-    {
-      url: Api.GetAllThuongHieu,
-    },
-    {
-      isTransformResponse: false,
-    }
-  ).then((res: any) => res as ResponseData<ThuongHieuDto[]>);
+  return realHttp
+    .get<ResponseData<ThuongHieuDto[]>>(
+      {
+        url: Api.GetAllThuongHieu,
+      },
+      {
+        isTransformResponse: false,
+      },
+    )
+    .then((res: any) => res as ResponseData<ThuongHieuDto[]>);
 }

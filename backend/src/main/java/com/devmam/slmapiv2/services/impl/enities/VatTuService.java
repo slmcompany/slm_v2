@@ -73,7 +73,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
 
 
     @Transactional
-    public ResponseEntity<ResponseData<VatTuDto>> create(VatTuCreatingDto dto, List<MultipartFile> files) {
+    public ResponseEntity<ResponseData<VatTuDto>> create(VatTuCreatingDto dto, MultipartFile sheet, List<MultipartFile> files) {
 
         VatTu creatingVattu = VatTuCreatingDto.toEntity(dto);
         Optional<NhomVatTu> nhomVatTu = nhomVatTuService.getOne(dto.getNhomVatTuId());
@@ -92,6 +92,24 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
 
         int i = 0;
         Date now = new Date();
+
+        if (sheet != null) {
+            try {
+                String objectName = minioService.upload(sheet, "vat_tu_sheet_" + calcService.genTenKhongDau(dto.getTen()) + "_" + now.getTime());
+                TepTin creatingTepTin = TepTin.builder()
+                        .tenTepGoc(objectName)
+                        .tenTaiLen(objectName)
+                        .tenLuuTru(objectName)
+                        .duongDan(minioService.getPublicUrl(objectName))
+                        .loaiTepTin(FileType.PDF.toString())
+                        .trangThai(1)
+                        .build();
+                tepTinService.create(creatingTepTin);
+                creatingVattu.setSheetLink(minioService.getPublicUrl(objectName));
+            } catch (Exception e) {
+                throw new CommonException("Lỗi tạo data sheet cho vật tư: " + dto.getTen(), e);
+            }
+        }
         if (files != null) {
             for (MultipartFile file : files) {
                 i++;
@@ -134,8 +152,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 .trangThai(1)
                 .taoLuc(creatingVattu.getTaoLuc())
                 .build();
-        creatingThongTinGia = thongTinGiaService.create(creatingThongTinGia);
-        creatingVattu.setThongTinGias(List.of(creatingThongTinGia));
+        thongTinGiaService.create(creatingThongTinGia);
         return ResponseEntity.ok(
                 ResponseData.<VatTuDto>builder()
                         .status(200)
@@ -278,10 +295,12 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         vatTu.setTrangThai(dto.getTrangThai());
         vatTu.setThoiGianBaoHanh(dto.getThoiGianBaoHanh());
         vatTu.setGm(dto.getGm());
-        List<ThongTinGia> dsThongTinGia = vatTu.getThongTinGias();
-        ThongTinGia creatingThongTinGia = ThongTinGia.builder().vatTu(vatTu).dsGia(dto.getDsGia()).taoLuc(Instant.now()).trangThai(1).build();
-        creatingThongTinGia = thongTinGiaService.create(creatingThongTinGia);
-        dsThongTinGia.add(creatingThongTinGia);
+        if (vatTu.getThongTinGias() != null && vatTu.getThongTinGias().isEmpty()) {
+            List<ThongTinGia> dsThongTinGia = vatTu.getThongTinGias();
+            ThongTinGia creatingThongTinGia = ThongTinGia.builder().vatTu(vatTu).dsGia(dto.getDsGia()).taoLuc(Instant.now()).trangThai(1).build();
+            creatingThongTinGia = thongTinGiaService.create(creatingThongTinGia);
+            dsThongTinGia.add(creatingThongTinGia);
+        }
         // Lấy lại thông tin mới nhất
         vatTuFinding = getOne(dto.getId());
         vatTu = vatTuFinding.get();

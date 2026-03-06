@@ -36,6 +36,24 @@
         </div>
       </template>
 
+      <template #sheetFile="{ model }">
+        <div class="sheet-container">
+          <Upload
+            :file-list="sheetFileList"
+            :before-upload="beforeUploadSheet"
+            @remove="handleRemoveSheet"
+            accept=".pdf"
+            :max-count="1"
+          >
+            <a-button>
+              <template #icon><UploadOutlined /></template>
+              Tải PDF lên
+            </a-button>
+          </Upload>
+          <div class="upload-hint">Chỉ chấp nhận file PDF, tối đa 10MB</div>
+        </div>
+      </template>
+
       <template #dsGia="{ model, field }">
         <div class="ds-gia-container" v-if="field === 'dsGia'">
           <Button type="dashed" block @click="handleAddGia" style="margin-bottom: 16px">
@@ -165,10 +183,23 @@
 
 <script lang="ts" setup>
   import { ref, watch } from 'vue';
-  import { Upload, InputNumber, Empty, Select, SelectOption, Alert, Card, Row, Col, Input, Button, FormItem } from 'ant-design-vue';
+  import {
+    Upload,
+    InputNumber,
+    Empty,
+    Select,
+    SelectOption,
+    Alert,
+    Card,
+    Row,
+    Col,
+    Input,
+    Button,
+    FormItem,
+  } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form';
-  import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+  import { PlusOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons-vue';
   import { formSchema } from './vatTu.data';
   import { createVatTu, GiaInfo, ThuocTinh } from './vatTu';
   import { message } from 'ant-design-vue';
@@ -190,6 +221,8 @@
   const duLieuRiengList = ref<Array<ThuocTinh & { key?: string }>>([]);
   const dsGiaList = ref<GiaInfo[]>([]);
   const fileList = ref<any[]>([]);
+  const sheetFileList = ref<any[]>([]);
+  const sheetFile = ref<File | null>(null);
 
   const nativeFileInput = ref<HTMLInputElement | null>(null);
   const antUpload = ref<any>(null);
@@ -208,6 +241,8 @@
     duLieuRiengList.value = [];
     dsGiaList.value = [];
     fileList.value = [];
+    sheetFileList.value = [];
+    sheetFile.value = null;
 
     // Cập nhật options cho các select
     updateSchema([
@@ -237,17 +272,15 @@
         (opt) => String(opt.value) === String(newNhomVatTuId),
       );
       if (selectedNhom?.thuocTinhRieng) {
-        duLieuRiengList.value = Object.entries(selectedNhom.thuocTinhRieng).map(
-          ([key, value]) => {
-            const v = value as any;
-            return {
-              key,
-              ten: v.ten ?? key,
-              donVi: v.donVi ?? '',
-              giaTri: v.giaTri ?? null,
-            };
-          },
-        );
+        duLieuRiengList.value = Object.entries(selectedNhom.thuocTinhRieng).map(([key, value]) => {
+          const v = value as any;
+          return {
+            key,
+            ten: v.ten ?? key,
+            donVi: v.donVi ?? '',
+            giaTri: v.giaTri ?? null,
+          };
+        });
       } else {
         duLieuRiengList.value = [];
       }
@@ -462,7 +495,6 @@
         nhomVatTuId: values.nhomVatTuId,
         thuongHieuId: values.thuongHieuId || undefined,
         ten: values.ten,
-        sheetLink: values.sheetLink || undefined,
         donVi: values.donVi || undefined,
         moTaBaoGia: values.moTaBaoGia || undefined,
         moTaHopDong: values.moTaHopDong || undefined,
@@ -474,7 +506,7 @@
       };
 
       const files = fileList.value.map((f) => f.originFileObj).filter(Boolean);
-      const result = await createVatTu(submitData, files);
+      const result = await createVatTu(submitData, sheetFile.value, files);
 
       if (result.status === 200 || result.status === 201) {
         message.success('Tạo mới thành công');
@@ -507,6 +539,34 @@
     } catch (err) {
       console.error('handleRemoveFile error', err);
     }
+  }
+
+  const beforeUploadSheet: UploadProps['beforeUpload'] = (file) => {
+    const isPDF = file.type === 'application/pdf';
+    if (!isPDF) {
+      message.error('Chỉ chấp nhận file PDF!');
+      return false;
+    }
+    const isLt10M = file.size / 1024 / 1024 < 10;
+    if (!isLt10M) {
+      message.error('Kích thước file phải nhỏ hơn 10MB!');
+      return false;
+    }
+    sheetFile.value = file as File;
+    sheetFileList.value = [
+      {
+        uid: file.uid,
+        name: file.name,
+        status: 'done',
+        originFileObj: file,
+      },
+    ];
+    return false;
+  };
+
+  function handleRemoveSheet() {
+    sheetFile.value = null;
+    sheetFileList.value = [];
   }
 </script>
 
