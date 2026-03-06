@@ -123,6 +123,17 @@ export const columns: BasicColumn[] = [
     },
   },
   {
+    title: 'Vật tư chính',
+    dataIndex: 'vatTuChinh',
+    width: 120,
+    customRender: ({ record }) => {
+      const status = record.vatTuChinh === true;
+      return h(Tag, { color: status ? 'success' : 'error' }, () =>
+        status ? 'Vật tư chính' : 'Vật tư phụ',
+      );
+    },
+  },
+  {
     title: 'Ngày tạo',
     dataIndex: 'taoLuc',
     width: 180,
@@ -291,6 +302,19 @@ export const formSchema: FormSchema[] = [
       options: [
         { label: 'Kích hoạt', value: 1 },
         { label: 'Vô hiệu', value: 0 },
+      ],
+    },
+    required: true,
+  },
+  {
+    field: 'vatTuChinh',
+    label: 'Vật tư chính',
+    component: 'RadioButtonGroup',
+    defaultValue: true,
+    componentProps: {
+      options: [
+        { label: 'Vật tư chính', value: true },
+        { label: 'Vật tư phụ', value: false },
       ],
     },
     required: true,

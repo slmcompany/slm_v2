@@ -35,6 +35,7 @@ public class VatTuCreatingDto {
     Integer thoiGianBaoHanh;
     Double gm;
     Integer trangThai;
+    boolean vatTuChinh;
 
     List<GiaInfo> dsGia;
 
@@ -54,6 +55,7 @@ public class VatTuCreatingDto {
                 .gm(dto.getGm())
                 .taoLuc(Instant.now())
                 .trangThai(dto.getTrangThai())
+                .vatTuChinh(dto.isVatTuChinh())
                 .build();
     }
 

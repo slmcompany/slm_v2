@@ -502,6 +502,7 @@
         thoiGianBaoHanh: values.thoiGianBaoHanh,
         gm: values.gm,
         trangThai: values.trangThai,
+        vatTuChinh: values.vatTuChinh,
         dsGia: dsGiaPayload,
       };
 
