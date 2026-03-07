@@ -3,7 +3,7 @@
   <component name="JpaBuddyIdeaProjectConfig" migrateIndexesAndConstraints="true" newRepositoryParent="org.springframework.data.jpa.repository.JpaRepository">
     <option name="migrateIndexesAndConstraints" value="true" />
     <option name="reLastEntityCreationPackage" value="src/main/java/com/devmam/slmapiv2/entities" />
-    <option name="reverseEngineeringLastDbConnectionId" value="8360098b-2048-473f-95fe-4e605d7f4cce" />
+    <option name="reverseEngineeringLastDbConnectionId" value="2510fb84-008a-4ed9-90f9-c36ee7974204" />
   </component>
   <component name="JpaPluginProjectSettings">
     <option name="entityNameTemplate" />
