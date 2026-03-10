@@ -219,7 +219,6 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 tepTin.setDuongDan(minioService.getPublicUrl(objectName));
                 tepTin.setLoaiTepTin(FileType.IMAGE.toString());
                 tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
-                tepTin = tepTinService.update(tepTin.getId(), tepTin);
             }
 
             if (isNew) {
