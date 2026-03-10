@@ -9,8 +9,10 @@ import com.devmam.slmapiv2.mapper.MienMapper;
 import com.devmam.slmapiv2.services.impl.enities.MienService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -62,8 +64,16 @@ public class MienController {
         );
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ResponseData<MienDto>> create(@RequestBody MienCreatingDto creating) {
-        return mienService.create(creating);
+    @PostMapping(
+            value = "/create",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<ResponseData<MienDto>> create(@RequestPart("dto") MienCreatingDto creating, @RequestPart("file") MultipartFile file) {
+        return mienService.create(creating, file);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseData<String>> hardDelete(@PathVariable Integer id){
+        return mienService.hardDelete(id);
     }
 }

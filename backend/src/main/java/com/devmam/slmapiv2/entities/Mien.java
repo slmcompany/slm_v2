@@ -37,6 +37,10 @@ public class Mien implements Serializable {
     @JoinColumn(name = "co_so_id")
     private CoSo coSo;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tep_tin_id")
+    private TepTin tepTin;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "tao_luc")
     private Instant taoLuc;

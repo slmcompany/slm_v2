@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {TepTinMapper.class})
 public interface MienMapper {
     MienDto toDto(Mien mien);
     List<MienDto> toDtoList(List<Mien> mienList);

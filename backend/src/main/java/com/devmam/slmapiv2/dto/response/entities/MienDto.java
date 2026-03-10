@@ -25,6 +25,7 @@ public class MienDto implements Serializable {
     @Size(max = 100)
     String tenMien;
     CoSoDto coSo;
+    TepTinDto tepTin;
     Instant taoLuc;
     Integer trangThai;
     List<ThongTinTenMienDto> thongTinTenMiens;

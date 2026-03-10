@@ -9,15 +9,19 @@ import com.devmam.slmapiv2.entities.ThongTinTenMien;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-08T01:27:03+0700",
+    date = "2026-03-10T19:33:48+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class MienMapperImpl implements MienMapper {
+
+    @Autowired
+    private TepTinMapper tepTinMapper;
 
     @Override
     public MienDto toDto(Mien mien) {
@@ -30,6 +34,7 @@ public class MienMapperImpl implements MienMapper {
         mienDto.id( mien.getId() );
         mienDto.tenMien( mien.getTenMien() );
         mienDto.coSo( coSoToCoSoDto( mien.getCoSo() ) );
+        mienDto.tepTin( tepTinMapper.toDto( mien.getTepTin() ) );
         mienDto.taoLuc( mien.getTaoLuc() );
         mienDto.trangThai( mien.getTrangThai() );
         mienDto.thongTinTenMiens( thongTinTenMienListToThongTinTenMienDtoList( mien.getThongTinTenMiens() ) );

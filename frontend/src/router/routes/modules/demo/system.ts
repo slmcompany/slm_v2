@@ -170,6 +170,16 @@ const system: AppRouteModule = {
         ignoreKeepAlive: false,
       },
       component: () => import('@/views/demo/system/nguoi-dung/index.vue'),
+    },
+    {
+      path: 'mien',
+      name: 'MienManagement',
+      meta: {
+        title: t('routes.demo.system.mien'),
+        ignoreKeepAlive: false,
+      },
+      component: () => import('@/views/demo/system/mien/index.vue'),
+
     }
   ],
 };
