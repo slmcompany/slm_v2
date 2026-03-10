@@ -5,7 +5,7 @@ enum Api {
   GetById = '/mien/get-by-id/',
   GetAll = '/mien/all',
   Create = '/mien/create',
-  Delete = '/mien/',
+  Delete = '/mien/delete/',
   GetAllCoSo = '/co-so/all',
 }
 

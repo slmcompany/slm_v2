@@ -121,7 +121,8 @@
                   padding: 12px;
                   border: 1px solid #e8e8e8;
                   border-radius: 8px;
-                  background: #fafafa;
+
+                  /* background: #fafafa; */
                 "
               >
                 <div
@@ -132,7 +133,7 @@
                     margin-bottom: 8px;
                   "
                 >
-                  <span style=" color: #262626;font-weight: 600">Liên hệ #{{ idx + 1 }}</span>
+                  <span style="font-weight: 600">Liên hệ #{{ idx + 1 }}</span>
                   <Tag :color="ttm.trangThai === 1 ? 'success' : 'error'">
                     {{ ttm.trangThai === 1 ? 'Kích hoạt' : 'Vô hiệu' }}
                   </Tag>
