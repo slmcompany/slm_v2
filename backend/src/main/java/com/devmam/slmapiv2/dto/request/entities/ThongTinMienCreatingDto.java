@@ -11,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @ToString
 public class ThongTinMienCreatingDto {
-    String tenMien;
     String sdt;
     String email;
 }

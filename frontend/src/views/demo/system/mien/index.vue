@@ -100,7 +100,7 @@
                 :width="120"
                 :src="record.tepTin.duongDan"
                 :preview="true"
-                style="border-radius: 6px; border: 1px solid #f0f0f0"
+                style=" border: 1px solid #f0f0f0;border-radius: 6px"
               />
             </div>
           </div>
@@ -132,7 +132,7 @@
                     margin-bottom: 8px;
                   "
                 >
-                  <span style="font-weight: 600; color: #262626">Liên hệ #{{ idx + 1 }}</span>
+                  <span style=" color: #262626;font-weight: 600">Liên hệ #{{ idx + 1 }}</span>
                   <Tag :color="ttm.trangThai === 1 ? 'success' : 'error'">
                     {{ ttm.trangThai === 1 ? 'Kích hoạt' : 'Vô hiệu' }}
                   </Tag>

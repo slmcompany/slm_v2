@@ -60,16 +60,6 @@
 
             <Card size="small" :bordered="true">
               <Row :gutter="16">
-                <!-- Tên miền con -->
-                <Col :span="24">
-                  <FormItem label="Tên miền" :required="true">
-                    <Input
-                      v-model:value="item.tenMien"
-                      placeholder="VD: www.example.com"
-                      :maxlength="100"
-                    />
-                  </FormItem>
-                </Col>
 
                 <!-- SĐT -->
                 <Col :span="12">
@@ -174,7 +164,7 @@
 
   // ─── Quản lý thongTinMiens ────────────────────────────────────────────────
   function handleAddThongTin() {
-    thongTinMienList.value.push({ tenMien: '', sdt: '', email: '' });
+    thongTinMienList.value.push({ sdt: '', email: '' });
   }
 
   function handleRemoveThongTin(index: number) {
@@ -231,11 +221,6 @@
       // Validate từng thongTinMien
       for (let i = 0; i < thongTinMienList.value.length; i++) {
         const ttm = thongTinMienList.value[i];
-        if (!ttm.tenMien?.trim()) {
-          message.error(`Vui lòng nhập tên miền cho thông tin #${i + 1}`);
-          setModalProps({ confirmLoading: false });
-          return;
-        }
         if (ttm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ttm.email)) {
           message.error(`Email không hợp lệ ở thông tin #${i + 1}`);
           setModalProps({ confirmLoading: false });
@@ -249,7 +234,6 @@
         thongTinMiens:
           thongTinMienList.value.length > 0
             ? thongTinMienList.value.map((ttm) => ({
-                tenMien: ttm.tenMien.trim(),
                 sdt: ttm.sdt?.trim() || '',
                 email: ttm.email?.trim() || '',
               }))

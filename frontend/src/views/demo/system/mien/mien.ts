@@ -86,7 +86,6 @@ export interface MienDto {
 }
 
 export interface ThongTinMienCreatingDto {
-  tenMien: string;
   sdt: string;
   email: string;
 }

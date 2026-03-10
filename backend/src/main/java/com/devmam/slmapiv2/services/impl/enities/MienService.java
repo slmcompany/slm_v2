@@ -104,6 +104,7 @@ public class MienService extends BaseServiceImpl<Mien, Integer> {
         if (creatingTepTin != null) {
             mien.setTepTin(creatingTepTin);
         }
+        mien = create(mien);
         List<ThongTinTenMien> thongTinTenMiens = new ArrayList<>();
 
         for (ThongTinMienCreatingDto thongTin : creating.getThongTinMiens()) {
