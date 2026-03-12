@@ -2,6 +2,7 @@ package com.devmam.slmapiv2.controller;
 
 import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
 import com.devmam.slmapiv2.dto.request.entities.MienCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.MienUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.MienDto;
 import com.devmam.slmapiv2.exception.customize.CommonException;
@@ -72,8 +73,21 @@ public class MienController {
         return mienService.create(creating, file);
     }
 
+    @PutMapping(
+            value="/update",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<ResponseData<String>> update(
+            @RequestPart("dto") MienUpdatingDto updating,
+            @RequestPart("file") MultipartFile file
+    ){
+        return mienService.update(updating, file);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseData<String>> hardDelete(@PathVariable Integer id){
         return mienService.hardDelete(id);
     }
+
+
 }

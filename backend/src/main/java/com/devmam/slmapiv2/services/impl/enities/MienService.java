@@ -2,7 +2,9 @@ package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.FileType;
 import com.devmam.slmapiv2.dto.request.entities.MienCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.MienUpdatingDto;
 import com.devmam.slmapiv2.dto.request.entities.ThongTinMienCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.ThongTinMienUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.MienDto;
 import com.devmam.slmapiv2.entities.CoSo;
@@ -75,10 +77,10 @@ public class MienService extends BaseServiceImpl<Mien, Integer> {
 
         Instant now = Instant.now();
         TepTin creatingTepTin = null;
-        if (file != null) {
+        if (file != null && !file.isEmpty()) {
             try {
                 Date dateNow = new Date();
-                String objectName = minioService.upload(file, calcService.genTenKhongDau(creating.getTenMien()) + "_" + dateNow.getTime());
+                String objectName = minioService.upload(file, "mien_" + calcService.genTenKhongDau(creating.getTenMien()) + "_" + dateNow.getTime());
                 creatingTepTin = tepTinService.create(
                         TepTin.builder()
                                 .tenTepGoc(objectName)
@@ -94,7 +96,6 @@ public class MienService extends BaseServiceImpl<Mien, Integer> {
             }
         }
 
-
         Mien mien = Mien.builder()
                 .tenMien(creating.getTenMien())
                 .coSo(coSo)
@@ -107,17 +108,19 @@ public class MienService extends BaseServiceImpl<Mien, Integer> {
         mien = create(mien);
         List<ThongTinTenMien> thongTinTenMiens = new ArrayList<>();
 
-        for (ThongTinMienCreatingDto thongTin : creating.getThongTinMiens()) {
-            ThongTinTenMien thongTinTenMien = thongTinTenMienService.create(
-                    ThongTinTenMien.builder()
-                            .mien(mien)
-                            .sdt(thongTin.getSdt())
-                            .email(thongTin.getEmail())
-                            .taoLuc(now)
-                            .trangThai(1)
-                            .build()
-            );
-            thongTinTenMiens.add(thongTinTenMien);
+        if (creating.getThongTinMiens() != null) {
+            for (ThongTinMienCreatingDto thongTin : creating.getThongTinMiens()) {
+                ThongTinTenMien thongTinTenMien = thongTinTenMienService.create(
+                        ThongTinTenMien.builder()
+                                .mien(mien)
+                                .sdt(thongTin.getSdt())
+                                .email(thongTin.getEmail())
+                                .taoLuc(now)
+                                .trangThai(1)
+                                .build()
+                );
+                thongTinTenMiens.add(thongTinTenMien);
+            }
         }
 
         mien.setThongTinTenMiens(thongTinTenMiens);
@@ -129,7 +132,107 @@ public class MienService extends BaseServiceImpl<Mien, Integer> {
                         .message("Success")
                         .build()
         );
+    }
 
+    @Transactional
+    public ResponseEntity<ResponseData<String>> update(MienUpdatingDto updating, MultipartFile file) {
+        updating.setTenMien(updating.getTenMien().trim().toLowerCase());
+
+        Optional<Mien> findingMien = repository.findByTenMien(updating.getTenMien());
+        int flag = 0;
+        Mien mien = null;
+
+        if (findingMien.isPresent()) {
+            mien = findingMien.get();
+            if (mien.getId().equals(updating.getId())) flag = 1;
+        } else {
+            flag = -1;
+        }
+
+        if (flag == 0) throw new CommonException("Tên miền đã tồn tại");
+        if (flag == -1) {
+            mien = getOne(updating.getId()).orElseThrow(
+                    () -> new CommonException("Không tìm thấy miền id: " + updating.getId())
+            );
+        }
+
+        CoSo coSo = coSoService.getOne(updating.getCoSoId()).orElseThrow(
+                () -> new CommonException("Không tìm thấy cơ sở id: " + updating.getCoSoId())
+        );
+
+        // Chỉ cập nhật ảnh khi có file mới được gửi lên
+        if (file != null && !file.isEmpty()) {
+            Date now = new Date();
+            try {
+                String objectName = minioService.upload(file, "mien_" + calcService.genTenKhongDau(updating.getTenMien()) + now.getTime());
+                TepTin tepTin = mien.getTepTin();
+                if (tepTin == null) {
+                    tepTin = TepTin.builder()
+                            .loaiTepTin(FileType.IMAGE.toString())
+                            .duoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"))
+                            .build();
+                    tepTin.setTenTepGoc(objectName);
+                    tepTin.setTenLuuTru(objectName);
+                    tepTin.setTenTaiLen(objectName);
+                    tepTin.setDuongDan(minioService.getPublicUrl(objectName));
+                    tepTin = tepTinService.create(tepTin);
+                    mien.setTepTin(tepTin);
+                } else {
+                    tepTin.setTenTepGoc(objectName);
+                    tepTin.setTenLuuTru(objectName);
+                    tepTin.setTenTaiLen(objectName);
+                    tepTin.setDuongDan(minioService.getPublicUrl(objectName));
+                    tepTinService.update(tepTin);
+                }
+            } catch (Exception e) {
+                throw new CommonException("Lỗi trong quá trình cập nhật tệp tin cho tên miền " + updating.getTenMien() + ". Lỗi: " + e.getMessage());
+            }
+        }
+
+        mien.setTenMien(updating.getTenMien());
+        mien.setCoSo(coSo);
+        if (updating.getTrangThai() != null) {
+            mien.setTrangThai(updating.getTrangThai());
+        }
+
+        // Xử lý thongTinTenMiens
+        if (updating.getThongTinMiens() != null) {
+            List<ThongTinTenMien> thongTinTenMiens = new ArrayList<>();
+            for (ThongTinMienUpdatingDto thongTinDto : updating.getThongTinMiens()) {
+                if (thongTinDto.getId() != null) {
+                    // Cập nhật bản ghi đã có
+                    ThongTinTenMien thongTinTenMien = thongTinTenMienService.getOne(thongTinDto.getId()).orElseThrow(
+                            () -> new CommonException("Không tìm thấy thông tin tên miền id: " + thongTinDto.getId())
+                    );
+                    thongTinTenMien.setSdt(thongTinDto.getSdt());
+                    thongTinTenMien.setEmail(thongTinDto.getEmail());
+                    thongTinTenMiens.add(thongTinTenMien);
+                } else {
+                    // Thêm mới thongTinTenMien trong lúc sửa
+                    ThongTinTenMien newThongTin = thongTinTenMienService.create(
+                            ThongTinTenMien.builder()
+                                    .mien(mien)
+                                    .sdt(thongTinDto.getSdt())
+                                    .email(thongTinDto.getEmail())
+                                    .taoLuc(Instant.now())
+                                    .trangThai(1)
+                                    .build()
+                    );
+                    thongTinTenMiens.add(newThongTin);
+                }
+            }
+            thongTinTenMienService.update(thongTinTenMiens);
+        }
+
+        update(mien);
+
+        return ResponseEntity.ok(
+                ResponseData.<String>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Success")
+                        .data("Success")
+                        .build()
+        );
     }
 
     @Transactional
@@ -151,6 +254,5 @@ public class MienService extends BaseServiceImpl<Mien, Integer> {
                         .error(null)
                         .build()
         );
-
     }
 }

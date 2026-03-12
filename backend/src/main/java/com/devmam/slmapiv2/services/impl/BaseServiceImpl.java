@@ -79,6 +79,12 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
 
     @Override
     @Transactional
+    public T update(T entity) {
+        return repository.save(entity);
+    }
+
+    @Override
+    @Transactional
     public T update(ID id, T entity) {
         Optional<T> optional = repository.findById(id);
         if (optional.isEmpty()) {
@@ -88,6 +94,12 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
         setEntityId(entity, id);
 
         return repository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public List<T> update(Iterable<T> entities){
+        return repository.saveAll(entities);
     }
 
 

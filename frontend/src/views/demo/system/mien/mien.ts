@@ -5,6 +5,7 @@ enum Api {
   GetById = '/mien/get-by-id/',
   GetAll = '/mien/all',
   Create = '/mien/create',
+  Update = '/mien/update',
   Delete = '/mien/delete/',
   GetAllCoSo = '/co-so/all',
 }
@@ -90,10 +91,23 @@ export interface ThongTinMienCreatingDto {
   email: string;
 }
 
+export interface ThongTinMienUpdatingDto {
+  id: number;
+  sdt: string;
+  email: string;
+}
+
 export interface MienCreatingDto {
   tenMien: string;
   coSoId?: number;
   thongTinMiens?: ThongTinMienCreatingDto[];
+}
+
+export interface MienUpdatingDto {
+  id: number;
+  tenMien: string;
+  coSoId?: number;
+  thongTinMiens?: ThongTinMienUpdatingDto[];
 }
 
 // ─── Response wrappers ────────────────────────────────────────────────────────
@@ -215,6 +229,26 @@ export function createMien(data: MienCreatingDto, file: File) {
       { isTransformResponse: false },
     )
     .then((res: any) => res as ResponseData<MienDto>);
+}
+
+export function updateMien(data: MienUpdatingDto, file?: File | null) {
+  const formData = new FormData();
+  const jsonBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  formData.append('dto', jsonBlob);
+  if (file) {
+    formData.append('file', file);
+  }
+
+  return realHttp
+    .put<ResponseData<string>>(
+      {
+        url: Api.Update,
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+      { isTransformResponse: false },
+    )
+    .then((res: any) => res as ResponseData<string>);
 }
 
 export function deleteMien(id: number) {

@@ -2,7 +2,7 @@
   <BasicModal
     v-bind="$attrs"
     @register="registerModal"
-    title="Tạo tên miền"
+    :title="isEditMode ? 'Sửa tên miền' : 'Tạo tên miền'"
     :width="800"
     @ok="handleSubmit"
   >
@@ -10,6 +10,18 @@
       <!-- ─── Slot: upload file ─────────────────────────────────────── -->
       <template #file>
         <div class="file-container">
+          <!-- Preview ảnh hiện tại (edit mode, chưa đổi ảnh) -->
+          <div v-if="isEditMode && currentImageUrl && fileList.length === 0" style="margin-bottom: 8px">
+            <div style=" margin-bottom: 4px; color: #666;font-size: 12px">Ảnh hiện tại:</div>
+            <img
+              :src="currentImageUrl"
+              style="width: 80px; height: 80px; border: 1px solid #f0f0f0; border-radius: 6px; object-fit: cover"
+            />
+            <div style="margin-top: 4px; color: #999; font-size: 12px">
+              Tải ảnh mới bên dưới để thay thế
+            </div>
+          </div>
+
           <Upload
             :file-list="fileList"
             list-type="picture-card"
@@ -20,7 +32,7 @@
           >
             <div v-if="fileList.length === 0" style="cursor: pointer">
               <PlusOutlined />
-              <div style="margin-top: 8px">Tải ảnh lên</div>
+              <div style="margin-top: 8px">{{ isEditMode ? 'Đổi ảnh' : 'Tải ảnh lên' }}</div>
             </div>
           </Upload>
           <div class="upload-hint">Định dạng: JPG, PNG, GIF – tối đa 5 MB</div>
@@ -100,7 +112,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, computed } from 'vue';
   import {
     Upload,
     Button,
@@ -121,8 +133,8 @@
     MailOutlined,
   } from '@ant-design/icons-vue';
   import { formSchema } from './mien.data';
-  import { createMien } from './mien';
-  import type { ThongTinMienCreatingDto } from './mien';
+  import { createMien, updateMien } from './mien';
+  import type { ThongTinMienCreatingDto, MienDto } from './mien';
   import type { UploadProps } from 'ant-design-vue';
 
   defineOptions({ name: 'MienModal' });
@@ -136,10 +148,14 @@
   // ─── State ────────────────────────────────────────────────────────────────
   const fileList = ref<any[]>([]);
   const selectedFile = ref<File | null>(null);
-  const thongTinMienList = ref<ThongTinMienCreatingDto[]>([]);
+  const thongTinMienList = ref<Array<{ id?: number; sdt: string; email: string }>>([]);
+  const editingRecord = ref<MienDto | null>(null);
+  const currentImageUrl = ref<string | null>(null);
+
+  const isEditMode = computed(() => !!editingRecord.value);
 
   // ─── Form ─────────────────────────────────────────────────────────────────
-  const [registerForm, { resetFields, validate, updateSchema }] = useForm({
+  const [registerForm, { resetFields, validate, updateSchema, setFieldsValue }] = useForm({
     labelWidth: 140,
     schemas: formSchema,
     showActionButtonGroup: false,
@@ -147,12 +163,14 @@
   });
 
   // ─── Modal ────────────────────────────────────────────────────────────────
-  const [registerModal, { setModalProps, closeModal }] = useModalInner(async () => {
+  const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
     resetFields();
     setModalProps({ confirmLoading: false });
     fileList.value = [];
     selectedFile.value = null;
     thongTinMienList.value = [];
+    editingRecord.value = null;
+    currentImageUrl.value = null;
 
     updateSchema([
       {
@@ -160,6 +178,29 @@
         componentProps: { options: props.coSoOptions },
       },
     ]);
+
+    // Edit mode: data.record được truyền vào
+    if (data?.record) {
+      const record: MienDto = data.record;
+      editingRecord.value = record;
+      currentImageUrl.value = record.tepTin?.duongDan ?? null;
+
+      // Điền dữ liệu vào form
+      await setFieldsValue({
+        tenMien: record.tenMien,
+        coSoId: record.coSo?.id,
+        trangThai: record.trangThai,
+      });
+
+      // Điền thongTinTenMiens
+      if (record.thongTinTenMiens?.length) {
+        thongTinMienList.value = record.thongTinTenMiens.map((ttm) => ({
+          id: ttm.id,
+          sdt: ttm.sdt ?? '',
+          email: ttm.email ?? '',
+        }));
+      }
+    }
   });
 
   // ─── Quản lý thongTinMiens ────────────────────────────────────────────────
@@ -212,13 +253,7 @@
       const values = await validate();
       setModalProps({ confirmLoading: true });
 
-      if (!selectedFile.value) {
-        message.error('Vui lòng chọn hình ảnh / logo cho tên miền!');
-        setModalProps({ confirmLoading: false });
-        return;
-      }
-
-      // Validate từng thongTinMien
+      // Validate email từng thongTinMien
       for (let i = 0; i < thongTinMienList.value.length; i++) {
         const ttm = thongTinMienList.value[i];
         if (ttm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ttm.email)) {
@@ -228,35 +263,94 @@
         }
       }
 
-      const dto = {
-        tenMien: values.tenMien,
-        coSoId: values.coSoId || undefined,
-        thongTinMiens:
-          thongTinMienList.value.length > 0
-            ? thongTinMienList.value.map((ttm) => ({
-                sdt: ttm.sdt?.trim() || '',
-                email: ttm.email?.trim() || '',
-              }))
-            : undefined,
-      };
+      if (isEditMode.value) {
+        // ── UPDATE ──
+        const record = editingRecord.value!;
 
-      const result = await createMien(dto, selectedFile.value);
-
-      if (result.status === 200 || result.status === 201) {
-        if (fileList.value[0]?.url?.startsWith('blob:')) {
-          URL.revokeObjectURL(fileList.value[0].url);
+        // Khi sửa, file là bắt buộc (backend yêu cầu @RequestPart("file"))
+        // Nếu không đổi ảnh thì cần tải lại ảnh hiện tại dạng File
+        // Giải pháp: nếu không có file mới & có ảnh cũ thì fetch blob rồi gửi
+        let fileToSend = selectedFile.value;
+        if (!fileToSend && currentImageUrl.value) {
+          try {
+            const blob = await fetch(currentImageUrl.value).then((r) => r.blob());
+            const ext = currentImageUrl.value.split('.').pop()?.split('?')[0] ?? 'jpg';
+            fileToSend = new File([blob], `current_image.${ext}`, { type: blob.type });
+          } catch {
+            message.error('Không thể tải lại ảnh hiện tại, vui lòng chọn ảnh mới');
+            setModalProps({ confirmLoading: false });
+            return;
+          }
         }
-        message.success('Tạo mới thành công');
-        closeModal();
-        emit('success');
+
+        if (!fileToSend) {
+          message.error('Vui lòng chọn hình ảnh / logo cho tên miền!');
+          setModalProps({ confirmLoading: false });
+          return;
+        }
+
+        const dto = {
+          id: record.id,
+          tenMien: values.tenMien,
+          coSoId: values.coSoId || undefined,
+          trangThai: values.trangThai,
+          thongTinMiens: thongTinMienList.value.map((ttm) => ({
+            ...(ttm.id !== undefined ? { id: ttm.id } : {}),
+            sdt: ttm.sdt?.trim() ?? '',
+            email: ttm.email?.trim() ?? '',
+          })),
+        };
+
+        const result = await updateMien(dto, fileToSend);
+        if (result.status === 200 || result.status === 201) {
+          cleanupBlobUrls();
+          message.success('Cập nhật thành công');
+          closeModal();
+          emit('success');
+        } else {
+          message.error(result.message || 'Có lỗi xảy ra');
+        }
       } else {
-        message.error(result.message || 'Có lỗi xảy ra');
+        // ── CREATE ──
+        if (!selectedFile.value) {
+          message.error('Vui lòng chọn hình ảnh / logo cho tên miền!');
+          setModalProps({ confirmLoading: false });
+          return;
+        }
+
+        const dto = {
+          tenMien: values.tenMien,
+          coSoId: values.coSoId || undefined,
+          thongTinMiens:
+            thongTinMienList.value.length > 0
+              ? thongTinMienList.value.map((ttm) => ({
+                  sdt: ttm.sdt?.trim() ?? '',
+                  email: ttm.email?.trim() ?? '',
+                }))
+              : undefined,
+        };
+
+        const result = await createMien(dto, selectedFile.value);
+        if (result.status === 200 || result.status === 201) {
+          cleanupBlobUrls();
+          message.success('Tạo mới thành công');
+          closeModal();
+          emit('success');
+        } else {
+          message.error(result.message || 'Có lỗi xảy ra');
+        }
       }
     } catch (error: any) {
       console.error('Submit error:', error);
       message.error(error?.message || 'Có lỗi xảy ra khi lưu dữ liệu');
     } finally {
       setModalProps({ confirmLoading: false });
+    }
+  }
+
+  function cleanupBlobUrls() {
+    if (fileList.value[0]?.url?.startsWith('blob:')) {
+      URL.revokeObjectURL(fileList.value[0].url);
     }
   }
 </script>

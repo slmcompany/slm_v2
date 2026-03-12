@@ -54,6 +54,11 @@
           <TableAction
             :actions="[
               {
+                icon: 'ant-design:edit-outlined',
+                tooltip: 'Sửa',
+                onClick: () => handleEdit(record as MienDto),
+              },
+              {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
                 tooltip: 'Xóa',
@@ -100,7 +105,7 @@
                 :width="120"
                 :src="record.tepTin.duongDan"
                 :preview="true"
-                style=" border: 1px solid #f0f0f0;border-radius: 6px"
+                style="border: 1px solid #f0f0f0; border-radius: 6px"
               />
             </div>
           </div>
@@ -121,8 +126,6 @@
                   padding: 12px;
                   border: 1px solid #e8e8e8;
                   border-radius: 8px;
-
-                  /* background: #fafafa; */
                 "
               >
                 <div
@@ -161,7 +164,7 @@
       </template>
     </BasicTable>
 
-    <!-- ─── Create modal ──────────────────────────────────────────────────── -->
+    <!-- ─── Create / Edit modal ───────────────────────────────────────────── -->
     <MienModal
       @register="registerModal"
       @success="handleSuccess"
@@ -254,7 +257,7 @@
     expandRowByClick: false,
     canResize: true,
     actionColumn: {
-      width: 80,
+      width: 100,
       title: 'Thao tác',
       dataIndex: 'action',
       fixed: 'right',
@@ -294,7 +297,6 @@
         loadError.value = 'Không tải được danh sách cơ sở: ' + String(coSoRes.reason);
       }
 
-      // Cập nhật search form options
       try {
         const form = getForm();
         if (form && typeof form.updateSchema === 'function') {
@@ -324,6 +326,15 @@
     } catch (err) {
       console.error('handleCreate error:', err);
       message.error('Không thể mở modal: ' + String(err));
+    }
+  }
+
+  function handleEdit(record: MienDto) {
+    try {
+      openModal(true, { record, coSoOptions: coSoOptions.value });
+    } catch (err) {
+      console.error('handleEdit error:', err);
+      message.error('Không thể mở modal sửa: ' + String(err));
     }
   }
 

@@ -12,6 +12,8 @@ public interface BaseService<T, ID> {
     T create(T entity);
 
     T update(ID id, T entity);
+    T update(T entity);
+    List<T> update(Iterable<T> entities);
 
     void delete(ID id);
 
