@@ -177,6 +177,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
         for (VatTuTronGoi vatTuTronGoi : dsVatTuTronGoi) {
             for (VatTuTronGoiUpdatingDto vatTuTronGoiUpdatingDto : dsVatTuTronGoiUpdatingDtos) {
                 if (vatTuTronGoi.getId().equals(vatTuTronGoiUpdatingDto.getId())) {
+                    vatTuTronGoi.setSoLuong(vatTuTronGoiUpdatingDto.getSoLuong());
                     vatTuTronGoi.setDuocBaoHanh(vatTuTronGoiUpdatingDto.getDuocBaoHanh());
                     vatTuTronGoi.setThoiGianBaoHanh(vatTuTronGoiUpdatingDto.getThoiGianBaoHanh());
                     vatTuTronGoi.setDuocXem(vatTuTronGoiUpdatingDto.getDuocXem());

@@ -79,6 +79,16 @@
                   </FormItem>
                 </Col>
                 <Col :span="12">
+                  <FormItem label="Số lượng">
+                    <InputNumber
+                      v-model:value="item.soLuong"
+                      placeholder="Nhập số lượng"
+                      :min="0"
+                      style="width: 100%"
+                    />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -127,6 +137,16 @@
                 <Col :span="12">
                   <FormItem label="Vật tư">
                     <Input :value="item.vatTuTen" disabled />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Số lượng">
+                    <InputNumber
+                      v-model:value="item.soLuong"
+                      placeholder="Nhập số lượng"
+                      :min="0"
+                      style="width: 100%"
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -181,6 +201,16 @@
                   </FormItem>
                 </Col>
                 <Col :span="12">
+                  <FormItem label="Số lượng">
+                    <InputNumber
+                      v-model:value="item.soLuong"
+                      placeholder="Nhập số lượng"
+                      :min="0"
+                      style="width: 100%"
+                    />
+                  </FormItem>
+                </Col>   
+                <Col :span="12">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -229,6 +259,16 @@
                 <Col :span="12">
                   <FormItem label="Vật tư">
                     <Input :value="item.vatTuTen" disabled />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Số lượng">
+                    <InputNumber
+                      v-model:value="item.soLuong"
+                      placeholder="Nhập số lượng"
+                      :min="0"
+                      style="width: 100%"
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -283,6 +323,16 @@
                   </FormItem>
                 </Col>
                 <Col :span="12">
+                  <FormItem label="Số lượng">
+                    <InputNumber
+                      v-model:value="item.soLuong"
+                      placeholder="Nhập số lượng"
+                      :min="0"
+                      style="width: 100%"
+                    />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -331,6 +381,16 @@
                 <Col :span="12">
                   <FormItem label="Vật tư">
                     <Input :value="item.vatTuTen" disabled />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Số lượng">
+                    <InputNumber
+                      v-model:value="item.soLuong"
+                      placeholder="Nhập số lượng"
+                      :min="0"
+                      style="width: 100%"
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -385,6 +445,16 @@
                   </FormItem>
                 </Col>
                 <Col :span="12">
+                  <FormItem label="Số lượng">
+                    <InputNumber
+                      v-model:value="item.soLuong"
+                      placeholder="Nhập số lượng"
+                      :min="0"
+                      style="width: 100%"
+                    />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
                   <FormItem label="Được bảo hành">
                     <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
                       <RadioButton :value="true">Có</RadioButton>
@@ -433,6 +503,16 @@
                 <Col :span="12">
                   <FormItem label="Vật tư">
                     <Input :value="item.vatTuTen" disabled />
+                  </FormItem>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="Số lượng">
+                    <InputNumber
+                      v-model:value="item.soLuong"
+                      placeholder="Nhập số lượng"
+                      :min="0"
+                      style="width: 100%"
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -646,6 +726,7 @@
 
   type VatTuUpdateItem = {
     id: number;
+    soLuong: number; // ← THÊM DÒNG NÀY
     vatTuTen: string;
     nhomVatTuMa: string;
     duocBaoHanh: boolean;
@@ -762,7 +843,7 @@
           fileList.value = [
             {
               uid: '-1',
-              name: record.tepTin.tenGoc || 'image.jpg',
+              name: record.tepTin.tenTepGoc || 'image.jpg',
               status: 'done',
               url: imageUrl,
             },
@@ -776,6 +857,7 @@
         // Tìm dòng này trong hàm loadRecordData:
         const vatTuItem: VatTuUpdateItem = {
           id: item.id,
+          soLuong: item.soLuong || 0, // ← THÊM DÒNG NÀY
           vatTuTen: item.vatTu?.ten || 'N/A',
           nhomVatTuMa: item.vatTu?.nhomVatTu?.ma || '',
           duocBaoHanh: item.duocBaoHanh ?? true,
@@ -857,6 +939,7 @@
         trangThai: formState.trangThai,
         vatTuTronGois: allVatTu.map((v) => ({
           id: v.id,
+          soLuong: v.soLuong,
           duocBaoHanh: v.duocBaoHanh,
           thoiGianBaoHanh: v.thoiGianBaoHanh,
           duocXem: v.duocXem,

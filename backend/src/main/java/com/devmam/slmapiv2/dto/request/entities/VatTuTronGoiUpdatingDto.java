@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class VatTuTronGoiUpdatingDto {
     Integer id;
+    Integer soLuong;
     Boolean duocBaoHanh;
     Integer thoiGianBaoHanh;
     Boolean duocXem;
