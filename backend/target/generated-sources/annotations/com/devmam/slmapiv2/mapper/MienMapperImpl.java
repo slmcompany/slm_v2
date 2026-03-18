@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-14T09:30:02+0700",
+    date = "2026-03-18T20:03:23+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -34,6 +34,7 @@ public class MienMapperImpl implements MienMapper {
         mienDto.id( mien.getId() );
         mienDto.tenMien( mien.getTenMien() );
         mienDto.coSo( coSoToCoSoDto( mien.getCoSo() ) );
+        mienDto.thoiGianThayDoiHotline( mien.getThoiGianThayDoiHotline() );
         mienDto.tepTin( tepTinMapper.toDto( mien.getTepTin() ) );
         mienDto.taoLuc( mien.getTaoLuc() );
         mienDto.trangThai( mien.getTrangThai() );

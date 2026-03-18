@@ -14,5 +14,6 @@ import java.util.List;
 public class MienCreatingDto {
     String tenMien;
     Integer coSoId;
+    Integer thoiGianThayDoiHotline;
     List<ThongTinMienCreatingDto> thongTinMiens;
 }

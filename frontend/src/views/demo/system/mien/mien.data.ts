@@ -15,10 +15,10 @@ export const columns: BasicColumn[] = [
     customRender: ({ record }) => record.coSo?.ten || '-',
   },
   {
-    title: 'Mã cơ sở',
-    dataIndex: ['coSo', 'ma'],
+    title: 'Thời gian thay đổi hotline(phút)',
+    dataIndex: ['thoiGianThayDoiHotline'],
     width: 120,
-    customRender: ({ record }) => record.coSo?.ma || '-',
+    customRender: ({ record }) => record.thoiGianThayDoiHotline || '-',
   },
   {
     title: 'Hình ảnh',
@@ -137,6 +137,16 @@ export const formSchema: FormSchema[] = [
       filterOption: (input: string, option: any) =>
         option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0,
     },
+  },
+  {
+    field: 'thoiGianThayDoiHotline',
+    label: 'Thời gian thay đổi',
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: 'Nhập thời gian (phút)',
+      min: 1,
+    },
+    required: false,
   },
   {
     field: 'trangThai',

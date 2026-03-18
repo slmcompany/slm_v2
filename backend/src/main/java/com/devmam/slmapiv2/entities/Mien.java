@@ -37,6 +37,9 @@ public class Mien implements Serializable {
     @JoinColumn(name = "co_so_id")
     private CoSo coSo;
 
+    @Column(name = "thoi_gian_thay_doi_hotline", nullable = true)
+    private Integer thoiGianThayDoiHotline;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tep_tin_id")
     private TepTin tepTin;

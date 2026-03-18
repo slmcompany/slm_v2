@@ -136,6 +136,7 @@
   import { createMien, updateMien } from './mien';
   import type { ThongTinMienCreatingDto, MienDto } from './mien';
   import type { UploadProps } from 'ant-design-vue';
+import { t } from '@/hooks/web/useI18n';
 
   defineOptions({ name: 'MienModal' });
 
@@ -189,6 +190,7 @@
       await setFieldsValue({
         tenMien: record.tenMien,
         coSoId: record.coSo?.id,
+        thoiGianThayDoiHotline: record.thoiGianThayDoiHotline,
         trangThai: record.trangThai,
       });
 
@@ -293,6 +295,7 @@
           id: record.id,
           tenMien: values.tenMien,
           coSoId: values.coSoId || undefined,
+          thoiGianThayDoiHotline: values.thoiGianThayDoiHotline || 1,
           trangThai: values.trangThai,
           thongTinMiens: thongTinMienList.value.map((ttm) => ({
             ...(ttm.id !== undefined ? { id: ttm.id } : {}),
@@ -321,6 +324,7 @@
         const dto = {
           tenMien: values.tenMien,
           coSoId: values.coSoId || undefined,
+          thoiGianThayDoiHotline: values.thoiGianThayDoiHotline || 1,
           thongTinMiens:
             thongTinMienList.value.length > 0
               ? thongTinMienList.value.map((ttm) => ({

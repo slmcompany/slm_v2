@@ -99,6 +99,7 @@ public class MienService extends BaseServiceImpl<Mien, Integer> {
         Mien mien = Mien.builder()
                 .tenMien(creating.getTenMien())
                 .coSo(coSo)
+                .thoiGianThayDoiHotline(creating.getThoiGianThayDoiHotline())
                 .trangThai(1)
                 .taoLuc(now)
                 .build();
@@ -191,6 +192,7 @@ public class MienService extends BaseServiceImpl<Mien, Integer> {
 
         mien.setTenMien(updating.getTenMien());
         mien.setCoSo(coSo);
+        mien.setThoiGianThayDoiHotline(updating.getThoiGianThayDoiHotline());
         if (updating.getTrangThai() != null) {
             mien.setTrangThai(updating.getTrangThai());
         }

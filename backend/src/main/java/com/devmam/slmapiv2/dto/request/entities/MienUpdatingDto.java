@@ -16,6 +16,7 @@ public class MienUpdatingDto {
     Integer id;
     String tenMien;
     Integer coSoId;
+    Integer thoiGianThayDoiHotline;
     Integer trangThai;
     List<ThongTinMienUpdatingDto> thongTinMiens;
 }

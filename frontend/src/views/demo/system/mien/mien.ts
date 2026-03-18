@@ -80,6 +80,7 @@ export interface MienDto {
   id: number;
   tenMien: string;
   coSo: CoSoDto;
+  thoiGianThayDoiHotline: number;
   tepTin: TepTinDto;
   taoLuc: string;
   trangThai: number;
@@ -100,6 +101,7 @@ export interface ThongTinMienUpdatingDto {
 export interface MienCreatingDto {
   tenMien: string;
   coSoId?: number;
+  thoiGianThayDoiHotline?: number;
   thongTinMiens?: ThongTinMienCreatingDto[];
 }
 
@@ -107,6 +109,7 @@ export interface MienUpdatingDto {
   id: number;
   tenMien: string;
   coSoId?: number;
+  thoiGianThayDoiHotline?: number;
   thongTinMiens?: ThongTinMienUpdatingDto[];
 }
 
