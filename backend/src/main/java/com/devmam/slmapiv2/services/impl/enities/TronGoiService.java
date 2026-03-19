@@ -170,7 +170,10 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
         if (tronGoiFinding.isEmpty()) {
             throw new CommonException("Không tìm thấy trọn gói id: " + dto.getId());
         }
+
         TronGoi tronGoi = tronGoiFinding.get();
+
+        // Cập nhật danh sách vật tư
         List<VatTuTronGoiUpdatingDto> dsVatTuTronGoiUpdatingDtos = dto.getVatTuTronGois();
         List<VatTuTronGoi> dsVatTuTronGoi = tronGoi.getVatTuTronGois();
 
@@ -186,53 +189,71 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             }
         }
 
-        TepTin tepTin = tronGoi.getTepTin();
-        boolean isNew = false;
-        if (tepTin == null) {
-            isNew = true;
-            tepTin = TepTin.builder().build();
-        }
+        // Cập nhật thông tin trọn gói
+        tronGoi.setTen(dto.getTen());
+        tronGoi.setLoaiHeThong(dto.getLoaiHeThong());
+        tronGoi.setLoaiPha(dto.getLoaiPha());
+        tronGoi.setCongSuatHeThong(dto.getCongSuatHeThong());
+        tronGoi.setSanLuongToiThieu(dto.getSanLuongToiThieu());
+        tronGoi.setSanLuongToiDa(dto.getSanLuongToiDa());
+        tronGoi.setTongGia(dto.getTongGia());
+        tronGoi.setGmTong(dto.getGmTong());
+        tronGoi.setBanChay(dto.getBanChay());
+        tronGoi.setTrangThai(dto.getTrangThai());
 
-        try {
-            if (!isNew) {
-                minioService.delete(tepTin.getTenLuuTru());
-            }
-        } catch (Exception ignored) {
-
-        }
-
-
-        try {
-            tronGoi.setTen(dto.getTen());
-            tronGoi.setLoaiHeThong(dto.getLoaiHeThong());
-            tronGoi.setLoaiPha(dto.getLoaiPha());
-            tronGoi.setCongSuatHeThong(dto.getCongSuatHeThong());
-            tronGoi.setSanLuongToiThieu(dto.getSanLuongToiThieu());
-            tronGoi.setSanLuongToiDa(dto.getSanLuongToiDa());
-            tronGoi.setTongGia(dto.getTongGia());
-            tronGoi.setGmTong(dto.getGmTong());
-            tronGoi.setBanChay(dto.getBanChay());
-            tronGoi.setTrangThai(dto.getTrangThai());
-            if (file != null) {
-                String objectName = minioService.upload(file, "tron_goi" + "_" + calcService.genTenKhongDau(tronGoi.getTen()) + '_' + tronGoi.getCoSo().getMa() + "_" + new Date().getTime());
-                tepTin.setTenLuuTru(objectName);
-                tepTin.setTenTepGoc(objectName);
-                tepTin.setDuongDan(minioService.getPublicUrl(objectName));
-                tepTin.setLoaiTepTin(FileType.IMAGE.toString());
-                tepTin.setDuoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"));
-            }
+        // Xử lý file ảnh nếu có truyền lên
+        if (file != null) {
+            TepTin tepTin = tronGoi.getTepTin();
+            boolean isNew = (tepTin == null);
 
             if (isNew) {
-                tepTin = tepTinService.create(tepTin);
-            } else {
-                tepTin = tepTinService.update(tepTin.getId(), tepTin);
+                tepTin = TepTin.builder().build();
             }
 
-            tronGoi.setTepTin(tepTin);
-            tronGoi = update(tronGoi.getId(), tronGoi);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi trong quá trình upload file: ", e);
+            String oldObjectName = isNew ? null : tepTin.getTenLuuTru();
+
+            try {
+                // 1. Upload ảnh mới trước
+                String newObjectName = minioService.upload(
+                        file,
+                        "tron_goi" + "_"
+                                + calcService.genTenKhongDau(tronGoi.getTen())
+                                + '_' + tronGoi.getCoSo().getMa()
+                                + "_" + new Date().getTime()
+                );
+
+                // 2. Upload thành công → cập nhật thông tin tepTin
+                tepTin.setTenLuuTru(newObjectName);
+                tepTin.setTenTepGoc(newObjectName);
+                tepTin.setDuongDan(minioService.getPublicUrl(newObjectName));
+                tepTin.setLoaiTepTin(FileType.IMAGE.toString());
+                tepTin.setDuoiTep(minioService.getObjectInfo(newObjectName)
+                        .getUserMetadata().get("file-extension"));
+
+                // 3. Persist tepTin
+                if (isNew) {
+                    tepTin = tepTinService.create(tepTin);
+                } else {
+                    tepTin = tepTinService.update(tepTin.getId(), tepTin);
+                }
+
+                tronGoi.setTepTin(tepTin);
+
+                // 4. Xóa ảnh cũ sau khi mọi thứ đã thành công
+                if (oldObjectName != null) {
+                    try {
+                        minioService.delete(oldObjectName);
+                    } catch (Exception ignored) {
+                        // Không ảnh hưởng nghiệp vụ nếu xóa ảnh cũ thất bại
+                    }
+                }
+
+            } catch (Exception e) {
+                throw new RuntimeException("Lỗi trong quá trình upload file: ", e);
+            }
         }
+
+        tronGoi = update(tronGoi.getId(), tronGoi);
 
         return ResponseEntity.ok(
                 ResponseData.<TronGoiDto>builder()
