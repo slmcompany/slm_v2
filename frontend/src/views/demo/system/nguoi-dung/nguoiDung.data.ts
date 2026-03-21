@@ -34,7 +34,7 @@ export const columns: BasicColumn[] = [
       const phanQuyen = record.phanQuyen;
       let color = 'blue';
       let text = 'Khách hàng';
-      
+
       if (phanQuyen === 'ADMIN') {
         color = 'red';
         text = 'Quản trị';
@@ -45,7 +45,7 @@ export const columns: BasicColumn[] = [
         color = 'green';
         text = 'Đại lý';
       }
-      
+
       return h(Tag, { color }, () => text);
     },
   },
@@ -75,7 +75,7 @@ export const columns: BasicColumn[] = [
       if (!record.tongHoaHong) return '0 đ';
       return new Intl.NumberFormat('vi-VN', {
         style: 'currency',
-        currency: 'VND'
+        currency: 'VND',
       }).format(record.tongHoaHong);
     },
   },
@@ -87,12 +87,12 @@ export const columns: BasicColumn[] = [
       const trangThai = record.trangThai;
       let color = 'success';
       let text = 'Hoạt động';
-      
+
       if (trangThai === 0) {
         color = 'error';
         text = 'Ngừng hoạt động';
       }
-      
+
       return h(Tag, { color }, () => text);
     },
   },
@@ -101,9 +101,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'taoLuc',
     width: 150,
     customRender: ({ record }) => {
-      return record.taoLuc 
-        ? new Date(record.taoLuc).toLocaleString('vi-VN')
-        : '-';
+      return record.taoLuc ? new Date(record.taoLuc).toLocaleString('vi-VN') : '-';
     },
   },
 ];
@@ -235,6 +233,104 @@ export const formSchema: FormSchema[] = [
         { label: 'Hà Nội', value: 'HN' },
         { label: 'Hồ Chí Minh', value: 'HCM' },
       ],
+    },
+  },
+];
+
+// Schema cho form chỉnh sửa người dùng
+export const editFormSchema: FormSchema[] = [
+  // Hidden field to carry the id
+  {
+    field: 'id',
+    label: 'ID',
+    component: 'Input',
+    show: false,
+  },
+  {
+    field: 'hoVaTen',
+    label: 'Họ và tên',
+    component: 'Input',
+    required: true,
+    componentProps: {
+      placeholder: 'Nhập họ và tên',
+    },
+  },
+  {
+    field: 'email',
+    label: 'Email',
+    component: 'Input',
+    componentProps: {
+      placeholder: 'Nhập email',
+    },
+    rules: [
+      {
+        type: 'email',
+        message: 'Email không hợp lệ',
+        trigger: 'blur',
+      },
+    ],
+  },
+  {
+    field: 'sdt',
+    label: 'Số điện thoại',
+    component: 'Input',
+    required: true,
+    componentProps: {
+      placeholder: 'Nhập số điện thoại',
+    },
+    rules: [
+      {
+        pattern: /^[0-9]{10,11}$/,
+        message: 'Số điện thoại phải từ 10-11 chữ số',
+        trigger: 'blur',
+      },
+    ],
+  },
+  {
+    field: 'phanQuyen',
+    label: 'Phân quyền',
+    component: 'Select',
+    componentProps: {
+      placeholder: 'Chọn phân quyền',
+      options: [
+        { label: 'Quản trị', value: 'ADMIN' },
+        { label: 'Bán hàng', value: 'SALE' },
+        { label: 'Đại lý', value: 'AGENT' },
+        { label: 'Khách hàng', value: 'CUSTOMER' },
+      ],
+    },
+  },
+  {
+    field: 'sinhNhat',
+    label: 'Sinh nhật',
+    component: 'DatePicker',
+    componentProps: {
+      placeholder: 'Chọn ngày sinh',
+      style: { width: '100%' },
+      format: 'DD/MM/YYYY',
+      valueFormat: 'YYYY-MM-DD',
+    },
+  },
+  {
+    field: 'phanTramHoaHong',
+    label: 'Hoa hồng (%)',
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: 'Nhập % hoa hồng',
+      min: 0,
+      max: 100,
+      precision: 2,
+      style: { width: '100%' },
+      addonAfter: '%',
+    },
+  },
+  {
+    field: 'diaChi',
+    label: 'Địa chỉ',
+    component: 'InputTextArea',
+    componentProps: {
+      placeholder: 'Nhập địa chỉ',
+      rows: 2,
     },
   },
 ];

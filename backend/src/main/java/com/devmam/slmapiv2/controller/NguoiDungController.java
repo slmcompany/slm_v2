@@ -101,7 +101,7 @@ public class NguoiDungController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseData<NguoiDungDto>> update(@Valid @RequestBody NguoiDungClientUpdatingDto dto) {
+    public ResponseEntity<ResponseData<NguoiDungDto>> update(@RequestBody NguoiDungClientUpdatingDto dto) {
         return nguoiDungService.updateNguoiDung(dto);
     }
 

@@ -77,8 +77,9 @@
           <Descriptions title="Thông tin công việc" :column="2" bordered size="small">
             <DescriptionsItem label="Phân quyền">
               <Tag v-if="record.phanQuyen === 'ADMIN'" color="red">Quản trị</Tag>
-              <Tag v-else-if="record.phanQuyen === 'MANAGER'" color="orange">Quản lý</Tag>
-              <Tag v-else color="blue">Người dùng</Tag>
+              <Tag v-else-if="record.phanQuyen === 'SALE'" color="orange">Bán hàng</Tag>
+              <Tag v-else-if="record.phanQuyen === 'AGENT'" color="green">Đại lý</Tag>
+              <Tag v-else color="blue">Khách hàng</Tag>
             </DescriptionsItem>
             <DescriptionsItem label="Cơ sở">
               {{ record.coSo?.ten || '-' }}
@@ -114,6 +115,9 @@
 
     <!-- Modal tạo tài khoản -->
     <NguoiDungModal @register="registerModal" @success="handleRefresh" />
+
+    <!-- Modal chỉnh sửa -->
+    <NguoiDungEditModal @register="registerEditModal" @success="handleRefresh" />
   </div>
 </template>
 
@@ -127,28 +131,31 @@
   import { Button, Descriptions, DescriptionsItem, Divider, message, Table, Tag } from 'ant-design-vue';
   import { useModal } from '@/components/Modal';
   import NguoiDungModal from './NguoiDungModal.vue';
+  import NguoiDungEditModal from './NguoiDungEditModal.vue';
 
   defineOptions({ name: 'NguoiDungManagement' });
 
   const loadError = ref<string | null>(null);
+
   const [registerModal, { openModal }] = useModal();
+  const [registerEditModal, { openModal: openEditModal }] = useModal();
 
   const khachHangColumns = [
     { title: 'Họ và tên', dataIndex: 'hoVaTen', width: 150 },
     { title: 'Email', dataIndex: 'email', width: 180 },
     { title: 'Số điện thoại', dataIndex: 'sdt', width: 120 },
-    { 
-      title: 'Giới tính', 
-      dataIndex: 'gioiTinh', 
+    {
+      title: 'Giới tính',
+      dataIndex: 'gioiTinh',
       width: 80,
-      customRender: ({ record }: any) => record.gioiTinh === true ? 'Nam' : 'Nữ'
+      customRender: ({ record }: any) => (record.gioiTinh === true ? 'Nam' : 'Nữ'),
     },
     { title: 'Địa chỉ', dataIndex: 'diaChi', width: 200 },
     {
       title: 'Đã bán được hàng',
       dataIndex: 'daBanDuocHang',
       width: 130,
-      customRender: ({ record }: any) => record.daBanDuocHang ? 'Có' : 'Chưa'
+      customRender: ({ record }: any) => (record.daBanDuocHang ? 'Có' : 'Chưa'),
     },
   ];
 
@@ -169,10 +176,7 @@
       } catch (error: any) {
         console.error('Error fetching data (filterNguoiDung):', error);
         message.error(`Error fetching data: ${error?.message ?? String(error)}`);
-        return {
-          items: [],
-          total: 0,
-        };
+        return { items: [], total: 0 };
       }
     },
     columns,
@@ -180,12 +184,8 @@
       labelWidth: 120,
       schemas: searchFormSchema,
       autoSubmitOnEnter: true,
-      submitFunc: async () => {
-        await reload();
-      },
-      resetFunc: async () => {
-        await reload();
-      },
+      submitFunc: async () => { await reload(); },
+      resetFunc: async () => { await reload(); },
     },
     useSearchForm: true,
     showTableSetting: true,
@@ -210,10 +210,7 @@
   });
 
   function formatCurrency(value: number) {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(value);
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
   }
 
   function handleCreate() {
@@ -221,7 +218,7 @@
   }
 
   function handleEdit(record: NguoiDungDto) {
-    message.info('Chức năng đang phát triển');
+    openEditModal(true, record);
   }
 
   function handleDelete(record: NguoiDungDto) {
@@ -261,5 +258,4 @@
   });
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

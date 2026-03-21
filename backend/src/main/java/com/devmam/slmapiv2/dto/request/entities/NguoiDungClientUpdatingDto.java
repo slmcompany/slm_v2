@@ -14,11 +14,13 @@ public class NguoiDungClientUpdatingDto {
 
     @NonNull
     Integer id;
+    String phanQuyen;
     String email;
     @NonNull
     String sdt;
     @NonNull
     String hoVaTen;
     Instant sinhNhat;
+    Double phanTramHoaHong;
     String diaChi;
 }

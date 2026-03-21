@@ -5,11 +5,21 @@ enum Api {
   GetAll = '/nguoi-dung/all',
   GetById = '/nguoi-dung/',
   CreateAccount = '/nguoi-dung/create-account',
+  Update = '/nguoi-dung/update',
 }
 
 export interface FilterCriteria {
   fieldName: string;
-  operation: 'EQUALS' | 'LESS_THAN' | 'LESS_THAN_OR_EQUAL' | 'GREATER_THAN' | 'GREATER_THAN_OR_EQUAL' | 'LIKE' | 'ILIKE' | 'IN' | 'NOT_IN';
+  operation:
+    | 'EQUALS'
+    | 'LESS_THAN'
+    | 'LESS_THAN_OR_EQUAL'
+    | 'GREATER_THAN'
+    | 'GREATER_THAN_OR_EQUAL'
+    | 'LIKE'
+    | 'ILIKE'
+    | 'IN'
+    | 'NOT_IN';
   value: any;
   logicType?: 'AND' | 'OR';
 }
@@ -99,61 +109,41 @@ export interface CreateAccountRequest {
   maCoSo: string;
 }
 
+export interface UpdateNguoiDungRequest {
+  id: number;
+  phanQuyen?: string;
+  email?: string;
+  sdt: string;
+  hoVaTen: string;
+  sinhNhat?: string; // ISO string, maps to Instant on backend
+  phanTramHoaHong?: number;
+  diaChi?: string;
+}
+
 export function convertToFilterRequest(params: any): BaseFilterRequest {
   const filters: FilterCriteria[] = [];
   const sorts: SortCriteria[] = [];
 
   if (params.hoVaTen) {
-    filters.push({
-      fieldName: 'hoVaTen',
-      operation: 'ILIKE',
-      value: params.hoVaTen,
-    });
+    filters.push({ fieldName: 'hoVaTen', operation: 'ILIKE', value: params.hoVaTen });
   }
-
   if (params.email) {
-    filters.push({
-      fieldName: 'email',
-      operation: 'ILIKE',
-      value: params.email,
-    });
+    filters.push({ fieldName: 'email', operation: 'ILIKE', value: params.email });
   }
-
   if (params.sdt) {
-    filters.push({
-      fieldName: 'sdt',
-      operation: 'ILIKE',
-      value: params.sdt,
-    });
+    filters.push({ fieldName: 'sdt', operation: 'ILIKE', value: params.sdt });
   }
-
   if (params.phanQuyen) {
-    filters.push({
-      fieldName: 'phanQuyen',
-      operation: 'EQUALS',
-      value: params.phanQuyen,
-    });
+    filters.push({ fieldName: 'phanQuyen', operation: 'EQUALS', value: params.phanQuyen });
   }
-
   if (params.trangThai !== undefined && params.trangThai !== null && params.trangThai !== '') {
-    filters.push({
-      fieldName: 'trangThai',
-      operation: 'EQUALS',
-      value: params.trangThai,
-    });
+    filters.push({ fieldName: 'trangThai', operation: 'EQUALS', value: params.trangThai });
   }
 
-  if (params.sortField) {
-    sorts.push({
-      fieldName: params.sortField,
-      direction: params.sortOrder === 'ascend' ? 'ASC' : 'DESC',
-    });
-  } else {
-    sorts.push({
-      fieldName: 'id',
-      direction: 'DESC',
-    });
-  }
+  sorts.push({
+    fieldName: params.sortField || 'id',
+    direction: params.sortOrder === 'ascend' ? 'ASC' : 'DESC',
+  });
 
   return {
     filters,
@@ -164,54 +154,36 @@ export function convertToFilterRequest(params: any): BaseFilterRequest {
 }
 
 export function getAllNguoiDung() {
-  return realHttp.get<ResponseData<NguoiDungDto[]>>(
-    {
-      url: Api.GetAll,
-    },
-    {
-      isTransformResponse: false,
-    }
-  ).then((res: any) => res as ResponseData<NguoiDungDto[]>);
+  return realHttp
+    .get<ResponseData<NguoiDungDto[]>>({ url: Api.GetAll }, { isTransformResponse: false })
+    .then((res: any) => res as ResponseData<NguoiDungDto[]>);
 }
 
 export function filterNguoiDung(params: any) {
   const filterRequest = convertToFilterRequest(params);
   return realHttp
-    .post<ResponseData<PageResponse<NguoiDungDto>>>(
-      {
-        url: Api.Filter,
-        data: filterRequest,
-      },
-      {
-        isTransformResponse: false,
-      },
-    )
-    .then((res: any) => {
-      return res as ResponseData<PageResponse<NguoiDungDto>>;
-    });
+    .post<
+      ResponseData<PageResponse<NguoiDungDto>>
+    >({ url: Api.Filter, data: filterRequest }, { isTransformResponse: false })
+    .then((res: any) => res as ResponseData<PageResponse<NguoiDungDto>>);
 }
 
 export function getNguoiDungById(id: number) {
   return realHttp
-    .get<ResponseData<NguoiDungDto>>(
-      {
-        url: `${Api.GetById}${id}`,
-      },
-      {
-        isTransformResponse: false,
-      },
-    )
+    .get<ResponseData<NguoiDungDto>>({ url: `${Api.GetById}${id}` }, { isTransformResponse: false })
     .then((res: any) => res.data as ResponseData<NguoiDungDto>);
 }
 
 export function createAccount(data: CreateAccountRequest) {
-  return realHttp.post<ResponseData<NguoiDungDto>>(
-    {
-      url: Api.CreateAccount,
-      data,
-    },
-    {
-      isTransformResponse: false,
-    }
-  ).then((res: any) => res as ResponseData<NguoiDungDto>);
+  return realHttp
+    .post<
+      ResponseData<NguoiDungDto>
+    >({ url: Api.CreateAccount, data }, { isTransformResponse: false })
+    .then((res: any) => res as ResponseData<NguoiDungDto>);
+}
+
+export function updateNguoiDung(data: UpdateNguoiDungRequest) {
+  return realHttp
+    .put<ResponseData<NguoiDungDto>>({ url: Api.Update, data }, { isTransformResponse: false })
+    .then((res: any) => res as ResponseData<NguoiDungDto>);
 }

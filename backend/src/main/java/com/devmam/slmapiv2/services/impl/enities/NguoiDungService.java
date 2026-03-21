@@ -220,9 +220,11 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         } else {
             dto.setEmail(dto.getEmail().trim().toLowerCase());
         }
+        nguoiDung.setPhanQuyen(dto.getPhanQuyen() != null ? dto.getPhanQuyen() : nguoiDung.getPhanQuyen());
         nguoiDung.setSdt(dto.getSdt());
         nguoiDung.setHoVaTen(dto.getHoVaTen());
         nguoiDung.setSinhNhat(dto.getSinhNhat());
+        nguoiDung.setPhanTramHoaHong(dto.getPhanTramHoaHong() != null ? dto.getPhanTramHoaHong() : nguoiDung.getPhanTramHoaHong());
         nguoiDung.setDiaChi(dto.getDiaChi());
 
         nguoiDung = update(dto.getId(), nguoiDung);
