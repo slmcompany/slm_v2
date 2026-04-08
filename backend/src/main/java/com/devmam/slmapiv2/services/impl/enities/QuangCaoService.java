@@ -160,10 +160,10 @@ public class QuangCaoService extends BaseServiceImpl<QuangCao, Integer> {
 
         } catch (Exception e) {
             log.error("Lỗi tạo tệp tin cho quảng cáo: {}", dto.getTieuDe(), e);
-            throw new RuntimeException("Lỗi tạo tệp tin cho quảng cáo: " + dto.getTieuDe(), e);
+            throw new CommonException("Lỗi tạo tệp tin cho quảng cáo: " + dto.getTieuDe(), e);
         }
         if (tepTinUpdating == null) {
-            CommonException e = new CommonException("Lỗi tạo tệp tin cho quảng cáo: " + dto.getTieuDe());
+            CommonException e = new CommonException("Lỗi tạo tệp tin cho quảng cáo do tệp tin updating null: " + dto.getTieuDe());
             log.error("Lỗi tạo tệp tin cho quảng cáo: {}", dto.getTieuDe(), e);
             throw e;
         }
