@@ -30,7 +30,6 @@ import java.util.Optional;
 @Slf4j
 public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
 
-
     @Autowired
     private TepTinService tepTinService;
 
@@ -70,18 +69,22 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
         return entityManager;
     }
 
+    // ============================================================
+    //  CREATE
+    // ============================================================
     @Transactional
     public ResponseEntity<ResponseData<List<TronGoiDto>>> create(TronGoiCreatingDto dto, MultipartFile file) {
-
 
         List<TronGoiDto> results = new ArrayList<>();
 
         for (ThongTinTronGoiCoSoCreatingDto tronGoiCoSo : dto.getTronGoiCoSos()) {
             TronGoi tronGoi = TronGoiCreatingDto.toEntity(dto);
+
             Optional<CoSo> coSo = coSoService.getOne(tronGoiCoSo.getCoSoId());
             if (coSo.isEmpty()) {
                 throw new CommonException("Không tìm thấy cơ sở id: " + tronGoiCoSo.getCoSoId());
             }
+
             Optional<NhomTronGoi> nhomTronGoi = nhomTronGoiService.getOne(dto.getNhomTronGoiId());
             if (nhomTronGoi.isEmpty()) {
                 throw new CommonException("Không tìm thấy nhóm trọn gói id:" + dto.getNhomTronGoiId());
@@ -97,44 +100,17 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             }
             tronGoi = create(tronGoi);
 
+            // Tạo vật tư trọn gói
+            createVatTuTronGoiList(tronGoi, dto.getVatTuTronGois().stream().toList(), coSo.get());
 
-            for (VatTuTronGoiCreatingDto vatTuTronGoiDto : dto.getVatTuTronGois()) {
-                Optional<VatTu> vatTu = vatTuService.getOne(vatTuTronGoiDto.getVatTuId());
-                if (vatTu.isEmpty()) {
-                    throw new CommonException("Không tìm thấy vật tư id: " + vatTuTronGoiDto.getVatTuId());
-                }
-                List<ThongTinGia> dsThongTinGia = vatTu.get().getThongTinGias();
-                if (dsThongTinGia.isEmpty()) {
-                    throw new CommonException("Giá của vật tư id:" + vatTu.get().getId() + " chưa được khởi tạo");
-                }
-                Double giaBanTheoKhuVuc = 0.0;
-                boolean daChinhGia = false;
-                for (GiaInfo giaInfo : dsThongTinGia.get(dsThongTinGia.size() - 1).getDsGia()) {
-                    if (giaInfo.getMaCoSo().equals(coSo.get().getMa())) {
-                        giaBanTheoKhuVuc = giaInfo.getGiaBan() + 0.0;
-                        daChinhGia = true;
-                        break;
-                    }
-                }
-                if (!daChinhGia) {
-                    giaBanTheoKhuVuc = dsThongTinGia.get(dsThongTinGia.size() - 1).getDsGia().get(0).getGiaBan() + 0.0;
-                }
-                vatTuTronGoiService.create(VatTuTronGoi.builder()
-                        .tronGoi(tronGoi)
-                        .vatTu(vatTu.get())
-                        .moTa(vatTuTronGoiDto.getMoTa())
-                        .soLuong(vatTuTronGoiDto.getSoLuong())
-                        .gia(giaBanTheoKhuVuc)
-                        .gm(vatTuTronGoiDto.getGm())
-                        .duocBaoHanh(vatTuTronGoiDto.getDuocBaoHanh())
-                        .thoiGianBaoHanh(vatTuTronGoiDto.getThoiGianBaoHanh())
-                        .duocXem(vatTuTronGoiDto.getDuocXem())
-                        .trangThai(vatTuTronGoiDto.getTrangThai())
-                        .build());
-            }
+            // Upload ảnh
             Date now = new Date();
             try {
-                String objectName = minioService.upload(file, "tron_goi_" + calcService.genTenKhongDau(tronGoi.getTen()) + "_" + coSo.get().getMa() + "_" + now.getTime());
+                String objectName = minioService.upload(
+                        file,
+                        "tron_goi_" + calcService.genTenKhongDau(tronGoi.getTen())
+                                + "_" + coSo.get().getMa() + "_" + now.getTime()
+                );
                 TepTin creatingTepTin = tepTinService.create(
                         TepTin.builder()
                                 .tenTepGoc(objectName)
@@ -153,6 +129,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                 throw new RuntimeException("Lỗi tạo tệp tin cho trọn gói: " + dto.getTen(), e);
             }
         }
+
         return ResponseEntity.ok(
                 ResponseData.<List<TronGoiDto>>builder()
                         .status(200)
@@ -163,91 +140,87 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
         );
     }
 
+    // ============================================================
+    //  UPDATE
+    // ============================================================
     @Transactional
     public ResponseEntity<ResponseData<TronGoiDto>> update(TronGoiUpdatingDto dto, MultipartFile file) {
         Optional<TronGoi> tronGoiFinding = getOne(dto.getId());
-
         if (tronGoiFinding.isEmpty()) {
             throw new CommonException("Không tìm thấy trọn gói id: " + dto.getId());
         }
 
         TronGoi tronGoi = tronGoiFinding.get();
+        CoSo coSo = tronGoi.getCoSo(); // giữ nguyên cơ sở
 
-        // Cập nhật danh sách vật tư
-        List<VatTuTronGoiUpdatingDto> dsVatTuTronGoiUpdatingDtos = dto.getVatTuTronGois();
-        List<VatTuTronGoi> dsVatTuTronGoi = tronGoi.getVatTuTronGois();
-
-        for (VatTuTronGoi vatTuTronGoi : dsVatTuTronGoi) {
-            for (VatTuTronGoiUpdatingDto vatTuTronGoiUpdatingDto : dsVatTuTronGoiUpdatingDtos) {
-                if (vatTuTronGoi.getId().equals(vatTuTronGoiUpdatingDto.getId())) {
-                    vatTuTronGoi.setSoLuong(vatTuTronGoiUpdatingDto.getSoLuong());
-                    vatTuTronGoi.setDuocBaoHanh(vatTuTronGoiUpdatingDto.getDuocBaoHanh());
-                    vatTuTronGoi.setThoiGianBaoHanh(vatTuTronGoiUpdatingDto.getThoiGianBaoHanh());
-                    vatTuTronGoi.setDuocXem(vatTuTronGoiUpdatingDto.getDuocXem());
-                    vatTuTronGoi.setTrangThai(vatTuTronGoiUpdatingDto.getTrangThai());
-                }
+        // --- Cập nhật nhóm trọn gói nếu có thay đổi ---
+        if (dto.getNhomTronGoiId() != null
+                && !dto.getNhomTronGoiId().equals(tronGoi.getNhomTronGoi().getId())) {
+            Optional<NhomTronGoi> nhomTronGoi = nhomTronGoiService.getOne(dto.getNhomTronGoiId());
+            if (nhomTronGoi.isEmpty()) {
+                throw new CommonException("Không tìm thấy nhóm trọn gói id: " + dto.getNhomTronGoiId());
             }
+            tronGoi.setNhomTronGoi(nhomTronGoi.get());
         }
 
-        // Cập nhật thông tin trọn gói
+        // --- Cập nhật thông tin cơ bản ---
         tronGoi.setTen(dto.getTen());
         tronGoi.setLoaiHeThong(dto.getLoaiHeThong());
         tronGoi.setLoaiPha(dto.getLoaiPha());
+        if (dto.getMoTa() != null) tronGoi.setMoTa(dto.getMoTa());
         tronGoi.setCongSuatHeThong(dto.getCongSuatHeThong());
-        tronGoi.setSanLuongToiThieu(dto.getSanLuongToiThieu());
-        tronGoi.setSanLuongToiDa(dto.getSanLuongToiDa());
-        tronGoi.setTongGia(dto.getTongGia());
         tronGoi.setGmTong(dto.getGmTong());
         tronGoi.setBanChay(dto.getBanChay());
         tronGoi.setTrangThai(dto.getTrangThai());
 
-        // Xử lý file ảnh nếu có truyền lên
+        // Tổng giá theo khu vực
+        Double tongGia = dto.getTongGiaMienBac();
+        if (coSo.getMa().equals("HCM") && dto.getTongGiaMienNam() != null) {
+            tongGia = dto.getTongGiaMienNam();
+        }
+        tronGoi.setTongGia(tongGia);
+
+        // --- Xóa toàn bộ vật tư cũ, tạo lại mới ---
+        if (dto.getVatTuTronGois() != null && !dto.getVatTuTronGois().isEmpty()) {
+            // Xóa các bản ghi VatTuTronGoi cũ
+            List<VatTuTronGoi> oldList = new ArrayList<>(tronGoi.getVatTuTronGois());
+            for (VatTuTronGoi old : oldList) {
+                vatTuTronGoiService.delete(old.getId());
+            }
+            tronGoi.getVatTuTronGois().clear();
+
+            // Flush để đảm bảo delete được thực thi trước khi insert
+            entityManager.flush();
+
+            // Tạo danh sách vật tư mới
+            createVatTuTronGoiList(tronGoi, dto.getVatTuTronGois(), coSo);
+        }
+
+        // --- Xử lý file ảnh ---
         if (file != null) {
             TepTin tepTin = tronGoi.getTepTin();
             boolean isNew = (tepTin == null);
-
-            if (isNew) {
-                tepTin = TepTin.builder().build();
-            }
-
+            if (isNew) tepTin = TepTin.builder().build();
             String oldObjectName = isNew ? null : tepTin.getTenLuuTru();
 
             try {
-                // 1. Upload ảnh mới trước
                 String newObjectName = minioService.upload(
                         file,
-                        "tron_goi" + "_"
-                                + calcService.genTenKhongDau(tronGoi.getTen())
-                                + '_' + tronGoi.getCoSo().getMa()
-                                + "_" + new Date().getTime()
+                        "tron_goi_" + calcService.genTenKhongDau(tronGoi.getTen())
+                                + "_" + coSo.getMa() + "_" + new Date().getTime()
                 );
-
-                // 2. Upload thành công → cập nhật thông tin tepTin
                 tepTin.setTenLuuTru(newObjectName);
                 tepTin.setTenTepGoc(newObjectName);
                 tepTin.setDuongDan(minioService.getPublicUrl(newObjectName));
                 tepTin.setLoaiTepTin(FileType.IMAGE.toString());
-                tepTin.setDuoiTep(minioService.getObjectInfo(newObjectName)
-                        .getUserMetadata().get("file-extension"));
+                tepTin.setDuoiTep(minioService.getObjectInfo(newObjectName).getUserMetadata().get("file-extension"));
 
-                // 3. Persist tepTin
-                if (isNew) {
-                    tepTin = tepTinService.create(tepTin);
-                } else {
-                    tepTin = tepTinService.update(tepTin.getId(), tepTin);
-                }
-
+                tepTin = isNew ? tepTinService.create(tepTin) : tepTinService.update(tepTin.getId(), tepTin);
                 tronGoi.setTepTin(tepTin);
 
-                // 4. Xóa ảnh cũ sau khi mọi thứ đã thành công
                 if (oldObjectName != null) {
-                    try {
-                        minioService.delete(oldObjectName);
-                    } catch (Exception ignored) {
-                        // Không ảnh hưởng nghiệp vụ nếu xóa ảnh cũ thất bại
-                    }
+                    try { minioService.delete(oldObjectName); } catch (Exception ignored) {}
                 }
-
             } catch (Exception e) {
                 throw new RuntimeException("Lỗi trong quá trình upload file: ", e);
             }
@@ -264,6 +237,9 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
         );
     }
 
+    // ============================================================
+    //  DELETE
+    // ============================================================
     @Transactional
     public ResponseEntity<ResponseData<TronGoiDto>> deleteTronGoi(Integer id) {
         Optional<TronGoi> tronGoi = getOne(id);
@@ -271,11 +247,10 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
             throw new CommonException("Không tồn tại trọn gói id: " + id);
         }
         TepTin tepTin = tronGoi.get().getTepTin();
-
-        minioService.delete(tepTin.getTenLuuTru());
-
-        tepTinService.delete(tepTin.getId());
-
+        if (tepTin != null) {
+            try { minioService.delete(tepTin.getTenLuuTru()); } catch (Exception ignored) {}
+            tepTinService.delete(tepTin.getId());
+        }
         TronGoiDto dto = TronGoiDto.builder()
                 .ten(tronGoi.get().getTen())
                 .id(tronGoi.get().getId())
@@ -289,5 +264,52 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                         .data(dto)
                         .build()
         );
+    }
+
+    // ============================================================
+    //  HELPER: tạo danh sách VatTuTronGoi từ DTO
+    // ============================================================
+    private void createVatTuTronGoiList(TronGoi tronGoi,
+                                        List<VatTuTronGoiCreatingDto> dtos,
+                                        CoSo coSo) {
+        for (VatTuTronGoiCreatingDto vatTuDto : dtos) {
+            Optional<VatTu> vatTu = vatTuService.getOne(vatTuDto.getVatTuId());
+            if (vatTu.isEmpty()) {
+                throw new CommonException("Không tìm thấy vật tư id: " + vatTuDto.getVatTuId());
+            }
+
+            List<ThongTinGia> dsThongTinGia = vatTu.get().getThongTinGias();
+            if (dsThongTinGia.isEmpty()) {
+                throw new CommonException("Giá của vật tư id: " + vatTu.get().getId() + " chưa được khởi tạo");
+            }
+
+            // Xác định giá bán theo khu vực
+            Double giaBanTheoKhuVuc = 0.0;
+            boolean daChinhGia = false;
+            for (GiaInfo giaInfo : dsThongTinGia.get(dsThongTinGia.size() - 1).getDsGia()) {
+                if (giaInfo.getMaCoSo().equals(coSo.getMa())) {
+                    giaBanTheoKhuVuc = giaInfo.getGiaBan() + 0.0;
+                    daChinhGia = true;
+                    break;
+                }
+            }
+            if (!daChinhGia) {
+                giaBanTheoKhuVuc = dsThongTinGia.get(dsThongTinGia.size() - 1)
+                        .getDsGia().get(0).getGiaBan() + 0.0;
+            }
+
+            vatTuTronGoiService.create(VatTuTronGoi.builder()
+                    .tronGoi(tronGoi)
+                    .vatTu(vatTu.get())
+                    .moTa(vatTuDto.getMoTa())
+                    .soLuong(vatTuDto.getSoLuong())
+                    .gia(giaBanTheoKhuVuc)
+                    .gm(vatTuDto.getGm())
+                    .duocBaoHanh(vatTuDto.getDuocBaoHanh())
+                    .thoiGianBaoHanh(vatTuDto.getThoiGianBaoHanh())
+                    .duocXem(vatTuDto.getDuocXem())
+                    .trangThai(vatTuDto.getTrangThai())
+                    .build());
+        }
     }
 }

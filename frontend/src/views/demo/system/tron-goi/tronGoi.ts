@@ -229,23 +229,18 @@ export interface TronGoiCreateDto {
 
 export interface TronGoiUpdateDto {
   id: number;
+  nhomTronGoiId?: number;          // << THÊM: cho phép cập nhật nhóm trọn gói
   ten: string;
   loaiHeThong: string;
   loaiPha: string;
+  moTa?: string;
   congSuatHeThong: number;
-  sanLuongToiThieu: number;
-  sanLuongToiDa: number;
-  tongGia: number;
+  tongGiaMienBac: number;          // << THAY: tách tổng giá theo khu vực
+  tongGiaMienNam: number;          // << THÊM
   gmTong: number;
   banChay: boolean;
   trangThai: number;
-  vatTuTronGois: Array<{
-    id: number;
-    duocBaoHanh: boolean;
-    thoiGianBaoHanh: number;
-    duocXem: boolean;
-    trangThai: number;
-  }>;
+  vatTuTronGois: VatTuTronGoiCreatingDto[];  // << THAY: dùng CreatingDto (không cần id)
 }
 
 export interface PageResponse<T> {
@@ -383,22 +378,21 @@ export function getAllNhomTronGoi() {
     });
 }
 
+// ============================================================
+// PATCH 1: Sửa hàm filterVatTu trong tronGoi.ts
+// Tìm hàm filterVatTu và thay toàn bộ bằng đoạn dưới đây
+// ============================================================
+
 export function filterVatTu(
-  nhomVatTuId: number | null, 
-  maNhomVatTu:string|null,
+  nhomVatTuId: number | null,
+  maNhomVatTu: string | null,
   thuongHieuIds: number[] | null,
-  ) {
+) {
   const filters: FilterCriteria[] = [];
   const sorts: SortCriteria[] = [];
-  if (thuongHieuIds) {
-    filters.push({
-      fieldName: 'nhomVatTu.thuongHieu.id',
-      operation: 'EQUALS',
-      value: nhomVatTuId,
-    });
-  }
 
-  if(maNhomVatTu){
+  // Filter theo mã nhóm vật tư (luôn áp dụng nếu có)
+  if (maNhomVatTu) {
     filters.push({
       fieldName: 'nhomVatTu.ma',
       operation: 'EQUALS',
@@ -406,13 +400,24 @@ export function filterVatTu(
     });
   }
 
+  // Filter theo nhóm vật tư id (nếu có)
   if (nhomVatTuId) {
+    filters.push({
+      fieldName: 'nhomVatTu.id',
+      operation: 'EQUALS',
+      value: nhomVatTuId,
+    });
+  }
+
+  // Filter theo thương hiệu (chỉ áp dụng cho TAM_PIN, BIEN_TAN, PIN_LUU_TRU)
+  if (thuongHieuIds && thuongHieuIds.length > 0) {
     filters.push({
       fieldName: 'thuongHieu.id',
       operation: 'IN',
       value: thuongHieuIds,
     });
   }
+
   const filterRequest: BaseFilterRequest = {
     filters,
     sorts,
@@ -420,7 +425,7 @@ export function filterVatTu(
     size: 1000,
   };
 
-  console.log('Filter VatTu request:', filterRequest); // Debug log
+  console.log('Filter VatTu request:', filterRequest);
 
   return realHttp
     .post<ResponseData<PageResponse<VatTuDto>>>(
@@ -433,7 +438,7 @@ export function filterVatTu(
       },
     )
     .then((res: any) => {
-      console.log('Filter VatTu response:', res); // Debug log
+      console.log('Filter VatTu response:', res);
       return res as ResponseData<PageResponse<VatTuDto>>;
     });
 }
@@ -472,7 +477,6 @@ export function updateTronGoi(id: number, data: TronGoiUpdateDto, file: File | n
   if (file) {
     formData.append('file', file);
   }
-
   return realHttp
     .put<ResponseData<TronGoiDto>>(
       {
@@ -487,7 +491,7 @@ export function updateTronGoi(id: number, data: TronGoiUpdateDto, file: File | n
       },
     )
     .then((res: any) => {
-      console.log('UpdateTronGoi response:', res); // Debug log
+      console.log('UpdateTronGoi response:', res);
       return res as ResponseData<TronGoiDto>;
     });
 }
