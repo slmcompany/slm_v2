@@ -183,10 +183,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
         // --- Xóa toàn bộ vật tư cũ, tạo lại mới ---
         if (dto.getVatTuTronGois() != null && !dto.getVatTuTronGois().isEmpty()) {
             // Xóa các bản ghi VatTuTronGoi cũ
-            List<VatTuTronGoi> oldList = new ArrayList<>(tronGoi.getVatTuTronGois());
-            for (VatTuTronGoi old : oldList) {
-                vatTuTronGoiService.delete(old.getId());
-            }
+            vatTuTronGoiService.delete(tronGoi.getVatTuTronGois());
             tronGoi.getVatTuTronGois().clear();
 
             // Flush để đảm bảo delete được thực thi trước khi insert

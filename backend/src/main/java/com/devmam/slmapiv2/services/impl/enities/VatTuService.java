@@ -269,7 +269,6 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 }
             }
         }
-
         // Bước 2: Xóa các ảnh thừa (nếu số ảnh mới < số ảnh cũ)
         if (soAnhMoi < soAnhHienTai) {
             for (int j = soAnhMoi; j < soAnhHienTai; j++) {
@@ -288,7 +287,6 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 tepTinService.delete(tepTin.getId());
             }
         }
-
         // Cập nhật thông tin vật tư
         vatTu.setTen(dto.getTen());
         vatTu.setMa(genMaVatTu(dto.getTen()));

@@ -375,9 +375,18 @@
           }
         });
 
-        Promise.all(promises).then((loadedFiles) => {
+        try {
+          const loadedFiles = await Promise.all(promises);
           fileList.value = loadedFiles;
-        });
+        } catch (error) {
+          console.error('Error loading images:', error);
+          const loadedFiles = await Promise.allSettled(promises).then((results) =>
+            results
+              .filter((r) => r.status === 'fulfilled')
+              .map((r: any) => r.value)
+          );
+          fileList.value = loadedFiles;
+        }
       }
 
       // Set giá trị form
@@ -585,11 +594,28 @@
         dsGia: dsGiaPayload,
       };
 
-      // Chỉ lấy các file mới (không phải existing)
-      const imageFiles = fileList.value
+      // Lấy tất cả file (cả file cũ + file mới)
+      const imageFiles: File[] = [];
+
+      // Xử lý file mới
+      const newFiles = fileList.value
         .filter((f) => !f.isExisting && f.originFileObj)
         .map((f) => f.originFileObj)
         .filter(Boolean);
+      imageFiles.push(...newFiles);
+
+      // Xử lý file cũ - fetch URL và convert thành File
+      const existingFiles = fileList.value.filter((f) => f.isExisting && f.url);
+      for (const existingFile of existingFiles) {
+        try {
+          const response = await fetch(existingFile.url);
+          const blob = await response.blob();
+          const file = new File([blob], existingFile.name, { type: blob.type });
+          imageFiles.push(file);
+        } catch (error) {
+          console.error('Failed to fetch existing image:', existingFile.url, error);
+        }
+      }
 
       const result = await updateVatTu(updateData, sheetFile.value, imageFiles);
 

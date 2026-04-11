@@ -7,1301 +7,1312 @@
     @ok="handleSubmit"
     :confirmLoading="loading"
   >
-  <Spin :spinning="loadingInit" tip="Đang tải dữ liệu...">
-    <Form ref="formRef" :model="formState" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-      <Divider orientation="center">Thông tin cơ bản</Divider>
-      <FormItem
-        label="Tên trọn gói"
-        name="ten"
-        :rules="[{ required: true, message: 'Vui lòng nhập tên trọn gói' }]"
-      >
-        <Input v-model:value="formState.ten" placeholder="Nhập tên trọn gói" :maxlength="400" />
-      </FormItem>
-
-      <FormItem
-        label="Nhóm trọn gói"
-        name="nhomTronGoiId"
-        :rules="[{ required: true, message: 'Vui lòng chọn nhóm trọn gói' }]"
-      >
-        <Select
-          v-model:value="formState.nhomTronGoiId"
-          placeholder="Chọn nhóm trọn gói"
-          show-search
-          :filter-option="filterOption"
-          :options="nhomTronGoiOptions"
-          @change="(value) => handleNhomTronGoiChange(value)"
-        ></Select>
-      </FormItem>
-
-      <FormItem
-        label="Loại hệ thống"
-        name="loaiHeThong"
-        :rules="[{ required: true, message: 'Vui lòng chọn loại hệ thống' }]"
-      >
-        <Select
-          v-model:value="formState.loaiHeThong"
-          placeholder="Chọn loại hệ thống"
-          :options="[
-            { label: 'On-Grid', value: 'On-Grid' },
-            { label: 'Hy-Brid', value: 'Hy-Brid' },
-          ]"
-        ></Select>
-      </FormItem>
-
-      <FormItem
-        label="Loại pha"
-        name="loaiPha"
-        :rules="[{ required: true, message: 'Vui lòng chọn loại pha' }]"
-      >
-        <Select
-          v-model:value="formState.loaiPha"
-          placeholder="Chọn loại pha"
-          :options="[
-            { label: '1 pha', value: '1 pha' },
-            { label: '3 pha', value: '3 pha' },
-          ]"
-          @change="handleSoPhaChange()"
-        ></Select>
-      </FormItem>
-
-      <FormItem label="Mô tả" name="moTa">
-        <Textarea v-model:value="formState.moTa" placeholder="Nhập mô tả" :rows="3"></Textarea>
-      </FormItem>
-
-      <FormItem label="Bán chạy" name="banChay">
-        <RadioGroup v-model:value="formState.banChay" button-style="solid">
-          <RadioButton :value="true">Có</RadioButton>
-          <RadioButton :value="false">Không</RadioButton>
-        </RadioGroup>
-      </FormItem>
-
-      <FormItem
-        label="Trạng thái"
-        name="trangThai"
-        :rules="[{ required: true, message: 'Vui lòng chọn trạng thái' }]"
-      >
-        <RadioGroup v-model:value="formState.trangThai" button-style="solid">
-          <RadioButton :value="1">Kích hoạt</RadioButton>
-          <RadioButton :value="0">Vô hiệu</RadioButton>
-        </RadioGroup>
-      </FormItem>
-
-      <Divider orientation="center">Vật tư trong gói</Divider>
-      <FormItem :wrapper-col="{ span: 24 }">
-        <!-- TẤM PIN -->
-        <div class="vat-tu-group">
-          <Divider orientation="left" style="margin: 16px 0">Tấm pin</Divider>
-          <div v-for="(item, itemIndex) in tamPinList" :key="itemIndex" class="vat-tu-item">
-            <Card size="small">
-              <Row :gutter="16">
-                <Col :span="12">
-                  <FormItem label="Tấm pin" :required="true">
-                    <Select
-                      v-model:value="item.vatTuId"
-                      placeholder="Chọn vật tư"
-                      show-search
-                      :filter-option="filterOption"
-                      :options="tamPinOptions"
-                      @change="(value) => handleTamPinChange(value, itemIndex)"
-                    ></Select>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Số lượng" :required="true">
-                    <InputNumber
-                      v-model:value="item.soLuong"
-                      placeholder="Nhập số lượng"
-                      :min="0"
-                      style="width: 100%"
-                      @change="
-                        (value) =>
-                          handleChangeSoLuongTamPin(tamPinList[0].vatTuId, itemIndex, value)
-                      "
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="GM (%)" :required="true">
-                    <InputNumber
-                      v-model:value="item.gm"
-                      placeholder="Nhập GM"
-                      :min="0"
-                      :max="100"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Thời gian BH (tháng)">
-                    <InputNumber
-                      v-model:value="item.thoiGianBaoHanh"
-                      placeholder="Nhập thời gian"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được bảo hành">
-                    <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được xem">
-                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        </div>
-
-        <!-- BIẾN TẦN -->
-        <div class="vat-tu-group">
-          <Divider orientation="left" style="margin: 16px 0">Biến tần</Divider>
-          <Button
-            type="dashed"
-            block
-            @click="handleAddBienTan"
-            style="margin-bottom: 16px"
-            size="small"
-          >
-            <template #icon><PlusOutlined /></template>
-            Thêm Biến tần
-          </Button>
-          <div v-for="(item, itemIndex) in bienTanList" :key="itemIndex" class="vat-tu-item">
-            <Card size="small">
-              <template #extra>
-                <Button type="link" danger size="small" @click="handleRemoveBienTan(itemIndex)"
-                  ><DeleteOutlined
-                /></Button>
-              </template>
-              <Row :gutter="16">
-                <Col :span="12">
-                  <FormItem label="Biến tần" :required="true">
-                    <Select
-                      v-model:value="item.vatTuId"
-                      placeholder="Chọn vật tư"
-                      show-search
-                      :filter-option="filterOption"
-                      :options="bienTanOptions"
-                      @change="(value) => handleBienTanChange(value, itemIndex)"
-                    ></Select>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Số lượng" :required="true">
-                    <InputNumber
-                      v-model:value="item.soLuong"
-                      placeholder="Nhập số lượng"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="GM (%)" :required="true">
-                    <InputNumber
-                      v-model:value="item.gm"
-                      placeholder="Nhập GM"
-                      :min="0"
-                      :max="100"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Thời gian BH (tháng)">
-                    <InputNumber
-                      v-model:value="item.thoiGianBaoHanh"
-                      placeholder="Nhập thời gian"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được bảo hành">
-                    <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được xem">
-                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        </div>
-
-        <!-- PIN LƯU TRỮ -->
-        <div class="vat-tu-group">
-          <Divider orientation="left" style="margin: 16px 0">Pin lưu trữ</Divider>
-          <Button
-            type="dashed"
-            block
-            @click="handleAddPinLuuTru"
-            style="margin-bottom: 16px"
-            size="small"
-          >
-            <template #icon><PlusOutlined /></template>
-            Thêm Pin lưu trữ
-          </Button>
-          <div v-for="(item, itemIndex) in pinLuuTruList" :key="itemIndex" class="vat-tu-item">
-            <Card size="small">
-              <template #extra>
-                <Button type="link" danger size="small" @click="handleRemovePinLuuTru(itemIndex)"
-                  ><DeleteOutlined
-                /></Button>
-              </template>
-              <Row :gutter="16">
-                <Col :span="12">
-                  <FormItem label="Pin lưu trữ" :required="true">
-                    <Select
-                      v-model:value="item.vatTuId"
-                      placeholder="Chọn vật tư"
-                      show-search
-                      :filter-option="filterOption"
-                      :options="pinLuuTruOptions"
-                      @change="(value) => handlePinLuuTruChange(value, itemIndex)"
-                    ></Select>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Số lượng" :required="true">
-                    <InputNumber
-                      v-model:value="item.soLuong"
-                      placeholder="Nhập số lượng"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="GM (%)" :required="true">
-                    <InputNumber
-                      v-model:value="item.gm"
-                      placeholder="Nhập GM"
-                      :min="0"
-                      :max="100"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Thời gian BH (tháng)">
-                    <InputNumber
-                      v-model:value="item.thoiGianBaoHanh"
-                      placeholder="Nhập thời gian"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được bảo hành">
-                    <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được xem">
-                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        </div>
-
-        <!-- HỆ KHUNG NHÔM -->
-        <div class="vat-tu-group">
-          <Divider orientation="left" style="margin: 16px 0">Hệ khung nhôm</Divider>
-          <CheckboxGroup label="Loại mái" v-model:value="loaiMais" @change="handleLoaiMaiChange()">
-            <Checkbox value="mái tôn">mái tôn</Checkbox>
-            <Checkbox value="mái ngói">mái ngói</Checkbox>
-            <Checkbox value="khung sắt">khung sắt</Checkbox>
-          </CheckboxGroup>
-          <Button
-            type="dashed"
-            block
-            @click="handleAddHeKhungNhom"
-            style="margin-bottom: 16px"
-            size="small"
-          >
-            <template #icon><PlusOutlined /></template>
-            Thêm Hệ khung nhôm
-          </Button>
-          <div v-for="(item, itemIndex) in heKhungNhomList" :key="itemIndex" class="vat-tu-item">
-            <Card size="small">
-              <template #extra>
-                <Button type="link" danger size="small" @click="handleRemoveHeKhungNhom(itemIndex)"
-                  ><DeleteOutlined
-                /></Button>
-              </template>
-              <Row :gutter="16">
-                <Col :span="12">
-                  <FormItem label="Hệ khung nhôm" :required="true">
-                    <Select
-                      v-model:value="item.vatTuId"
-                      placeholder="Chọn vật tư"
-                      show-search
-                      :filter-option="filterOption"
-                      :options="heKhungNhomOptions"
-                      @change="(value) => handleHeKhungNhomChange(value, itemIndex)"
-                    ></Select>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Số lượng" :required="true">
-                    <InputNumber
-                      v-model:value="item.soLuong"
-                      placeholder="Nhập số lượng"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="GM (%)" :required="true">
-                    <InputNumber
-                      v-model:value="item.gm"
-                      placeholder="Nhập GM"
-                      :min="0"
-                      :max="100"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Thời gian BH (tháng)">
-                    <InputNumber
-                      v-model:value="item.thoiGianBaoHanh"
-                      placeholder="Nhập thời gian"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được bảo hành">
-                    <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được xem">
-                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        </div>
-
-        <!-- HỆ DÂY ĐIỆN -->
-        <div class="vat-tu-group">
-          <Divider orientation="left" style="margin: 16px 0">Hệ dây điện</Divider>
-          <Button
-            type="dashed"
-            block
-            @click="handleAddHeDayDien"
-            style="margin-bottom: 16px"
-            size="small"
-          >
-            <template #icon><PlusOutlined /></template>
-            Thêm Hệ dây điện
-          </Button>
-          <div v-for="(item, itemIndex) in heDayDienList" :key="itemIndex" class="vat-tu-item">
-            <Card size="small">
-              <template #extra>
-                <Button type="link" danger size="small" @click="handleRemoveHeDayDien(itemIndex)"
-                  ><DeleteOutlined
-                /></Button>
-              </template>
-              <Row :gutter="16">
-                <Col :span="12">
-                  <FormItem label="Hệ dây điện" :required="true">
-                    <Select
-                      v-model:value="item.vatTuId"
-                      placeholder="Chọn vật tư"
-                      show-search
-                      :filter-option="filterOption"
-                      :options="heDayDienOptions"
-                      @change="(value) => handleHeDayDienChange(value, itemIndex)"
-                    ></Select>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Số lượng" :required="true">
-                    <InputNumber
-                      v-model:value="item.soLuong"
-                      placeholder="Nhập số lượng"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="GM (%)" :required="true">
-                    <InputNumber
-                      v-model:value="item.gm"
-                      placeholder="Nhập GM"
-                      :min="0"
-                      :max="100"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Thời gian BH (tháng)">
-                    <InputNumber
-                      v-model:value="item.thoiGianBaoHanh"
-                      placeholder="Nhập thời gian"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được bảo hành">
-                    <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được xem">
-                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        </div>
-
-        <!-- TỦ ĐIỆN -->
-        <div class="vat-tu-group">
-          <Divider orientation="left" style="margin: 16px 0">Tủ điện</Divider>
-          <Button
-            type="dashed"
-            block
-            @click="handleAddTuDien"
-            style="margin-bottom: 16px"
-            size="small"
-          >
-            <template #icon><PlusOutlined /></template>
-            Thêm Tủ điện
-          </Button>
-          <div v-for="(item, itemIndex) in tuDienList" :key="itemIndex" class="vat-tu-item">
-            <Card size="small">
-              <template #extra>
-                <Button type="link" danger size="small" @click="handleRemoveTuDien(itemIndex)"
-                  ><DeleteOutlined
-                /></Button>
-              </template>
-              <Row :gutter="16">
-                <Col :span="12">
-                  <FormItem label="Tủ điện" :required="true">
-                    <Select
-                      v-model:value="item.vatTuId"
-                      placeholder="Chọn vật tư"
-                      show-search
-                      :filter-option="filterOption"
-                      :options="tuDienOptions"
-                      @change="(value) => handleTuDienChange(value, itemIndex)"
-                    ></Select>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Số lượng" :required="true">
-                    <InputNumber
-                      v-model:value="item.soLuong"
-                      placeholder="Nhập số lượng"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="GM (%)" :required="true">
-                    <InputNumber
-                      v-model:value="item.gm"
-                      placeholder="Nhập GM"
-                      :min="0"
-                      :max="100"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Thời gian BH (tháng)">
-                    <InputNumber
-                      v-model:value="item.thoiGianBaoHanh"
-                      placeholder="Nhập thời gian"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được bảo hành">
-                    <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được xem">
-                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        </div>
-
-        <!-- HỆ TIẾP ĐỊA -->
-        <div class="vat-tu-group">
-          <Divider orientation="left" style="margin: 16px 0">Hệ tiếp địa</Divider>
-          <Button
-            type="dashed"
-            block
-            @click="handleAddHeTiepDia"
-            style="margin-bottom: 16px"
-            size="small"
-          >
-            <template #icon><PlusOutlined /></template>
-            Thêm Hệ tiếp địa
-          </Button>
-          <div v-for="(item, itemIndex) in heTiepDiaList" :key="itemIndex" class="vat-tu-item">
-            <Card size="small">
-              <template #extra>
-                <Button type="link" danger size="small" @click="handleRemoveHeTiepDia(itemIndex)"
-                  ><DeleteOutlined
-                /></Button>
-              </template>
-              <Row :gutter="16">
-                <Col :span="12">
-                  <FormItem label="Hệ tiếp địa" :required="true">
-                    <Select
-                      v-model:value="item.vatTuId"
-                      placeholder="Chọn vật tư"
-                      show-search
-                      :filter-option="filterOption"
-                      :options="heTiepDiaOptions"
-                      @change="(value) => handleHeTiepDiaChange(value, itemIndex)"
-                    ></Select>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Số lượng" :required="true">
-                    <InputNumber
-                      v-model:value="item.soLuong"
-                      placeholder="Nhập số lượng"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="GM (%)" :required="true">
-                    <InputNumber
-                      v-model:value="item.gm"
-                      placeholder="Nhập GM"
-                      :min="0"
-                      :max="100"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Thời gian BH (tháng)">
-                    <InputNumber
-                      v-model:value="item.thoiGianBaoHanh"
-                      placeholder="Nhập thời gian"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được bảo hành">
-                    <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được xem">
-                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        </div>
-
-        <!-- TRỌN GÓI LẮP ĐẶT -->
-        <div class="vat-tu-group">
-          <Divider orientation="left" style="margin: 16px 0">Trọn gói lắp đặt</Divider>
-          <Button
-            type="dashed"
-            block
-            @click="handleAddTronGoiLapDat"
-            style="margin-bottom: 16px"
-            size="small"
-          >
-            <template #icon><PlusOutlined /></template>
-            Thêm Trọn gói lắp đặt
-          </Button>
-          <div v-for="(item, itemIndex) in tronGoiLapDatList" :key="itemIndex" class="vat-tu-item">
-            <Card size="small">
-              <template #extra>
-                <Button
-                  type="link"
-                  danger
-                  size="small"
-                  @click="handleRemoveTronGoiLapDat(itemIndex)"
-                  ><DeleteOutlined
-                /></Button>
-              </template>
-              <Row :gutter="16">
-                <Col :span="12">
-                  <FormItem label="Trọn gói lắp đặt" :required="true">
-                    <Select
-                      v-model:value="item.vatTuId"
-                      placeholder="Chọn vật tư"
-                      show-search
-                      :filter-option="filterOption"
-                      :options="tronGoiLapDatOptions"
-                      @change="(value) => handleTronGoiLapDatChange(value, itemIndex)"
-                    ></Select>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Số lượng" :required="true">
-                    <InputNumber
-                      v-model:value="item.soLuong"
-                      placeholder="Nhập số lượng"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="GM (%)" :required="true">
-                    <InputNumber
-                      v-model:value="item.gm"
-                      placeholder="Nhập GM"
-                      :min="0"
-                      :max="100"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá nhập miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaNhapMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Bắc" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienBac"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Giá bán miền Nam" :required="true">
-                    <InputNumber
-                      v-model:value="item.giaBanMienNam"
-                      :min="0"
-                      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                      :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Thời gian BH (tháng)">
-                    <InputNumber
-                      v-model:value="item.thoiGianBaoHanh"
-                      placeholder="Nhập thời gian"
-                      :min="0"
-                      style="width: 100%"
-                    />
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được bảo hành">
-                    <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col :span="24">
-                  <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
-                  </FormItem>
-                </Col>
-                <Col :span="12">
-                  <FormItem label="Được xem">
-                    <RadioGroup v-model:value="item.duocXem" button-style="solid">
-                      <RadioButton :value="true">Có</RadioButton>
-                      <RadioButton :value="false">Không</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        </div>
-      </FormItem>
-
-      <Row :gutter="16">
-        <Col :span="12">
-          <FormItem
-            label="Công suất hệ thống (kW)"
-            name="congSuatHeThong"
-            :label-col="{ span: 12 }"
-            :wrapper-col="{ span: 12 }"
-          >
-            <InputNumber
-              v-model:value="formState.congSuatHeThong"
-              placeholder="Công suất hệ thống"
-              :min="0"
-              :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-              :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-              style="width: 100%"
-            ></InputNumber>
-          </FormItem>
-        </Col>
-      </Row>
-
-      <Row :gutter="16">
-        <Col :span="12">
-          <FormItem
-            label="Tổng giá Miền Bắc (VND)"
-            name="tongGiaMienBac"
-            :rules="[{ required: true, message: 'Vui lòng nhập tổng giá Miền Bắc' }]"
-            :label-col="{ span: 12 }"
-            :wrapper-col="{ span: 12 }"
-          >
-            <InputNumber
-              v-model:value="formState.tongGiaMienBac"
-              placeholder="Nhập tổng giá Miền Bắc"
-              :min="0"
-              :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-              :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-              style="width: 100%"
-            ></InputNumber>
-          </FormItem>
-        </Col>
-      </Row>
-
-      <Row :gutter="16">
-        <Col :span="12">
-          <FormItem
-            label="Tổng giá Miền Nam (VND)"
-            name="tongGiaMienNam"
-            :rules="[{ required: true, message: 'Vui lòng nhập tổng giá Miền Nam' }]"
-            :label-col="{ span: 12 }"
-            :wrapper-col="{ span: 12 }"
-          >
-            <InputNumber
-              v-model:value="formState.tongGiaMienNam"
-              placeholder="Nhập tổng giá Miền Nam"
-              :min="0"
-              :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-              :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
-              style="width: 100%"
-            ></InputNumber>
-          </FormItem>
-        </Col>
-      </Row>
-
-      <Row :gutter="16">
-        <Col :span="12">
-          <FormItem
-            label="GM Tổng (%)"
-            name="gmTong"
-            :label-col="{ span: 12 }"
-            :wrapper-col="{ span: 12 }"
-          >
-            <InputNumber
-              v-model:value="formState.gmTong"
-              placeholder="Nhập GM tổng"
-              :min="0"
-              :max="100"
-              style="width: 100%"
-            ></InputNumber>
-          </FormItem>
-        </Col>
-      </Row>
-
-      <Row :gutter="16">
-        <Col :span="12">
-          <FormItem label="Tính tổng giá" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
-            <Button type="primary" @click="tinhTongGia()">Tính tổng giá</Button>
-          </FormItem>
-        </Col>
-      </Row>
-
-      <Divider orientation="center">Hình ảnh</Divider>
-      <FormItem label="Hình ảnh" :wrapper-col="{ span: 18 }">
-        <Upload
-          v-model:file-list="fileList"
-          list-type="picture-card"
-          :before-upload="beforeUpload"
-          @remove="handleRemoveFile"
-          accept="image/*"
-          :max-count="1"
+    <Spin :spinning="loadingInit" tip="Đang tải dữ liệu...">
+      <Form ref="formRef" :model="formState" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+        <Divider orientation="center">Thông tin cơ bản</Divider>
+        <FormItem
+          label="Tên trọn gói"
+          name="ten"
+          :rules="[{ required: true, message: 'Vui lòng nhập tên trọn gói' }]"
         >
-          <div v-if="fileList.length < 1">
-            <PlusOutlined />
-            <div style="margin-top: 8px">Tải ảnh lên</div>
+          <Input v-model:value="formState.ten" placeholder="Nhập tên trọn gói" :maxlength="400" />
+        </FormItem>
+
+        <FormItem
+          label="Nhóm trọn gói"
+          name="nhomTronGoiId"
+          :rules="[{ required: true, message: 'Vui lòng chọn nhóm trọn gói' }]"
+        >
+          <Select
+            v-model:value="formState.nhomTronGoiId"
+            placeholder="Chọn nhóm trọn gói"
+            show-search
+            :filter-option="filterOption"
+            :options="nhomTronGoiOptions"
+            @change="(value) => handleNhomTronGoiChange(value)"
+          ></Select>
+        </FormItem>
+
+        <FormItem
+          label="Loại hệ thống"
+          name="loaiHeThong"
+          :rules="[{ required: true, message: 'Vui lòng chọn loại hệ thống' }]"
+        >
+          <Select
+            v-model:value="formState.loaiHeThong"
+            placeholder="Chọn loại hệ thống"
+            :options="[
+              { label: 'On-Grid', value: 'On-Grid' },
+              { label: 'Hy-Brid', value: 'Hy-Brid' },
+            ]"
+          ></Select>
+        </FormItem>
+
+        <FormItem
+          label="Loại pha"
+          name="loaiPha"
+          :rules="[{ required: true, message: 'Vui lòng chọn loại pha' }]"
+        >
+          <Select
+            v-model:value="formState.loaiPha"
+            placeholder="Chọn loại pha"
+            :options="[
+              { label: '1 pha', value: '1 pha' },
+              { label: '3 pha', value: '3 pha' },
+            ]"
+            @change="handleSoPhaChange()"
+          ></Select>
+        </FormItem>
+
+        <FormItem label="Mô tả" name="moTa">
+          <Textarea v-model:value="formState.moTa" placeholder="Nhập mô tả" :rows="3"></Textarea>
+        </FormItem>
+
+        <FormItem label="Bán chạy" name="banChay">
+          <RadioGroup v-model:value="formState.banChay" button-style="solid">
+            <RadioButton :value="true">Có</RadioButton>
+            <RadioButton :value="false">Không</RadioButton>
+          </RadioGroup>
+        </FormItem>
+
+        <FormItem
+          label="Trạng thái"
+          name="trangThai"
+          :rules="[{ required: true, message: 'Vui lòng chọn trạng thái' }]"
+        >
+          <RadioGroup v-model:value="formState.trangThai" button-style="solid">
+            <RadioButton :value="1">Kích hoạt</RadioButton>
+            <RadioButton :value="0">Vô hiệu</RadioButton>
+          </RadioGroup>
+        </FormItem>
+
+        <Divider orientation="center">Vật tư trong gói</Divider>
+        <FormItem :wrapper-col="{ span: 24 }">
+          <!-- TẤM PIN -->
+          <div class="vat-tu-group">
+            <Divider orientation="left" style="margin: 16px 0">Tấm pin</Divider>
+            <div v-for="(item, itemIndex) in tamPinList" :key="itemIndex" class="vat-tu-item">
+              <Card size="small">
+                <Row :gutter="16">
+                  <Col :span="12">
+                    <FormItem label="Tấm pin" :required="true">
+                      <Select
+                        v-model:value="item.vatTuId"
+                        placeholder="Chọn vật tư"
+                        show-search
+                        :filter-option="filterOption"
+                        :options="tamPinOptions"
+                        @change="(value) => handleTamPinChange(value, itemIndex)"
+                      ></Select>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Số lượng" :required="true">
+                      <InputNumber
+                        v-model:value="item.soLuong"
+                        placeholder="Nhập số lượng"
+                        :min="0"
+                        style="width: 100%"
+                        @change="
+                          (value) =>
+                            handleChangeSoLuongTamPin(tamPinList[0].vatTuId, itemIndex, value)
+                        "
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="GM (%)" :required="true">
+                      <InputNumber
+                        v-model:value="item.gm"
+                        placeholder="Nhập GM"
+                        :min="0"
+                        :max="100"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Thời gian BH (tháng)">
+                      <InputNumber
+                        v-model:value="item.thoiGianBaoHanh"
+                        placeholder="Nhập thời gian"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được bảo hành">
+                      <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="Mô tả">
+                      <Textarea
+                        v-model:value="item.moTa"
+                        placeholder="Nhập mô tả"
+                        :rows="2"
+                      ></Textarea>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được xem">
+                      <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Card>
+            </div>
           </div>
-        </Upload>
-        <div class="upload-hint">
-          Tối đa 1 ảnh, định dạng: JPG, PNG, GIF. Xóa ảnh cũ và không chọn ảnh mới sẽ xóa ảnh.
-        </div>
-      </FormItem>
-    </Form>
-  </Spin>
-    
+
+          <!-- BIẾN TẦN -->
+          <div class="vat-tu-group">
+            <Divider orientation="left" style="margin: 16px 0">Biến tần</Divider>
+            <Button
+              type="dashed"
+              block
+              @click="handleAddBienTan"
+              style="margin-bottom: 16px"
+              size="small"
+            >
+              <template #icon><PlusOutlined /></template>
+              Thêm Biến tần
+            </Button>
+            <div v-for="(item, itemIndex) in bienTanList" :key="itemIndex" class="vat-tu-item">
+              <Card size="small">
+                <template #extra>
+                  <Button type="link" danger size="small" @click="handleRemoveBienTan(itemIndex)"
+                    ><DeleteOutlined
+                  /></Button>
+                </template>
+                <Row :gutter="16">
+                  <Col :span="12">
+                    <FormItem label="Biến tần" :required="true">
+                      <Select
+                        v-model:value="item.vatTuId"
+                        placeholder="Chọn vật tư"
+                        show-search
+                        :filter-option="filterOption"
+                        :options="bienTanOptions"
+                        @change="(value) => handleBienTanChange(value, itemIndex)"
+                      ></Select>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Số lượng" :required="true">
+                      <InputNumber
+                        v-model:value="item.soLuong"
+                        placeholder="Nhập số lượng"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="GM (%)" :required="true">
+                      <InputNumber
+                        v-model:value="item.gm"
+                        placeholder="Nhập GM"
+                        :min="0"
+                        :max="100"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Thời gian BH (tháng)">
+                      <InputNumber
+                        v-model:value="item.thoiGianBaoHanh"
+                        placeholder="Nhập thời gian"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được bảo hành">
+                      <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="Mô tả">
+                      <Textarea
+                        v-model:value="item.moTa"
+                        placeholder="Nhập mô tả"
+                        :rows="2"
+                      ></Textarea>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được xem">
+                      <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Card>
+            </div>
+          </div>
+
+          <!-- PIN LƯU TRỮ -->
+          <div class="vat-tu-group">
+            <Divider orientation="left" style="margin: 16px 0">Pin lưu trữ</Divider>
+            <Button
+              type="dashed"
+              block
+              @click="handleAddPinLuuTru"
+              style="margin-bottom: 16px"
+              size="small"
+            >
+              <template #icon><PlusOutlined /></template>
+              Thêm Pin lưu trữ
+            </Button>
+            <div v-for="(item, itemIndex) in pinLuuTruList" :key="itemIndex" class="vat-tu-item">
+              <Card size="small">
+                <template #extra>
+                  <Button type="link" danger size="small" @click="handleRemovePinLuuTru(itemIndex)"
+                    ><DeleteOutlined
+                  /></Button>
+                </template>
+                <Row :gutter="16">
+                  <Col :span="12">
+                    <FormItem label="Pin lưu trữ" :required="true">
+                      <Select
+                        v-model:value="item.vatTuId"
+                        placeholder="Chọn vật tư"
+                        show-search
+                        :filter-option="filterOption"
+                        :options="pinLuuTruOptions"
+                        @change="(value) => handlePinLuuTruChange(value, itemIndex)"
+                      ></Select>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Số lượng" :required="true">
+                      <InputNumber
+                        v-model:value="item.soLuong"
+                        placeholder="Nhập số lượng"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="GM (%)" :required="true">
+                      <InputNumber
+                        v-model:value="item.gm"
+                        placeholder="Nhập GM"
+                        :min="0"
+                        :max="100"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Thời gian BH (tháng)">
+                      <InputNumber
+                        v-model:value="item.thoiGianBaoHanh"
+                        placeholder="Nhập thời gian"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được bảo hành">
+                      <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="Mô tả">
+                      <Textarea
+                        v-model:value="item.moTa"
+                        placeholder="Nhập mô tả"
+                        :rows="2"
+                      ></Textarea>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được xem">
+                      <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Card>
+            </div>
+          </div>
+
+          <!-- HỆ KHUNG NHÔM -->
+          <div class="vat-tu-group">
+            <Divider orientation="left" style="margin: 16px 0">Hệ khung nhôm</Divider>
+            <CheckboxGroup
+              label="Loại mái"
+              v-model:value="loaiMais"
+              @change="handleLoaiMaiChange()"
+            >
+              <Checkbox value="mái tôn">mái tôn</Checkbox>
+              <Checkbox value="mái ngói">mái ngói</Checkbox>
+              <Checkbox value="khung sắt">khung sắt</Checkbox>
+            </CheckboxGroup>
+            <Button
+              type="dashed"
+              block
+              @click="handleAddHeKhungNhom"
+              style="margin-bottom: 16px"
+              size="small"
+            >
+              <template #icon><PlusOutlined /></template>
+              Thêm Hệ khung nhôm
+            </Button>
+            <div v-for="(item, itemIndex) in heKhungNhomList" :key="itemIndex" class="vat-tu-item">
+              <Card size="small">
+                <template #extra>
+                  <Button
+                    type="link"
+                    danger
+                    size="small"
+                    @click="handleRemoveHeKhungNhom(itemIndex)"
+                    ><DeleteOutlined
+                  /></Button>
+                </template>
+                <Row :gutter="16">
+                  <Col :span="12">
+                    <FormItem label="Hệ khung nhôm" :required="true">
+                      <Select
+                        v-model:value="item.vatTuId"
+                        placeholder="Chọn vật tư"
+                        show-search
+                        :filter-option="filterOption"
+                        :options="heKhungNhomOptions"
+                        @change="(value) => handleHeKhungNhomChange(value, itemIndex)"
+                      ></Select>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Số lượng" :required="true">
+                      <InputNumber
+                        v-model:value="item.soLuong"
+                        placeholder="Nhập số lượng"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="GM (%)" :required="true">
+                      <InputNumber
+                        v-model:value="item.gm"
+                        placeholder="Nhập GM"
+                        :min="0"
+                        :max="100"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Thời gian BH (tháng)">
+                      <InputNumber
+                        v-model:value="item.thoiGianBaoHanh"
+                        placeholder="Nhập thời gian"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được bảo hành">
+                      <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="Mô tả">
+                      <Textarea
+                        v-model:value="item.moTa"
+                        placeholder="Nhập mô tả"
+                        :rows="2"
+                      ></Textarea>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được xem">
+                      <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Card>
+            </div>
+          </div>
+
+          <!-- HỆ DÂY ĐIỆN -->
+          <div class="vat-tu-group">
+            <Divider orientation="left" style="margin: 16px 0">Hệ dây điện</Divider>
+            <Button
+              type="dashed"
+              block
+              @click="handleAddHeDayDien"
+              style="margin-bottom: 16px"
+              size="small"
+            >
+              <template #icon><PlusOutlined /></template>
+              Thêm Hệ dây điện
+            </Button>
+            <div v-for="(item, itemIndex) in heDayDienList" :key="itemIndex" class="vat-tu-item">
+              <Card size="small">
+                <template #extra>
+                  <Button type="link" danger size="small" @click="handleRemoveHeDayDien(itemIndex)"
+                    ><DeleteOutlined
+                  /></Button>
+                </template>
+                <Row :gutter="16">
+                  <Col :span="12">
+                    <FormItem label="Hệ dây điện" :required="true">
+                      <Select
+                        v-model:value="item.vatTuId"
+                        placeholder="Chọn vật tư"
+                        show-search
+                        :filter-option="filterOption"
+                        :options="heDayDienOptions"
+                        @change="(value) => handleHeDayDienChange(value, itemIndex)"
+                      ></Select>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Số lượng" :required="true">
+                      <InputNumber
+                        v-model:value="item.soLuong"
+                        placeholder="Nhập số lượng"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="GM (%)" :required="true">
+                      <InputNumber
+                        v-model:value="item.gm"
+                        placeholder="Nhập GM"
+                        :min="0"
+                        :max="100"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Thời gian BH (tháng)">
+                      <InputNumber
+                        v-model:value="item.thoiGianBaoHanh"
+                        placeholder="Nhập thời gian"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được bảo hành">
+                      <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="Mô tả">
+                      <Textarea
+                        v-model:value="item.moTa"
+                        placeholder="Nhập mô tả"
+                        :rows="2"
+                      ></Textarea>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được xem">
+                      <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Card>
+            </div>
+          </div>
+
+          <!-- TỦ ĐIỆN -->
+          <div class="vat-tu-group">
+            <Divider orientation="left" style="margin: 16px 0">Tủ điện</Divider>
+            <Button
+              type="dashed"
+              block
+              @click="handleAddTuDien"
+              style="margin-bottom: 16px"
+              size="small"
+            >
+              <template #icon><PlusOutlined /></template>
+              Thêm Tủ điện
+            </Button>
+            <div v-for="(item, itemIndex) in tuDienList" :key="itemIndex" class="vat-tu-item">
+              <Card size="small">
+                <template #extra>
+                  <Button type="link" danger size="small" @click="handleRemoveTuDien(itemIndex)"
+                    ><DeleteOutlined
+                  /></Button>
+                </template>
+                <Row :gutter="16">
+                  <Col :span="12">
+                    <FormItem label="Tủ điện" :required="true">
+                      <Select
+                        v-model:value="item.vatTuId"
+                        placeholder="Chọn vật tư"
+                        show-search
+                        :filter-option="filterOption"
+                        :options="tuDienOptions"
+                        @change="(value) => handleTuDienChange(value, itemIndex)"
+                      ></Select>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Số lượng" :required="true">
+                      <InputNumber
+                        v-model:value="item.soLuong"
+                        placeholder="Nhập số lượng"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="GM (%)" :required="true">
+                      <InputNumber
+                        v-model:value="item.gm"
+                        placeholder="Nhập GM"
+                        :min="0"
+                        :max="100"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Thời gian BH (tháng)">
+                      <InputNumber
+                        v-model:value="item.thoiGianBaoHanh"
+                        placeholder="Nhập thời gian"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được bảo hành">
+                      <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="Mô tả">
+                      <Textarea
+                        v-model:value="item.moTa"
+                        placeholder="Nhập mô tả"
+                        :rows="2"
+                      ></Textarea>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được xem">
+                      <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Card>
+            </div>
+          </div>
+
+          <!-- HỆ TIẾP ĐỊA -->
+          <div class="vat-tu-group">
+            <Divider orientation="left" style="margin: 16px 0">Hệ tiếp địa</Divider>
+            <Button
+              type="dashed"
+              block
+              @click="handleAddHeTiepDia"
+              style="margin-bottom: 16px"
+              size="small"
+            >
+              <template #icon><PlusOutlined /></template>
+              Thêm Hệ tiếp địa
+            </Button>
+            <div v-for="(item, itemIndex) in heTiepDiaList" :key="itemIndex" class="vat-tu-item">
+              <Card size="small">
+                <template #extra>
+                  <Button type="link" danger size="small" @click="handleRemoveHeTiepDia(itemIndex)"
+                    ><DeleteOutlined
+                  /></Button>
+                </template>
+                <Row :gutter="16">
+                  <Col :span="12">
+                    <FormItem label="Hệ tiếp địa" :required="true">
+                      <Select
+                        v-model:value="item.vatTuId"
+                        placeholder="Chọn vật tư"
+                        show-search
+                        :filter-option="filterOption"
+                        :options="heTiepDiaOptions"
+                        @change="(value) => handleHeTiepDiaChange(value, itemIndex)"
+                      ></Select>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Số lượng" :required="true">
+                      <InputNumber
+                        v-model:value="item.soLuong"
+                        placeholder="Nhập số lượng"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="GM (%)" :required="true">
+                      <InputNumber
+                        v-model:value="item.gm"
+                        placeholder="Nhập GM"
+                        :min="0"
+                        :max="100"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Thời gian BH (tháng)">
+                      <InputNumber
+                        v-model:value="item.thoiGianBaoHanh"
+                        placeholder="Nhập thời gian"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được bảo hành">
+                      <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="Mô tả">
+                      <Textarea
+                        v-model:value="item.moTa"
+                        placeholder="Nhập mô tả"
+                        :rows="2"
+                      ></Textarea>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được xem">
+                      <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Card>
+            </div>
+          </div>
+
+          <!-- TRỌN GÓI LẮP ĐẶT -->
+          <div class="vat-tu-group">
+            <Divider orientation="left" style="margin: 16px 0">Trọn gói lắp đặt</Divider>
+            <Button
+              type="dashed"
+              block
+              @click="handleAddTronGoiLapDat"
+              style="margin-bottom: 16px"
+              size="small"
+            >
+              <template #icon><PlusOutlined /></template>
+              Thêm Trọn gói lắp đặt
+            </Button>
+            <div
+              v-for="(item, itemIndex) in tronGoiLapDatList"
+              :key="itemIndex"
+              class="vat-tu-item"
+            >
+              <Card size="small">
+                <template #extra>
+                  <Button
+                    type="link"
+                    danger
+                    size="small"
+                    @click="handleRemoveTronGoiLapDat(itemIndex)"
+                    ><DeleteOutlined
+                  /></Button>
+                </template>
+                <Row :gutter="16">
+                  <Col :span="12">
+                    <FormItem label="Trọn gói lắp đặt" :required="true">
+                      <Select
+                        v-model:value="item.vatTuId"
+                        placeholder="Chọn vật tư"
+                        show-search
+                        :filter-option="filterOption"
+                        :options="tronGoiLapDatOptions"
+                        @change="(value) => handleTronGoiLapDatChange(value, itemIndex)"
+                      ></Select>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Số lượng" :required="true">
+                      <InputNumber
+                        v-model:value="item.soLuong"
+                        placeholder="Nhập số lượng"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="GM (%)" :required="true">
+                      <InputNumber
+                        v-model:value="item.gm"
+                        placeholder="Nhập GM"
+                        :min="0"
+                        :max="100"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá nhập miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaNhapMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Bắc" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienBac"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Giá bán miền Nam" :required="true">
+                      <InputNumber
+                        v-model:value="item.giaBanMienNam"
+                        :min="0"
+                        :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                        :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Thời gian BH (tháng)">
+                      <InputNumber
+                        v-model:value="item.thoiGianBaoHanh"
+                        placeholder="Nhập thời gian"
+                        :min="0"
+                        style="width: 100%"
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được bảo hành">
+                      <RadioGroup v-model:value="item.duocBaoHanh" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                  <Col :span="24">
+                    <FormItem label="Mô tả">
+                      <Textarea
+                        v-model:value="item.moTa"
+                        placeholder="Nhập mô tả"
+                        :rows="2"
+                      ></Textarea>
+                    </FormItem>
+                  </Col>
+                  <Col :span="12">
+                    <FormItem label="Được xem">
+                      <RadioGroup v-model:value="item.duocXem" button-style="solid">
+                        <RadioButton :value="true">Có</RadioButton>
+                        <RadioButton :value="false">Không</RadioButton>
+                      </RadioGroup>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Card>
+            </div>
+          </div>
+        </FormItem>
+
+        <Row :gutter="16">
+          <Col :span="12">
+            <FormItem
+              label="Công suất hệ thống (kW)"
+              name="congSuatHeThong"
+              :label-col="{ span: 12 }"
+              :wrapper-col="{ span: 12 }"
+            >
+              <InputNumber
+                v-model:value="formState.congSuatHeThong"
+                placeholder="Công suất hệ thống"
+                :min="0"
+                :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                style="width: 100%"
+              ></InputNumber>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row :gutter="16">
+          <Col :span="12">
+            <FormItem
+              label="Tổng giá Miền Bắc (VND)"
+              name="tongGiaMienBac"
+              :rules="[{ required: true, message: 'Vui lòng nhập tổng giá Miền Bắc' }]"
+              :label-col="{ span: 12 }"
+              :wrapper-col="{ span: 12 }"
+            >
+              <InputNumber
+                v-model:value="formState.tongGiaMienBac"
+                placeholder="Nhập tổng giá Miền Bắc"
+                :min="0"
+                :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                style="width: 100%"
+              ></InputNumber>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row :gutter="16">
+          <Col :span="12">
+            <FormItem
+              label="Tổng giá Miền Nam (VND)"
+              name="tongGiaMienNam"
+              :rules="[{ required: true, message: 'Vui lòng nhập tổng giá Miền Nam' }]"
+              :label-col="{ span: 12 }"
+              :wrapper-col="{ span: 12 }"
+            >
+              <InputNumber
+                v-model:value="formState.tongGiaMienNam"
+                placeholder="Nhập tổng giá Miền Nam"
+                :min="0"
+                :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+                style="width: 100%"
+              ></InputNumber>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row :gutter="16">
+          <Col :span="12">
+            <FormItem
+              label="GM Tổng (%)"
+              name="gmTong"
+              :label-col="{ span: 12 }"
+              :wrapper-col="{ span: 12 }"
+            >
+              <InputNumber
+                v-model:value="formState.gmTong"
+                placeholder="Nhập GM tổng"
+                :min="0"
+                :max="100"
+                style="width: 100%"
+              ></InputNumber>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row :gutter="16">
+          <Col :span="12">
+            <FormItem label="Tính tổng giá" :label-col="{ span: 12 }" :wrapper-col="{ span: 12 }">
+              <Button type="primary" @click="tinhTongGia()">Tính tổng giá</Button>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Divider orientation="center">Hình ảnh</Divider>
+        <FormItem label="Hình ảnh" :wrapper-col="{ span: 18 }">
+          <Upload
+            v-model:file-list="fileList"
+            list-type="picture-card"
+            :before-upload="beforeUpload"
+            @remove="handleRemoveFile"
+            accept="image/*"
+            :max-count="1"
+          >
+            <div v-if="fileList.length < 1">
+              <PlusOutlined />
+              <div style="margin-top: 8px">Tải ảnh lên</div>
+            </div>
+          </Upload>
+          <div class="upload-hint">
+            Tối đa 1 ảnh, định dạng: JPG, PNG, GIF. Xóa ảnh cũ và không chọn ảnh mới sẽ xóa ảnh.
+          </div>
+        </FormItem>
+      </Form>
+    </Spin>
   </BasicModal>
 </template>
 
