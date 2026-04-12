@@ -24,6 +24,11 @@ export const columns: BasicColumn[] = [
     width: 180,
   },
   {
+    title: 'Người giới thiệu',
+    dataIndex: ['nguoiGioiThieu', 'hoVaTen'],
+    width: 180,
+  },
+  {
     title: 'Loại hệ thống',
     dataIndex: 'loaiHeThong',
     width: 120,
