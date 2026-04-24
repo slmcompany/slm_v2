@@ -37,6 +37,39 @@ public class MienController {
         );
     }
 
+
+    @GetMapping("/blocked-domains")
+    public ResponseEntity<ResponseData<List<String>>> listBlockedDomains() {
+        return ResponseEntity.ok(
+                ResponseData.<List<String>>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(List.of(
+                                "facebook.com",
+                                "tiktok.com",
+                                "youtube.com"
+                        ))
+                        .build()
+        );
+    }
+
+
+    @GetMapping("/blocked-ips")
+    public ResponseEntity<ResponseData<List<String>>> listBlockedIps() {
+        return ResponseEntity.ok(
+                ResponseData.<List<String>>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(List.of(
+                                "1.2.3.4",
+                                "192.168.100.0/24"
+                        ))
+                        .build()
+        );
+    }
+
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity<ResponseData<MienDto>> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(
@@ -74,18 +107,18 @@ public class MienController {
     }
 
     @PutMapping(
-            value="/update",
+            value = "/update",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<ResponseData<String>> update(
             @RequestPart("dto") MienUpdatingDto updating,
             @RequestPart("file") MultipartFile file
-    ){
+    ) {
         return mienService.update(updating, file);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseData<String>> hardDelete(@PathVariable Integer id){
+    public ResponseEntity<ResponseData<String>> hardDelete(@PathVariable Integer id) {
         return mienService.hardDelete(id);
     }
 
