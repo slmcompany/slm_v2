@@ -28,16 +28,11 @@ public class SecurityConfig implements WebMvcConfigurer {
     //Security Config==================================================================================================>
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
-//                        .requestMatchers("/private/**").hasAnyAuthority("SCOPE_ROLE_ADMIN", "SCOPE_ROLE_CUSTOMER")
-                        .anyRequest().authenticated())
-                .csrf().disable();
-        http.oauth2ResourceServer(oauth2 -> {
-            oauth2.jwt(jwtConfigurer -> {
-                jwtConfigurer.decoder(jwtDecoder());
-            });
-        });
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()  // Mở tất cả
+                )
+                .csrf(csrf -> csrf.disable());
         return http.build();
     }
 
