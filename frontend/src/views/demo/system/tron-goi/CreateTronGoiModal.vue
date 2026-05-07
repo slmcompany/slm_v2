@@ -1391,12 +1391,34 @@
       <Row :gutter="16">
         <Col :span="12">
           <FormItem
-            label="Tính tổng giá"
-            name="banChay"
+            label="Giá đề xuất Miền Bắc (VND)"
             :label-col="{ span: 12 }"
             :wrapper-col="{ span: 12 }"
           >
-            <Button type="primary" :reqired="true" @click="tinhTongGia()">Tính tổng giá</Button>
+            <InputNumber
+              v-model:value="formState.giaDeXuatMienBac"
+              :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+              :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+              style="width: 100%"
+              disabled
+            />
+          </FormItem>
+        </Col>
+      </Row>
+      <Row :gutter="16">
+        <Col :span="12">
+          <FormItem
+            label="Giá đề xuất Miền Nam (VND)"
+            :label-col="{ span: 12 }"
+            :wrapper-col="{ span: 12 }"
+          >
+            <InputNumber
+              v-model:value="formState.giaDeXuatMienNam"
+              :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+              :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
+              style="width: 100%"
+              disabled
+            />
           </FormItem>
         </Col>
       </Row>
@@ -1427,7 +1449,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, watch } from 'vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue';
   import {
@@ -1482,6 +1504,8 @@
     moTa: '',
     tongGiaMienBac: 0,
     tongGiaMienNam: 0,
+    giaDeXuatMienBac: 0,
+    giaDeXuatMienNam: 0,
     gmTong: 0,
     congSuatHeThong: 0,
     banChay: false,
@@ -1536,7 +1560,10 @@
       loaiPha: '1 pha',
       giaKhungSat: 0,
       moTa: '',
-      tongGia: 0,
+      tongGiaMienBac: 0,
+      tongGiaMienNam: 0,
+      giaDeXuatMienBac: 0,
+      giaDeXuatMienNam: 0,
       gmTong: 0,
       congSuatHeThong: 0,
       banChay: false,
@@ -2367,9 +2394,29 @@
         tongGiaMienNam += (vatTu.giaBanMienBac || 0) * (vatTu.soLuong || 0);
       }
     }
-    formState.tongGiaMienBac = tongGiaMienBac;
-    formState.tongGiaMienNam = tongGiaMienNam;
+    formState.giaDeXuatMienBac = tongGiaMienBac;
+    formState.giaDeXuatMienNam = tongGiaMienNam;
   }
+
+  watch(
+    [
+      tamPinList,
+      bienTanList,
+      pinLuuTruList,
+      heKhungNhomList,
+      heDayDienList,
+      tuDienList,
+      heTiepDiaList,
+      tronGoiLapDatList,
+    ],
+    () => {
+      tinhTongGia();
+    },
+    {
+      deep: true,
+      immediate: true,
+    },
+  );
 
   async function handleSubmit() {
     try {
