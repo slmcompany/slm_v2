@@ -32,7 +32,7 @@
   import { PlusOutlined } from '@ant-design/icons-vue';
   import { Button, Divider } from 'ant-design-vue';
   import VatTuFormItem from './VatTuFormItem.vue';
-  import type { VatTuHopDongCreatingDto, VatTuDto } from './hopDong.ts';
+  import type { VatTuHopDongCreatingDto, VatTuDto } from './hopDong';
 
   interface Props {
     title: string;
@@ -44,7 +44,7 @@
     showAddButton?: boolean;
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     coSoMa: 'HN',
     region: 'Miền Bắc', // Default value
     showAddButton: true,

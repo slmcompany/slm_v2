@@ -2,6 +2,7 @@ package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.RoleType;
 import com.devmam.slmapiv2.dto.request.entities.HopDongUndefineKhachHangCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.HopDongUpdatingDto;
 import com.devmam.slmapiv2.dto.request.entities.VatTuHopDongCreatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.HopDongDto;
@@ -12,11 +13,14 @@ import com.devmam.slmapiv2.repository.HopDongRepository;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -203,6 +207,105 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
                         .data(hopDongMapper.toDto(hopDongFinding.get()))
                         .build()
         );
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseData<HopDongDto>> update(HopDongUpdatingDto dto) {
+        HopDong hopDong = getOne(dto.getId()).orElseThrow(
+                () -> new CommonException("Không tìm thấy hợp đồng id: " + dto.getId())
+        );
+
+        CoSo coSo = coSoService.getOne(dto.getCoSoId()).orElseThrow(
+                () -> new CommonException("Không tìm thấy cơ sở id: " + dto.getCoSoId())
+        );
+
+        KhachHang khachHang = hopDong.getKhachHang();
+
+        NguoiDung nguoiDung = nguoiDungService.findBySdtOrEmail(khachHang.getSdt(), khachHang.getSdt()).orElseThrow(
+                () -> new CommonException("Không tìm thấy người dùng sdt: " + khachHang.getSdt())
+        );
+        // Logic người giới thiệu và hoa hồng
+        NguoiDung nguoiGioiThieu = nguoiDungService.getOne(dto.getNguoiGioiThieuId()).orElseThrow(
+                () -> new CommonException("Không tìm thấy người dùng id: " + dto.getNguoiGioiThieuId())
+        );
+
+        // Update thông tin hợp đồng
+        hopDong.setCoSo(coSo);
+        hopDong.setTen(dto.getTen());
+        hopDong.setLoaiHeThong(dto.getLoaiHeThong());
+        hopDong.setLoaiPha(dto.getLoaiPha());
+        hopDong.setSanLuongToiThieu(dto.getSanLuongToiThieu());
+        hopDong.setSanLuongToiDa(dto.getSanLuongToiDa());
+        hopDong.setGiaKhungSat(dto.getGiaKhungSat());
+        hopDong.setMoTa(dto.getMoTa());
+        hopDong.setTongGia(dto.getTongGia());
+        hopDong.setNguoiGioiThieu(nguoiGioiThieu);
+
+        //Update thông tin khách hàng
+        khachHang.setNguoiGioiThieu(nguoiGioiThieu);
+        khachHang.setEmail(dto.getEmailKhachHang());
+        khachHang.setSdt(dto.getSdtKhachHang());
+        khachHang.setHoVaTen(dto.getHoVaTenKhachHang());
+        khachHang.setDiaChi(dto.getDiaChiKhachHang());
+        khachHangService.update(khachHang.getId(), khachHang);
+
+        //Update thông tin tài khoản của khách hàng
+        nguoiDung.setEmail(dto.getEmailKhachHang());
+        nguoiDung.setSdt(dto.getSdtKhachHang());
+        nguoiDung.setHoVaTen(dto.getHoVaTenKhachHang());
+        nguoiDung.setDiaChi(dto.getDiaChiKhachHang());
+        nguoiDungService.update(nguoiDung.getId(), nguoiDung);
+
+        // Logic vật tư trong hợp đồng
+        if (dto.getVatTuHopDongs() != null && !dto.getVatTuHopDongs().isEmpty()) {
+            vatTuHopDongService.delete(hopDong.getVatTuHopDongs());
+            hopDong.getVatTuHopDongs().clear();
+            entityManager.flush();
+            createVatTuHopDongList(hopDong, dto.getVatTuHopDongs());
+        }
+
+        hopDong = update(hopDong);
+
+        return ResponseEntity.ok(
+                ResponseData.<HopDongDto>builder()
+                        .status(HttpStatus.OK.value())
+                        .data(hopDongMapper.toDto(hopDong))
+                        .message("Success")
+                        .build()
+        );
+    }
+
+    private void createVatTuHopDongList(HopDong hopDong, List<VatTuHopDongCreatingDto> dtos) {
+        Instant now = Instant.now();
+        for (VatTuHopDongCreatingDto vatTuDto : dtos) {
+
+            Optional<VatTu> vatTu = vatTuService.getOne(vatTuDto.getVatTuId());
+            if (vatTu.isEmpty()) {
+                throw new CommonException("Không tìm thấy vật tư id: " + vatTuDto.getVatTuId());
+            }
+
+            VatTuHopDong vatTuHopDongCreating = VatTuHopDong.builder()
+                    .hopDong(hopDong)
+                    .vatTu(vatTu.get())
+                    .moTa(hopDong.getMoTa())
+                    .soLuong(vatTuDto.getSoLuong())
+                    .gm(vatTuDto.getGm())
+                    .giaHeThong(vatTuDto.getGiaBan())
+                    .giaHienThi(vatTuDto.getGiaBan())
+                    .thoiGianBaoHanh(vatTuDto.getThoiGianBaoHanh())
+                    .baoHanhBatDau(hopDong.getTaoLuc())
+                    .baoHanhKetThuc(
+                            hopDong.getTaoLuc()
+                                    .atZone(ZoneId.systemDefault()) // Chuyển Instant -> ZonedDateTime
+                                    .plusMonths(vatTuDto.getThoiGianBaoHanh())
+                                    .toInstant() // Chuyển lại thành Instant
+                    )
+                    .duocBaoHanh(vatTuDto.getDuocBaoHanh())
+                    .taoLuc(now)
+                    .trangThai(1)
+                    .build();
+            vatTuHopDongService.create(vatTuHopDongCreating);
+        }
     }
 
     @Transactional

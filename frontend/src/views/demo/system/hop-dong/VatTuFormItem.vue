@@ -144,7 +144,8 @@
     emit('update:modelValue', { ...props.modelValue, [field]: value });
   };
 
-  const handleVatTuChange = (vatTuId: number) => {
+  const handleVatTuChange = (value: any) => {
+    const vatTuId = Number(value);
     const vatTu = props.vatTuData.find((v) => v.id === vatTuId);
     if (!vatTu) return;
 

@@ -1,5 +1,6 @@
 package com.devmam.slmapiv2.dto.response;
 
+import com.devmam.slmapiv2.context.SecurityContextHolder;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -27,6 +28,7 @@ public class ResponseData<T> implements Serializable {
         this.error = error;
         this.message = message;
         this.timestamp = new Date();
+        this.path = SecurityContextHolder.getPath();
     }
 
     public ResponseData(int status, T data, String error, String message, String path) {

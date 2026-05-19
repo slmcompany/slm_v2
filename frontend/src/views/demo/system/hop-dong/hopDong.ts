@@ -1,9 +1,9 @@
 import { realHttp } from '@/utils/http/axios';
-import { c } from 'node_modules/vite/dist/node/types.d-aGj9QkWt';
 
 enum Api {
   Filter = '/hop-dong/filter',
   Create = '/hop-dong/create',
+  Update = '/hop-dong/update',
   Delete = '/hop-dong/delete/',
   GetAllCoSo = '/co-so/all',
   GetAllNganhHang = '/nganh-hang/all',
@@ -64,6 +64,7 @@ export interface VatTuDto {
   moTaBaoGia: string;
   moTaHopDong: string;
   duLieuRieng: Record<string, any>;
+  thoiGianBaoHanh?: number;
   thongTinGias: ThongTinGiaDto[];
   nhomVatTu: {
     id: number;
@@ -106,6 +107,26 @@ export interface HopDongCreateDto {
   vatTuHopDongs: VatTuHopDongCreatingDto[];
 }
 
+export interface HopDongUpdateDto {
+  id: number | undefined;
+  coSoId: number | undefined;
+  ten: string;
+  loaiHeThong: string;
+  loaiPha: string;
+  sanLuongToiThieu: number;
+  sanLuongToiDa: number;
+  giaKhungSat: number;
+  moTa: string;
+  nguoiGioiThieuId: number | undefined;
+  emailKhachHang: string;
+  sdtKhachHang: string;
+  hoVaTenKhachHang: string;
+  diaChiKhachHang: string;
+  tongGia: number;
+  taoLuc: string;
+  vatTuHopDongs: VatTuHopDongCreatingDto[];
+}
+
 export interface CoSoDto {
   id: number;
   ma: string;
@@ -124,6 +145,7 @@ export interface KhachHangDto{
   gioiTinh: boolean;
   sinhNhat: string;
   diaChi: string;
+  nguoiGioiThieu?: NguoiDungDto;
   daBanDuocHang: boolean;
   taoLuc: string;
   trangThai: string;
@@ -177,7 +199,7 @@ export interface HopDongDto {
   giaKhungSat: number;
   moTa: string;
   nguoiGioiThieu: { id: number; hoVaTen: string };
-  khachHang: { id: number; hoVaTen: string; email: string; sdt: string };
+  khachHang: KhachHangDto;
   tongGia: number;
   taoLuc: string;
   trangThai: number;
@@ -261,6 +283,13 @@ export function filterVatTu(maNhomVatTu: string | null) {
 export function createHopDong(data: HopDongCreateDto) {
   return realHttp.post<ResponseData<HopDongDto>>(
     { url: Api.Create, data },
+    { isTransformResponse: false }
+  ).then((res: any) => res as ResponseData<HopDongDto>);
+}
+
+export function updateHopDong(data: HopDongUpdateDto) {
+  return realHttp.put<ResponseData<HopDongDto>>(
+    { url: Api.Update, data },
     { isTransformResponse: false }
   ).then((res: any) => res as ResponseData<HopDongDto>);
 }

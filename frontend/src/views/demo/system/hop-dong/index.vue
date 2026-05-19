@@ -17,13 +17,18 @@
           <TableAction
             :actions="[
               {
+                icon: 'clarity:note-edit-line',
+                tooltip: 'Chỉnh sửa',
+                onClick: () => handleEdit(record as HopDongDto),
+              },
+              {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
                 tooltip: 'Xóa',
                 popConfirm: {
                   title: 'Bạn có chắc chắn muốn xóa?',
                   placement: 'left',
-                  confirm: () => handleDelete(record),
+                  confirm: () => handleDelete(record as HopDongDto),
                 },
               },
             ]"
@@ -134,6 +139,7 @@
     </BasicTable>
 
     <CreateHopDongModal @register="registerCreateModal" @success="handleSuccess" />
+    <UpdateHopDongModal @register="registerUpdateModal" @success="handleSuccess" />
   </div>
 </template>
 
@@ -142,14 +148,16 @@
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { PlusOutlined, ReloadOutlined } from '@ant-design/icons-vue';
   import { useModal } from '@/components/Modal';
-  import { columns, searchFormSchema, vatTuColumns } from './hopDong.data.ts';
-  import { filterHopDong, getAllCoSo, getAllNganhHang, deleteHopDong, type HopDongDto } from './hopDong.ts';
+  import { columns, searchFormSchema, vatTuColumns } from './hopDong.data';
+  import { filterHopDong, getAllCoSo, getAllNganhHang, deleteHopDong, type HopDongDto } from './hopDong';
   import CreateHopDongModal from './CreateHopDongModal.vue';
+  import UpdateHopDongModal from './UpdateHopDong.vue';
   import { Button, Descriptions, DescriptionsItem, Divider, message, Table } from 'ant-design-vue';
 
   defineOptions({ name: 'HopDongManagement' });
 
   const [registerCreateModal, { openModal: openCreateModal }] = useModal();
+  const [registerUpdateModal, { openModal: openUpdateModal }] = useModal();
 
   const [registerTable, { reload, getForm }] = useTable({
     title: 'Danh sách hợp đồng',
@@ -215,7 +223,7 @@
       const nghanhHangOptions = ref<any[]>([]);
 
       if (coSoRes.status === 'fulfilled' && coSoRes.value?.data) {
-        const list = Array.isArray(coSoRes.value.data) ? coSoRes.value.data : coSoRes.value.data.content || [];
+        const list = resolveList(coSoRes.value);
         coSoOptions.value = list.map((item: any) => ({
           label: item.ten || item.ma,
           value: item.id,
@@ -223,7 +231,7 @@
       }
 
       if (nghanhHangRes.status === 'fulfilled' && nghanhHangRes.value?.data) {
-        const list = Array.isArray(nghanhHangRes.value.data) ? nghanhHangRes.value.data : nghanhHangRes.value.data.content || [];
+        const list = resolveList(nghanhHangRes.value);
         nghanhHangOptions.value = list.map((item: any) => ({
           label: item.ten,
           value: item.id,
@@ -242,6 +250,13 @@
     }
   }
 
+  function resolveList(res: any) {
+    const payload = res?.data ?? res;
+    if (Array.isArray(payload)) return payload;
+    if (payload && Array.isArray(payload.content)) return payload.content;
+    return [];
+  }
+
   function formatCurrency(value: number) {
     if (!value && value !== 0) return '0đ';
     try {
@@ -253,6 +268,10 @@
 
   function handleCreate() {
     openCreateModal(true, {});
+  }
+
+  function handleEdit(record: HopDongDto) {
+    openUpdateModal(true, { record });
   }
 
   async function handleDelete(record: HopDongDto) {

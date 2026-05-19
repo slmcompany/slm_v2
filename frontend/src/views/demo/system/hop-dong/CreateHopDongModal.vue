@@ -301,7 +301,7 @@
     type HopDongCreateDto,
     type VatTuHopDongCreatingDto,
     type VatTuDto,
-  } from './hopDong.ts';
+  } from './hopDong';
   import { ceil } from 'lodash-es';
 
   defineOptions({ name: 'CreateHopDongModal' });
@@ -492,9 +492,7 @@
       ]);
 
       if (coSoRes.status === 'fulfilled' && coSoRes.value?.data) {
-        const list = Array.isArray(coSoRes.value.data)
-          ? coSoRes.value.data
-          : coSoRes.value.data.content || [];
+        const list = resolveList(coSoRes.value);
         coSoOptions.value = list.map((item: any) => ({
           label: item.ten || item.ma,
           value: item.id,
@@ -503,9 +501,7 @@
       }
 
       if (nghanhHangRes.status === 'fulfilled' && nghanhHangRes.value?.data) {
-        const list = Array.isArray(nghanhHangRes.value.data)
-          ? nghanhHangRes.value.data
-          : nghanhHangRes.value.data.content || [];
+        const list = resolveList(nghanhHangRes.value);
         nghanhHangOptions.value = list.map((item: any) => ({
           label: item.ten,
           value: item.id,
@@ -513,9 +509,7 @@
       }
 
       if (nguoiDungRes.status === 'fulfilled' && nguoiDungRes.value?.data) {
-        const list = Array.isArray(nguoiDungRes.value.data)
-          ? nguoiDungRes.value.data
-          : nguoiDungRes.value.data.content || [];
+        const list = resolveList(nguoiDungRes.value);
         nguoiDungOptions.value = list.map((item: any) => ({
           label: item.hoVaTen || item.email,
           value: item.id,
@@ -525,6 +519,13 @@
       console.error('Error loading options:', error);
       message.error('Không thể tải dữ liệu danh mục');
     }
+  }
+
+  function resolveList(res: any) {
+    const payload = res?.data ?? res;
+    if (Array.isArray(payload)) return payload;
+    if (payload && Array.isArray(payload.content)) return payload.content;
+    return [];
   }
 
   async function loadAllVatTu() {
@@ -719,6 +720,9 @@
     } else {
       console.log('Đi qua 4');
       listMap[code].value[index] = value;
+    }
+    if (code === 'TAM_PIN') {
+      updateHeKhungNhomQuantities();
     }
   }
 

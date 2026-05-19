@@ -2,6 +2,7 @@ package com.devmam.slmapiv2.controller;
 
 import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
 import com.devmam.slmapiv2.dto.request.entities.HopDongUndefineKhachHangCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.HopDongUpdatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.HopDongDto;
 import com.devmam.slmapiv2.mapper.HopDongMapper;
@@ -36,6 +37,11 @@ public class HopDongController {
     @PostMapping("/create")
     public ResponseEntity<ResponseData<HopDongDto>> create(@RequestBody HopDongUndefineKhachHangCreatingDto dto){
         return hopDongService.create(dto);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseData<HopDongDto>> update(@RequestBody HopDongUpdatingDto dto){
+        return hopDongService.update(dto);
     }
 
     @DeleteMapping("/delete/{id}")

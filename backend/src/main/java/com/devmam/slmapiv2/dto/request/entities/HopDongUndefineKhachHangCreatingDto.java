@@ -16,11 +16,8 @@ import java.util.List;
 public class HopDongUndefineKhachHangCreatingDto {
     Integer coSoId;
     Integer nghanhHangId;
-    @Size(max = 400)
     String ten;
-    @Size(max = 50)
     String loaiHeThong;
-    @Size(max = 50)
     String loaiPha;
     Double sanLuongToiThieu;
     Double sanLuongToiDa;
