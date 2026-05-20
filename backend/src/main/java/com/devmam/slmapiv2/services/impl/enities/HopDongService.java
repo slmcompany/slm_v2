@@ -1,6 +1,7 @@
 package com.devmam.slmapiv2.services.impl.enities;
 
 import com.devmam.slmapiv2.constant.enums.RoleType;
+import com.devmam.slmapiv2.dto.request.entities.HopDongDefineKhachHangCreatingDto;
 import com.devmam.slmapiv2.dto.request.entities.HopDongUndefineKhachHangCreatingDto;
 import com.devmam.slmapiv2.dto.request.entities.HopDongUpdatingDto;
 import com.devmam.slmapiv2.dto.request.entities.VatTuHopDongCreatingDto;
@@ -71,7 +72,6 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
         if (coSoFinding.isEmpty()) {
             throw new CommonException("Không tìm thấy cơ sở id: " + dto.getCoSoId());
         }
-        System.out.println(dto.getNghanhHangId());
 
         Optional<NganhHang> nganhHangFinding = nganhHangService.getOne(dto.getNghanhHangId());
 
@@ -88,6 +88,7 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
         if (dto.getEmailKhachHang() == null || dto.getEmailKhachHang().isEmpty()) {
             dto.setEmailKhachHang(dto.getSdtKhachHang());
         }
+
         KhachHang khachHangCreating = KhachHang.builder()
                 .email(dto.getEmailKhachHang())
                 .sdt(dto.getSdtKhachHang())
@@ -205,6 +206,40 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
                         .error(null)
                         .message("Success")
                         .data(hopDongMapper.toDto(hopDongFinding.get()))
+                        .build()
+        );
+    }
+
+
+    @Transactional
+    public ResponseEntity<ResponseData<HopDongDto>> create(HopDongDefineKhachHangCreatingDto dto) {
+        CoSo coSo = coSoService.getOne(dto.getCoSoId()).orElseThrow(
+                () -> new CommonException("Không tìm thấy cơ sở id: " + dto.getCoSoId())
+        );
+
+        NganhHang nganhHang = nganhHangService.getOne(dto.getNghanhHangId()).orElseThrow(
+                () -> new CommonException("Không tìm thấy ngành hàng id: " + dto.getNghanhHangId())
+        );
+
+        KhachHang khachHang = khachHangService.getOne(dto.getKhachHangId()).orElseThrow(
+                () -> new CommonException("Không tìm thấy khách hàng id: " + dto.getKhachHangId())
+        );
+
+        HopDong hopDong = HopDongDefineKhachHangCreatingDto.toEntity(dto);
+        hopDong.setCoSo(coSo);
+        hopDong.setNghanhHang(nganhHang);
+        hopDong.setKhachHang(khachHang);
+        hopDong.setNguoiGioiThieu(khachHang.getNguoiGioiThieu());
+        hopDong = create(hopDong);
+
+        if (dto.getVatTuHopDongs() != null && !dto.getVatTuHopDongs().isEmpty()) {
+            createVatTuHopDongList(hopDong, dto.getVatTuHopDongs());
+        }
+        return ResponseEntity.ok(
+                ResponseData.<HopDongDto>builder()
+                        .status(HttpStatus.OK.value())
+                        .data(hopDongMapper.toDto(hopDong))
+                        .message("Success")
                         .build()
         );
     }
@@ -344,4 +379,6 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
                         .build()
         );
     }
+
+
 }

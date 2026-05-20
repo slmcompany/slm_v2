@@ -9,6 +9,8 @@ enum Api {
   GetAllNganhHang = '/nganh-hang/all',
   GetAllNguoiDung = '/nguoi-dung/all',
   FilterVatTu = '/vat-tu/filter',
+  FilterKhachHang = '/khach-hang/filter',
+  CreateKnownCustomer = '/hop-dong/create-known-customer',
 }
 
 // ============= Types =============
@@ -102,6 +104,22 @@ export interface HopDongCreateDto {
   gioiTinhKhachHang: boolean;
   sinhNhatKhachHang: string | null;
   diaChiKhachHang: string;
+  tongGia: number;
+  taoLuc: string;
+  vatTuHopDongs: VatTuHopDongCreatingDto[];
+}
+
+export interface HopDongKnownCustomerCreateDto {
+  coSoId: number | undefined;
+  nghanhHangId: number | undefined;
+  ten: string;
+  loaiHeThong: string;
+  loaiPha: string;
+  sanLuongToiThieu: number;
+  sanLuongToiDa: number;
+  giaKhungSat: number;
+  moTa: string;
+  khachHangId: number;
   tongGia: number;
   taoLuc: string;
   vatTuHopDongs: VatTuHopDongCreatingDto[];
@@ -298,5 +316,27 @@ export function deleteHopDong(id: number) {
   return realHttp.delete<ResponseData<HopDongDto>>(
     { url: Api.Delete + id },
     { isTransformResponse: false }
+  ).then((res: any) => res as ResponseData<HopDongDto>);
+}
+
+export function filterKhachHang(sdt: string) {
+  return realHttp.post<ResponseData<PageResponse<KhachHangDto>>>(
+    {
+      url: Api.FilterKhachHang,
+      data: {
+        filters: [{ fieldName: 'sdt', operation: 'EQUALS', value: sdt }],
+        sorts: [],
+        page: 0,
+        size: 5,
+      },
+    },
+    { isTransformResponse: false },
+  ).then((res: any) => res as ResponseData<PageResponse<KhachHangDto>>);
+}
+
+export function createHopDongKnownCustomer(data: HopDongKnownCustomerCreateDto) {
+  return realHttp.post<ResponseData<HopDongDto>>(
+    { url: Api.CreateKnownCustomer, data },
+    { isTransformResponse: false },
   ).then((res: any) => res as ResponseData<HopDongDto>);
 }

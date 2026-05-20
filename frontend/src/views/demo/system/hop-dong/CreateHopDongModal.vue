@@ -143,69 +143,136 @@
       <Row :gutter="16">
         <Col :span="12">
           <FormItem
-            label="Họ và tên"
-            name="hoVaTenKhachHang"
-            :rules="[{ required: true, message: 'Vui lòng nhập' }]"
-            :label-col="{ span: 12 }"
-            :wrapper-col="{ span: 12 }"
-          >
-            <Input v-model:value="formState.hoVaTenKhachHang" placeholder="Nhập họ tên" />
-          </FormItem>
-        </Col>
-        <Col :span="12">
-          <FormItem
             label="Số điện thoại"
             name="sdtKhachHang"
             :rules="[{ required: true, message: 'Vui lòng nhập' }]"
             :label-col="{ span: 12 }"
             :wrapper-col="{ span: 12 }"
           >
-            <Input v-model:value="formState.sdtKhachHang" placeholder="Nhập SĐT" />
-          </FormItem>
-        </Col>
-      </Row>
-
-      <Row :gutter="16">
-        <Col :span="12">
-          <FormItem
-            label="Email"
-            name="emailKhachHang"
-            :rules="[{ type: 'email', message: 'Email không hợp lệ' }]"
-            :label-col="{ span: 12 }"
-            :wrapper-col="{ span: 12 }"
-          >
-            <Input v-model:value="formState.emailKhachHang" placeholder="Nhập email" />
+            <InputSearch
+              v-model:value="formState.sdtKhachHang"
+              placeholder="Nhập SĐT để tìm khách hàng"
+              :loading="searchingKhachHang"
+              enter-button
+              @search="handleSearchKhachHang"
+              @change="handleSdtChange"
+            />
           </FormItem>
         </Col>
         <Col :span="12">
           <FormItem
-            label="Giới tính"
-            name="gioiTinhKhachHang"
+            label="Họ và tên"
+            name="hoVaTenKhachHang"
+            :rules="[{ required: true, message: 'Vui lòng nhập' }]"
             :label-col="{ span: 12 }"
             :wrapper-col="{ span: 12 }"
           >
-            <RadioGroup v-model:value="formState.gioiTinhKhachHang" button-style="solid">
-              <RadioButton :value="true">Nam</RadioButton>
-              <RadioButton :value="false">Nữ</RadioButton>
-            </RadioGroup>
+            <Input
+              v-model:value="formState.hoVaTenKhachHang"
+              placeholder="Nhập họ tên"
+              :disabled="!!selectedKhachHang"
+            />
           </FormItem>
         </Col>
       </Row>
 
-      <FormItem label="Địa chỉ" name="diaChiKhachHang">
-        <Textarea v-model:value="formState.diaChiKhachHang" placeholder="Nhập địa chỉ" :rows="2" />
-      </FormItem>
-
-      <FormItem label="Người giới thiệu" name="nguoiGioiThieuId">
-        <Select
-          v-model:value="formState.nguoiGioiThieuId"
-          placeholder="Chọn người giới thiệu"
-          show-search
-          allow-clear
-          :filter-option="filterOption"
-          :options="nguoiDungOptions"
+      <!-- Hiển thị khách hàng tìm thấy -->
+      <div v-if="foundKhachHangs.length > 0" style="margin-bottom: 16px">
+        <Alert
+          message="Tìm thấy khách hàng trong hệ thống"
+          type="info"
+          show-icon
+          style="margin-bottom: 8px"
         />
-      </FormItem>
+        <Card
+          v-for="kh in foundKhachHangs"
+          :key="kh.id"
+          size="small"
+          :style="{
+            marginBottom: '8px',
+            cursor: 'pointer',
+            border: selectedKhachHang?.id === kh.id ? '2px solid #1890ff' : '1px solid #d9d9d9',
+          }"
+          @click="handleSelectKhachHang(kh)"
+        >
+          <Row :gutter="16" align="middle">
+            <Col :flex="1">
+              <Space direction="vertical" :size="2">
+                <span
+                  ><strong>{{ kh.hoVaTen || 'Chưa có tên' }}</strong></span
+                >
+                <span style="color: #666">SĐT: {{ kh.sdt }}</span>
+                <span style="color: #666">Email: {{ kh.email || '-' }}</span>
+                <span v-if="kh.nguoiGioiThieu" style="color: #666">
+                  Người GT: {{ kh.nguoiGioiThieu.hoVaTen }}
+                </span>
+              </Space>
+            </Col>
+            <Col>
+              <Tag v-if="selectedKhachHang?.id === kh.id" color="blue">Đã chọn</Tag>
+              <Button v-else type="primary" size="small">Chọn</Button>
+            </Col>
+          </Row>
+        </Card>
+        <Button
+          v-if="selectedKhachHang"
+          type="link"
+          danger
+          size="small"
+          @click="handleClearSelectedKhachHang"
+        >
+          Hủy chọn — nhập khách hàng mới
+        </Button>
+      </div>
+
+      <!-- Thông tin bổ sung (ẩn khi đã chọn KH có sẵn) -->
+      <template v-if="!selectedKhachHang">
+        <Row :gutter="16">
+          <Col :span="12">
+            <FormItem
+              label="Email"
+              name="emailKhachHang"
+              :rules="[{ type: 'email', message: 'Email không hợp lệ' }]"
+              :label-col="{ span: 12 }"
+              :wrapper-col="{ span: 12 }"
+            >
+              <Input v-model:value="formState.emailKhachHang" placeholder="Nhập email" />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <FormItem
+              label="Giới tính"
+              name="gioiTinhKhachHang"
+              :label-col="{ span: 12 }"
+              :wrapper-col="{ span: 12 }"
+            >
+              <RadioGroup v-model:value="formState.gioiTinhKhachHang" button-style="solid">
+                <RadioButton :value="true">Nam</RadioButton>
+                <RadioButton :value="false">Nữ</RadioButton>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <FormItem label="Địa chỉ" name="diaChiKhachHang">
+          <Textarea
+            v-model:value="formState.diaChiKhachHang"
+            placeholder="Nhập địa chỉ"
+            :rows="2"
+          />
+        </FormItem>
+
+        <FormItem label="Người giới thiệu" name="nguoiGioiThieuId">
+          <Select
+            v-model:value="formState.nguoiGioiThieuId"
+            placeholder="Chọn người giới thiệu"
+            show-search
+            allow-clear
+            :filter-option="filterOption"
+            :options="nguoiDungOptions"
+          />
+        </FormItem>
+      </template>
 
       <!-- VẬT TƯ TRONG HỢP ĐỒNG -->
       <Divider orientation="center">Vật tư trong hợp đồng</Divider>
@@ -276,6 +343,7 @@
   import { ref, reactive, computed, watch, Ref } from 'vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import {
+    Alert,
     Button,
     Col,
     DatePicker,
@@ -283,6 +351,7 @@
     Form,
     FormItem,
     Input,
+    InputSearch,
     InputNumber,
     RadioButton,
     RadioGroup,
@@ -290,6 +359,8 @@
     Select,
     Textarea,
     message,
+    Card,
+    Space,
   } from 'ant-design-vue';
   import VatTuGroupSection from './VatTuGroupSection.vue';
   import {
@@ -298,11 +369,69 @@
     getAllNganhHang,
     getAllNguoiDung,
     filterVatTu,
+    createHopDongKnownCustomer,
+    filterKhachHang,
     type HopDongCreateDto,
     type VatTuHopDongCreatingDto,
     type VatTuDto,
+    type HopDongKnownCustomerCreateDto,
+    type KhachHangDto,
   } from './hopDong';
   import { ceil } from 'lodash-es';
+
+  const searchingKhachHang = ref(false);
+  const foundKhachHangs = ref<KhachHangDto[]>([]);
+  const selectedKhachHang = ref<KhachHangDto | null>(null);
+
+  async function handleSearchKhachHang(value: string) {
+    if (!value || value.trim().length < 6) {
+      foundKhachHangs.value = [];
+      return;
+    }
+
+    searchingKhachHang.value = true;
+    try {
+      const res = await filterKhachHang(value.trim());
+      foundKhachHangs.value = res?.data?.content || [];
+      if (foundKhachHangs.value.length === 0) {
+        message.info('Không tìm thấy khách hàng, vui lòng nhập thông tin mới');
+      }
+    } catch (error) {
+      console.error('Error searching khach hang:', error);
+      message.error('Lỗi khi tìm kiếm khách hàng');
+    } finally {
+      searchingKhachHang.value = false;
+    }
+  }
+
+  function handleSdtChange() {
+    // Khi thay đổi SĐT, reset kết quả tìm kiếm nếu chưa chọn
+    if (!selectedKhachHang.value) {
+      foundKhachHangs.value = [];
+    }
+  }
+
+  function handleSelectKhachHang(kh: KhachHangDto) {
+    selectedKhachHang.value = kh;
+    // Điền thông tin vào form để hiển thị
+    formState.hoVaTenKhachHang = kh.hoVaTen || '';
+    formState.sdtKhachHang = kh.sdt;
+    formState.emailKhachHang = kh.email || '';
+    formState.diaChiKhachHang = kh.diaChi || '';
+    if (kh.nguoiGioiThieu) {
+      formState.nguoiGioiThieuId = kh.nguoiGioiThieu.id;
+    }
+    message.success(`Đã chọn khách hàng: ${kh.hoVaTen || kh.sdt}`);
+  }
+
+  function handleClearSelectedKhachHang() {
+    selectedKhachHang.value = null;
+    foundKhachHangs.value = [];
+    formState.hoVaTenKhachHang = '';
+    formState.emailKhachHang = '';
+    formState.diaChiKhachHang = '';
+    formState.nguoiGioiThieuId = undefined;
+  }
 
   defineOptions({ name: 'CreateHopDongModal' });
   const emit = defineEmits(['success', 'register']);
@@ -796,12 +925,32 @@
         return;
       }
 
-      const submitData: HopDongCreateDto = {
-        ...formState,
-        vatTuHopDongs: allVatTu,
-      };
+      let result;
 
-      const result = await createHopDong(submitData);
+      if (selectedKhachHang.value) {
+        const submitData: HopDongKnownCustomerCreateDto = {
+          coSoId: formState.coSoId,
+          nghanhHangId: formState.nghanhHangId,
+          ten: formState.ten,
+          loaiHeThong: formState.loaiHeThong,
+          loaiPha: formState.loaiPha,
+          sanLuongToiThieu: formState.sanLuongToiThieu || 0,
+          sanLuongToiDa: formState.sanLuongToiDa || 0,
+          giaKhungSat: formState.giaKhungSat || 0,
+          moTa: formState.moTa || '',
+          khachHangId: selectedKhachHang.value.id,
+          tongGia: formState.tongGia || 0,
+          taoLuc: formState.taoLuc,
+          vatTuHopDongs: allVatTu,
+        };
+        result = await createHopDongKnownCustomer(submitData);
+      } else {
+        const submitData: HopDongCreateDto = {
+          ...formState,
+          vatTuHopDongs: allVatTu,
+        };
+        result = await createHopDong(submitData);
+      }
 
       if (result.status === 200 || result.status === 201) {
         message.success('Tạo mới thành công');
