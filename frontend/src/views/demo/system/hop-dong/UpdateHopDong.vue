@@ -173,7 +173,6 @@
             <FormItem
               label="Email"
               name="emailKhachHang"
-              :rules="[{ type: 'email', message: 'Email không hợp lệ' }]"
               :label-col="{ span: 12 }"
               :wrapper-col="{ span: 12 }"
             >
