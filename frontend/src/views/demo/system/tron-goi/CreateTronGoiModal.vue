@@ -28,7 +28,7 @@
           :filter-option="filterOption"
           :options="nhomTronGoiOptions"
           @change="(value) => handleNhomTronGoiChange(value)"
-        ></Select>
+        />
       </FormItem>
       <FormItem
         label="Loại hệ thống"
@@ -42,7 +42,7 @@
             { label: 'On-Grid', value: 'On-Grid' },
             { label: 'Hy-Brid', value: 'Hy-Brid' },
           ]"
-        ></Select>
+        />
       </FormItem>
       <FormItem
         label="Loại pha"
@@ -57,10 +57,10 @@
             { label: '3 pha', value: '3 pha' },
           ]"
           @change="handleSoPhaChange()"
-        ></Select>
+        />
       </FormItem>
       <FormItem label="Mô tả" name="moTa">
-        <Textarea v-model:value="formState.moTa" placeholder="Nhập mô tả" :rows="3"></Textarea>
+        <Textarea v-model:value="formState.moTa" placeholder="Nhập mô tả" :rows="3" />
       </FormItem>
       <FormItem label="Bán chạy" name="banChay">
         <RadioGroup v-model:value="formState.banChay" button-style="solid">
@@ -101,7 +101,7 @@
                     show-search
                     :filter-option="filterOption"
                     :options="coSoOptions"
-                  ></Select>
+                  />
                 </FormItem>
               </Col>
               <Col :span="8">
@@ -146,7 +146,7 @@
                       :filter-option="filterOption"
                       :options="tamPinOptions"
                       @change="(value) => handleTamPinChange(value, itemIndex)"
-                    ></Select>
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -244,11 +244,7 @@
                 </Col>
                 <Col :span="24">
                   <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
+                    <Textarea v-model:value="item.moTa" placeholder="Nhập mô tả" :rows="2" />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -293,7 +289,7 @@
                       :filter-option="filterOption"
                       :options="bienTanOptions"
                       @change="(value) => handleBienTanChange(value, itemIndex)"
-                    ></Select>
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -388,11 +384,7 @@
                 </Col>
                 <Col :span="24">
                   <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
+                    <Textarea v-model:value="item.moTa" placeholder="Nhập mô tả" :rows="2" />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -437,7 +429,7 @@
                       :filter-option="filterOption"
                       :options="pinLuuTruOptions"
                       @change="(value) => handlePinLuuTruChange(value, itemIndex)"
-                    ></Select>
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -532,11 +524,7 @@
                 </Col>
                 <Col :span="24">
                   <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
+                    <Textarea v-model:value="item.moTa" placeholder="Nhập mô tả" :rows="2" />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -588,7 +576,7 @@
                       :filter-option="filterOption"
                       :options="heKhungNhomOptions"
                       @change="(value) => handleHeKhungNhomChange(value, itemIndex)"
-                    ></Select>
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -683,11 +671,7 @@
                 </Col>
                 <Col :span="24">
                   <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
+                    <Textarea v-model:value="item.moTa" placeholder="Nhập mô tả" :rows="2" />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -732,7 +716,7 @@
                       :filter-option="filterOption"
                       :options="heDayDienOptions"
                       @change="(value) => handleHeDayDienChange(value, itemIndex)"
-                    ></Select>
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -827,11 +811,7 @@
                 </Col>
                 <Col :span="24">
                   <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
+                    <Textarea v-model:value="item.moTa" placeholder="Nhập mô tả" :rows="2" />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -876,7 +856,7 @@
                       :filter-option="filterOption"
                       :options="tuDienOptions"
                       @change="(value) => handleTuDienChange(value, itemIndex)"
-                    ></Select>
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -971,11 +951,7 @@
                 </Col>
                 <Col :span="24">
                   <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
+                    <Textarea v-model:value="item.moTa" placeholder="Nhập mô tả" :rows="2" />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -1020,7 +996,7 @@
                       :filter-option="filterOption"
                       :options="heTiepDiaOptions"
                       @change="(value) => handleHeTiepDiaChange(value, itemIndex)"
-                    ></Select>
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -1115,11 +1091,7 @@
                 </Col>
                 <Col :span="24">
                   <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
+                    <Textarea v-model:value="item.moTa" placeholder="Nhập mô tả" :rows="2" />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -1168,7 +1140,7 @@
                       :filter-option="filterOption"
                       :options="tronGoiLapDatOptions"
                       @change="(value) => handleTronGoiLapDatChange(value, itemIndex)"
-                    ></Select>
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -1263,11 +1235,7 @@
                 </Col>
                 <Col :span="24">
                   <FormItem label="Mô tả">
-                    <Textarea
-                      v-model:value="item.moTa"
-                      placeholder="Nhập mô tả"
-                      :rows="2"
-                    ></Textarea>
+                    <Textarea v-model:value="item.moTa" placeholder="Nhập mô tả" :rows="2" />
                   </FormItem>
                 </Col>
                 <Col :span="12">
@@ -1288,7 +1256,7 @@
         <Col :span="12">
           <FormItem
             label="Giá khung sắt (VND)"
-            name="tongGia"
+            name="giaKhungSat"
             :rules="[{ required: true, message: 'Vui lòng nhập giá khung sắt' }]"
             :label-col="{ span: 12 }"
             :wrapper-col="{ span: 12 }"
@@ -1300,7 +1268,7 @@
               :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
               :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
               style="width: 100%"
-            ></InputNumber>
+            />
           </FormItem>
         </Col>
       </Row>
@@ -1321,7 +1289,7 @@
               :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
               :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
               style="width: 100%"
-            ></InputNumber>
+            />
           </FormItem>
         </Col>
       </Row>
@@ -1329,7 +1297,7 @@
         <Col :span="12">
           <FormItem
             label="Tổng giá Miền Bắc (VND)"
-            name="tongGia"
+            name="tongGiaMienBac"
             :rules="[{ required: true, message: 'Vui lòng nhập tổng giá Miền Bắc' }]"
             :label-col="{ span: 12 }"
             :wrapper-col="{ span: 12 }"
@@ -1341,7 +1309,7 @@
               :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
               :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
               style="width: 100%"
-            ></InputNumber>
+            />
           </FormItem>
         </Col>
       </Row>
@@ -1350,7 +1318,7 @@
         <Col :span="12">
           <FormItem
             label="Tổng giá Miền Nam (VND)"
-            name="tongGia"
+            name="tongGiaMienNam"
             :rules="[{ required: true, message: 'Vui lòng nhập tổng giá Miền Nam' }]"
             :label-col="{ span: 12 }"
             :wrapper-col="{ span: 12 }"
@@ -1362,7 +1330,7 @@
               :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
               :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
               style="width: 100%"
-            ></InputNumber>
+            />
           </FormItem>
         </Col>
       </Row>
@@ -1383,7 +1351,7 @@
               :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
               :parser="(value) => value.replace(/\$\s?|(,*)/g, '')"
               style="width: 100%"
-            ></InputNumber>
+            />
           </FormItem>
         </Col>
       </Row>
@@ -2347,7 +2315,7 @@
         tronGoiLapDatList.value[index].giaBanMienBac = giaBanMienBac;
         tronGoiLapDatList.value[index].giaBanMienNam = giaBanMienNam;
         tronGoiLapDatList.value[index].thoiGianBaoHanh = vatTu.thoiGianBaoHanh || 0;
-        tronGoiLapDatList.value[index].gm = vatTu.gm || 0;  
+        tronGoiLapDatList.value[index].gm = vatTu.gm || 0;
         break;
       }
     }
