@@ -89,44 +89,53 @@ public class HopDongService extends BaseServiceImpl<HopDong, Integer> {
             dto.setEmailKhachHang(dto.getSdtKhachHang());
         }
 
-        KhachHang khachHangCreating = KhachHang.builder()
-                .email(dto.getEmailKhachHang())
-                .sdt(dto.getSdtKhachHang())
-                .hoVaTen(dto.getHoVaTenKhachHang())
-                .gioiTinh(dto.getGioiTinhKhachHang())
-                .sinhNhat(dto.getSinhNhatKhachHang())
-                .diaChi(dto.getDiaChiKhachHang())
-                .nguoiGioiThieu(nguoiGioiThieuFinding.get())
-                .daBanDuocHang(true)
-                .taoLuc(dto.getTaoLuc())
-                .trangThai(1)
-                .build();
-        khachHangCreating = khachHangService.create(khachHangCreating);
+        KhachHang khachHangCreating = khachHangService.findBySdt(dto.getSdtKhachHang()).orElse(null);
+
+        if (khachHangCreating == null) {
+            khachHangCreating = KhachHang.builder()
+                    .email(dto.getEmailKhachHang())
+                    .sdt(dto.getSdtKhachHang())
+                    .hoVaTen(dto.getHoVaTenKhachHang())
+                    .gioiTinh(dto.getGioiTinhKhachHang())
+                    .sinhNhat(dto.getSinhNhatKhachHang())
+                    .diaChi(dto.getDiaChiKhachHang())
+                    .nguoiGioiThieu(nguoiGioiThieuFinding.get())
+                    .daBanDuocHang(true)
+                    .taoLuc(dto.getTaoLuc())
+                    .trangThai(1)
+                    .build();
+            khachHangCreating = khachHangService.create(khachHangCreating);
+        }
+
 
         if (khachHangCreating == null) {
             throw new CommonException("Tạo khách hànng thất bại, sđt khach hàng: " + dto.getSdtKhachHang());
         }
 
+        NguoiDung taiKhoanKhachHangMoi = nguoiDungService.findBySdtOrEmail(dto.getSdtKhachHang(), dto.getEmailKhachHang()).orElse(null);
 
-        NguoiDung taiKhoanKhachHangMoi = NguoiDung.builder()
-                .coSo(coSoFinding.get())
-                .phanQuyen(RoleType.CUSTOMER.name())
-                .email(dto.getEmailKhachHang())
-                .sdt(dto.getSdtKhachHang())
-                .matKhau("slm123slm123")
-                .hoVaTen(dto.getHoVaTenKhachHang())
-                .gioiTinh(dto.getGioiTinhKhachHang())
-                .sinhNhat(dto.getSinhNhatKhachHang())
-                .phanTramHoaHong(5.0)
-                .tongHoaHong(0.0)
-                .diaChi(dto.getDiaChiKhachHang())
-                .nganHang(null)
-                .maNganHang(null)
-                .taoLuc(dto.getTaoLuc())
-                .trangThai(1)
-                .build();
+        if (taiKhoanKhachHangMoi == null) {
+            taiKhoanKhachHangMoi = NguoiDung.builder()
+                    .coSo(coSoFinding.get())
+                    .phanQuyen(RoleType.CUSTOMER.name())
+                    .email(dto.getEmailKhachHang())
+                    .sdt(dto.getSdtKhachHang())
+                    .matKhau("slm123slm123")
+                    .hoVaTen(dto.getHoVaTenKhachHang())
+                    .gioiTinh(dto.getGioiTinhKhachHang())
+                    .sinhNhat(dto.getSinhNhatKhachHang())
+                    .phanTramHoaHong(5.0)
+                    .tongHoaHong(0.0)
+                    .diaChi(dto.getDiaChiKhachHang())
+                    .nganHang(null)
+                    .maNganHang(null)
+                    .taoLuc(dto.getTaoLuc())
+                    .trangThai(1)
+                    .build();
 
-        taiKhoanKhachHangMoi = nguoiDungService.create(taiKhoanKhachHangMoi);
+            nguoiDungService.create(taiKhoanKhachHangMoi);
+        }
+
 
         HopDong hopDongCreating = HopDong.builder()
                 .coSo(coSoFinding.get())
